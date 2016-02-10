@@ -1,5 +1,6 @@
 package fr.sims.coachingproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // // TODO: 2016/2/10 remove
+        startActivity(new Intent(this, ProfileActivity.class));
     }
 
     @Override
