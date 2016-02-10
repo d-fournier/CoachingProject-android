@@ -12,6 +12,14 @@ import android.widget.TextView;
  */
 public class QR extends Fragment{
 
+    public static QR newInstance() {
+        QR fragment = new QR();
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
         @Override
         public View onCreateView(LayoutInflater inflater,
                                  ViewGroup container, Bundle savedInstanceState) {
@@ -19,7 +27,7 @@ public class QR extends Fragment{
             // properly.
             View rootView = inflater.inflate(
                     R.layout.fragment_qr, container, false);
-            ((TextView) rootView.findViewById(android.R.id.text2)).setText(
+            ((TextView) rootView.findViewById(R.id.text2)).setText(
                     "test2");
             return rootView;
         }

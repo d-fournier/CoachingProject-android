@@ -14,6 +14,16 @@ import android.widget.TextView;
 public class MesCoach extends Fragment {
     public final String ARG_OBJECT = "Mes Coach";
 
+
+    public static MesCoach newInstance() {
+        MesCoach fragment = new MesCoach();
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -22,7 +32,7 @@ public class MesCoach extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_mescoach, container, false);
         Bundle args = getArguments();
-        ((TextView) rootView.findViewById(android.R.id.text1)).setText(
+        ((TextView) rootView.findViewById(R.id.text1)).setText(
                 "test");
         return rootView;
     }

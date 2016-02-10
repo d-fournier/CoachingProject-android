@@ -19,8 +19,19 @@ public class SwipeView extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Fragment fragment = new MesCoach();
-
+        Fragment fragment;
+        switch(i) {
+            case 1:
+                fragment = QR.newInstance();
+                break;
+            case 2:
+                fragment = GroupFragment.newInstance();
+                break;
+            case 0:
+            default:
+                fragment = MesCoach.newInstance();
+                break;
+        }
         return fragment;
     }
 
