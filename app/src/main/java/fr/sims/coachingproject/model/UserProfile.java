@@ -41,15 +41,8 @@ public class UserProfile extends Model{
     public boolean mIsCoach;
 
 
-    public static UserProfile getCurrentUserProfile(Context ctx) {
-        SharedPreferences settings = ctx.getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        long currentUserId = settings.getLong(Const.SharedPref.CURRENT_USER_ID, -1);
-
-        if(currentUserId == -1) {
-            return null;
-        } else {
-            return new Select().from(UserProfile.class).where("id = ?", currentUserId).executeSingle();
-        }
+    public static UserProfile getUserProfileById(long id) {
+        return new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
     }
 
     public static List<UserProfile> getAllUserProfile() {
