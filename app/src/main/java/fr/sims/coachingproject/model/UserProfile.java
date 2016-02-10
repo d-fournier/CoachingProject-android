@@ -1,16 +1,11 @@
 package fr.sims.coachingproject.model;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
 import java.util.List;
-
-import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by dfour on 10/02/2016.
@@ -19,7 +14,7 @@ import fr.sims.coachingproject.util.Const;
 @Table(name="UserProfile", id="_id")
 public class UserProfile extends Model{
 
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     public long mId;
 
     @Column(name = "name")
@@ -31,8 +26,8 @@ public class UserProfile extends Model{
     @Column(name = "picture")
     public String mPicture;
 
-    @Column(name = "birthdate")
-    public String mBirthDate;
+    @Column(name = "birthday")
+    public String mBirthday;
 
     @Column(name = "city")
     public String mCity;
