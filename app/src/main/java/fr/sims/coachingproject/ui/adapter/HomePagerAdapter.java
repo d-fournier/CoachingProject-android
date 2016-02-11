@@ -44,7 +44,20 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "OBJECT " + (position + 1);
+        String title;
+        switch(position) {
+            case 1:
+                title = QuestionsAnswersFragment.TABS_TITLE;
+                break;
+            case 2:
+                title = GroupFragment.TABS_TITLE;
+                break;
+            case 0:
+            default:
+                title = CoachingRelationsFragment.TABS_TITLE;
+                break;
+        }
+        return title;
     }
 }
 

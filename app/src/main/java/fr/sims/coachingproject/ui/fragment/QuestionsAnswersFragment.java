@@ -14,6 +14,8 @@ import fr.sims.coachingproject.R;
  */
 public class QuestionsAnswersFragment extends Fragment{
 
+    public static final String TABS_TITLE = "Questions";
+
     public static QuestionsAnswersFragment newInstance() {
         QuestionsAnswersFragment fragment = new QuestionsAnswersFragment();
         Bundle args = new Bundle();
@@ -22,12 +24,11 @@ public class QuestionsAnswersFragment extends Fragment{
         return fragment;
     }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater,
-                                 ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(
-                    R.layout.fragment_questions_answers, container, false);
-            return rootView;
-        }
-
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(
+                R.layout.fragment_questions_answers, container, false);
+        return rootView;
+    }
 }

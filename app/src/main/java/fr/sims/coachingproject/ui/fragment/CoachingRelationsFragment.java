@@ -15,6 +15,8 @@ import fr.sims.coachingproject.R;
  */
 public class CoachingRelationsFragment extends Fragment {
 
+    public static final String TABS_TITLE = "Coaching";
+
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
         Bundle args = new Bundle();

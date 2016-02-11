@@ -11,6 +11,8 @@ import fr.sims.coachingproject.R;
 
 public class GroupFragment extends Fragment {
 
+    public static final String TABS_TITLE = "Groups";
+
     public GroupFragment() {
         // Required empty public constructor
     }
@@ -42,4 +44,5 @@ public class GroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_group, container, false);
-    }}
+    }
+}
