@@ -1,10 +1,12 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+
+import fr.sims.coachingproject.ui.fragment.CoachingRelationsFragment;
+import fr.sims.coachingproject.ui.fragment.GroupFragment;
+import fr.sims.coachingproject.ui.fragment.QuestionsAnswersFragment;
 
 /**
  * Created by abarbosa on 10/02/2016.
@@ -12,8 +14,8 @@ import android.support.v4.view.ViewPager;
 
 
 
-public class SwipeView extends FragmentPagerAdapter {
-    public SwipeView(FragmentManager fm) {
+public class HomePagerAdapter extends FragmentPagerAdapter {
+    public HomePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -22,14 +24,14 @@ public class SwipeView extends FragmentPagerAdapter {
         Fragment fragment;
         switch(i) {
             case 1:
-                fragment = QR.newInstance();
+                fragment = QuestionsAnswersFragment.newInstance();
                 break;
             case 2:
                 fragment = GroupFragment.newInstance();
                 break;
             case 0:
             default:
-                fragment = MesCoach.newInstance();
+                fragment = CoachingRelationsFragment.newInstance();
                 break;
         }
         return fragment;

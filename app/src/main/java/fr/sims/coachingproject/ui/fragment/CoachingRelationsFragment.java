@@ -1,4 +1,4 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,16 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import fr.sims.coachingproject.R;
+
 
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class MesCoach extends Fragment {
-    public final String ARG_OBJECT = "Mes Coach";
+public class CoachingRelationsFragment extends Fragment {
 
-
-    public static MesCoach newInstance() {
-        MesCoach fragment = new MesCoach();
+    public static CoachingRelationsFragment newInstance() {
+        CoachingRelationsFragment fragment = new CoachingRelationsFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -27,13 +27,9 @@ public class MesCoach extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        // The last two arguments ensure LayoutParams are inflated
-        // properly.
         View rootView = inflater.inflate(
-                R.layout.fragment_mescoach, container, false);
-        Bundle args = getArguments();
-        ((TextView) rootView.findViewById(R.id.text1)).setText(
-                "test");
+                R.layout.fragment_coaching_relations, container, false);
+
         return rootView;
     }
 }

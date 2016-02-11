@@ -1,4 +1,4 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,13 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import fr.sims.coachingproject.R;
+
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class QR extends Fragment{
+public class QuestionsAnswersFragment extends Fragment{
 
-    public static QR newInstance() {
-        QR fragment = new QR();
+    public static QuestionsAnswersFragment newInstance() {
+        QuestionsAnswersFragment fragment = new QuestionsAnswersFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -23,12 +25,8 @@ public class QR extends Fragment{
         @Override
         public View onCreateView(LayoutInflater inflater,
                                  ViewGroup container, Bundle savedInstanceState) {
-            // The last two arguments ensure LayoutParams are inflated
-            // properly.
             View rootView = inflater.inflate(
-                    R.layout.fragment_qr, container, false);
-            ((TextView) rootView.findViewById(R.id.text2)).setText(
-                    "test2");
+                    R.layout.fragment_questions_answers, container, false);
             return rootView;
         }
 

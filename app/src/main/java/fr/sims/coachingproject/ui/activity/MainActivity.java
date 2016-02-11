@@ -1,4 +1,4 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.ui.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,13 +17,14 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 import fr.sims.coachingproject.model.CoachingRelation;
-import fr.sims.coachingproject.model.UserProfile;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    SwipeView mSwipeView;
+    HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
 
 
@@ -51,9 +52,9 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        mSwipeView = new SwipeView(getSupportFragmentManager());
+        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSwipeView);
+        mViewPager.setAdapter(mHomePagerAdapter);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
