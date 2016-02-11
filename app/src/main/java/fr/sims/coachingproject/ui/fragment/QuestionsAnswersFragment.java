@@ -12,7 +12,7 @@ import fr.sims.coachingproject.R;
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class QuestionsAnswersFragment extends Fragment{
+public class QuestionsAnswersFragment extends GenericFragment{
 
     public static final String TABS_TITLE = "Questions";
 
@@ -25,10 +25,7 @@ public class QuestionsAnswersFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(
-                R.layout.fragment_questions_answers, container, false);
-        return rootView;
+    protected int getLayoutId() {
+        return R.layout.fragment_questions_answers;
     }
 }

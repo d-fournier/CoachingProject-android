@@ -1,15 +1,11 @@
 package fr.sims.coachingproject.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import fr.sims.coachingproject.R;
 
 
-public class GroupFragment extends Fragment {
+public class GroupFragment extends GenericFragment{
 
     public static final String TABS_TITLE = "Groups";
 
@@ -31,18 +27,9 @@ public class GroupFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group, container, false);
+    protected int getLayoutId() {
+        return R.layout.fragment_group;
     }
 }

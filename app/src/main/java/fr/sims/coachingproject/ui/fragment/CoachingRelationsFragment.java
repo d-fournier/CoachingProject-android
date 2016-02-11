@@ -13,7 +13,7 @@ import fr.sims.coachingproject.R;
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class CoachingRelationsFragment extends Fragment {
+public class CoachingRelationsFragment extends GenericFragment {
 
     public static final String TABS_TITLE = "Coaching";
 
@@ -27,11 +27,7 @@ public class CoachingRelationsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(
-                R.layout.fragment_coaching_relations, container, false);
-
-        return rootView;
+    protected int getLayoutId() {
+        return R.layout.fragment_coaching_relations;
     }
 }
