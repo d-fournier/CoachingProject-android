@@ -36,8 +36,13 @@ public class UserProfile extends Model{
     public boolean mIsCoach;
 
 
+    public List<SportLevel> mSportsList = null;
+
+
     public static UserProfile getUserProfileById(long id) {
-        return new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
+        UserProfile up = new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
+        up.mSportsList = UserSportLevel.getAllSportLevelByUserId(id);
+        return up;
     }
 
     public static List<UserProfile> getAllUserProfile() {

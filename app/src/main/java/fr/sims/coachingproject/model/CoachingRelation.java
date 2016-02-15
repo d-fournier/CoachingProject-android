@@ -30,28 +30,19 @@ public class CoachingRelation extends Model {
     @Column(name = "comment")
     public String mComment;
 
-    // TODO isAccepted = true / false => No answer means ... ?
-    @Column(name= "isPending")
+    @Column(name = "sport", notNull = true)
+    public Sport mSport;
+
+    @Column(name= "isPending", notNull = true)
     public boolean mIsPending;
 
-    @Column(name = "isAccepted")
+    @Column(name = "isAccepted", notNull = true)
     public boolean mIsAccepted;
 
-    // TODO IsClosed Sprint 1 ?
-    @Column(name = "isClosed")
-    public boolean mIsClosed;
-
-    public static List<CoachingRelation> getAllCoachingRelation(){
-        return new Select().from(CoachingRelation.class).execute();
-    }
-
-    public static List<CoachingRelation> getAllUserCoachingRelation(long id, boolean isCurrentUserCoach ,boolean isPending) {
-        From query = new Select().from(CoachingRelation.class).where("isPending == ?", isPending);
-        if(isCurrentUserCoach) {
-            query.where("coach == ?", id);
-        } else {
-            query.where("user == ?", id);
-        }
-        return query.execute();
+    public static List<CoachingRelation> getAllUserCoachingRelation(long id) {
+        return new Select()
+                .from(CoachingRelation.class)
+                .where("coach == ?", id).or("user == ?", id)
+                .execute();
     }
 }
