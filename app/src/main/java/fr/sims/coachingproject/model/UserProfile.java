@@ -4,6 +4,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -15,29 +16,29 @@ import java.util.List;
 public class UserProfile extends Model{
 
     @Column(name = "id", unique = true)
+    @SerializedName("id")
     public long mId;
 
-    @Column(name = "name")
-    public String mName;
-
-    @Column(name = "email")
-    public String mMail;
+    @Column(name = "displayName")
+    @SerializedName("displayName")
+    public String mDisplayName;
 
     @Column(name = "picture")
     public String mPicture;
 
-    @Column(name = "birthday")
-    public String mBirthday;
+    @Column(name = "birthdate")
+    @SerializedName("birthdate")
+    public String mBirthdate;
 
     @Column(name = "city")
+    @SerializedName("city")
     public String mCity;
 
     @Column(name = "isCoach")
+    @SerializedName("isCoach")
     public boolean mIsCoach;
 
-
     public List<SportLevel> mSportsList = null;
-
 
     public static UserProfile getUserProfileById(long id) {
         UserProfile up = new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
