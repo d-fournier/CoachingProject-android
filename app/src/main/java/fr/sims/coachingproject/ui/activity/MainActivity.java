@@ -14,7 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
 public class MainActivity extends AppCompatActivity
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Set a custom action if you want ;)", Snackbar.LENGTH_LONG)
+                UserProfile up = UserProfile.getUserProfileById(1);
+                Snackbar.make(view, up.mDisplayName, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        NetworkService.startActionConnectedUserInfo(this);
     }
 
     @Override

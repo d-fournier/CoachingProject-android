@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by dfour on 15/02/2016.
  */
@@ -29,12 +31,12 @@ public class NetworkUtil {
     private static String request(String urlString, String method, String token, String body) {
         StringBuilder res = new StringBuilder();
 
-        HttpURLConnection urlConnection;
+        HttpsURLConnection urlConnection;
         BufferedReader br;
 
         try {
             URL url = new URL(urlString);
-            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setRequestMethod(method);
 
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -51,7 +53,6 @@ public class NetworkUtil {
             }
 
             int code = urlConnection.getResponseCode();
-            Log.i("XXX---XXX", "ReturnCode=" + code);
             if(code == HttpURLConnection.HTTP_OK) {
                 InputStream is = urlConnection.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
