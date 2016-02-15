@@ -10,22 +10,63 @@
     tools:context="fr.sims.coachingproject.ProfileActivity">
 
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Basketball      3 ans                                         Football ---- ans"
-        android:id="@+id/textView2"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:gravity="center">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageView1"
+                android:background="@mipmap/lena_color"
+                />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/name_age"
+                android:id="@+id/textView3"
+                android:maxLines="10"
+                android:typeface="serif" />
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:id="@+id/listView1"
+            android:layout_marginTop="10dp"
+            />
+<!--        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Basketball      3 ans    \n Football &#45;&#45;&#45;&#45; ans"
+            android:id="@+id/textView2"
+            android:layout_marginTop="20dp" />-->
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="190dp"
+            android:id="@+id/listView"
+            android:layout_marginTop="20dp"
+            />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/coaching"
+            android:layout_marginTop="10dp"
+            />
+    </LinearLayout>
 
 </RelativeLayout>
