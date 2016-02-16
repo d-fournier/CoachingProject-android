@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="fr.sims.coachingproject.ProfileActivity">
+    tools:context=".ui.activity.ProfileActivity">
 
 
     <LinearLayout
@@ -25,18 +25,56 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:id="@+id/imageView1"
-                android:background="@mipmap/lena_color"
+                android:id="@+id/imagePicture"
+                />
+                <!--android:background="@mipmap/lena_color"-->
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="60dp">
+<!--            me.mId = 1;
+            me.mName = "John Doe";
+            me.mBirthday = "01/01/1990";
+            me.mCity = "Villeurbanne (69100)";
+            me.mIsCoach = false;
+            me.mMail = "j.doe@example.com";
+            me.mPicture = "https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png";  -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textID"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textName"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textBirthday"
                 />
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/name_age"
-                android:id="@+id/textView3"
-                android:maxLines="10"
-                android:typeface="serif" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textCity"
+                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textIsCoach"
+                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textMail"
+                />
+            </LinearLayout>
         </LinearLayout>
 
         <ListView

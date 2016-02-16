@@ -26,6 +26,12 @@ public class UserLoader extends AsyncTaskLoader<UserProfile> {
     }
 
     @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
+    }
+
+    @Override
     public UserProfile loadInBackground() {
         if(mId == -1) {
             SharedPreferences settings = mCtx.getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME, Context.MODE_PRIVATE);

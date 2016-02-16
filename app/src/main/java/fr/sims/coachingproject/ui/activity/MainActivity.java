@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import fr.sims.coachingproject.ProfileActivity;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
@@ -60,8 +59,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // // TODO: 2016/2/10 remove
-        startActivity(new Intent(this, ProfileActivity.class));
+        //startActivity(new Intent(this, ProfileActivity.class));
     }
 
     @Override
