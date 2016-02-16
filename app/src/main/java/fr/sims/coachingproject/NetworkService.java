@@ -19,8 +19,8 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 public class NetworkService extends IntentService {
-    private static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
-    private static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
+    public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
+    public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
 
     public NetworkService() {
         super("NetworkService");
@@ -49,6 +49,10 @@ public class NetworkService extends IntentService {
                     handleActionCoachingRelation();
                     break;
             }
+
+            Intent endIntent = new Intent(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION);
+            endIntent.putExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME, action);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(endIntent);
         }
     }
 
