@@ -141,28 +141,28 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetCr.get(position - 1);
                     // TODO Image Loader        vh.mPictureIV
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_LEARNER:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
                     // TODO Image Loader        vh.mPictureIV
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_COACH:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
                     // TODO Image Loader        vh.mPictureIV
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_LEARNER:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
                     // TODO Image Loader        vh.mPictureIV
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case HEADER_COACH:

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.sims.coachingproject">
 
-    <!-- Internet Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,7 +11,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="AA_DB_NAME"
             android:value="coachingproject.db" />
@@ -21,11 +19,7 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="fr.sims.coachingproject.model.UserProfile,
-             fr.sims.coachingproject.model.CoachingRelation,
-             fr.sims.coachingproject.model.Sport,
-             fr.sims.coachingproject.model.SportLevel,
-             fr.sims.coachingproject.model.UserSportLevel" />
+            android:value="fr.sims.coachingproject.model.UserProfile,fr.sims.coachingproject.model.CoachingRelation,fr.sims.coachingproject.model.Sport,fr.sims.coachingproject.model.SportLevel,fr.sims.coachingproject.model.UserSportLevel" />
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -37,7 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".ui.activity.ProfileActivity"></activity>
+
+        <service
+            android:name=".NetworkService"
+            android:exported="false"></service>
+
 
     </application>
 

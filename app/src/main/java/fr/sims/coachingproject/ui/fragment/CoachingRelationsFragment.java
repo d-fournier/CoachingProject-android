@@ -11,6 +11,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -55,6 +56,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onStart() {
         super.onStart();
+        NetworkService.startActionCoachingRelations(getContext());
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -68,12 +70,11 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     @Override
     public Loader<List<CoachingRelation>> onCreateLoader(int id, Bundle args) {
-        return new CoachingLoader(getActivity());
+        return (new CoachingLoader(getContext()));
     }
 
     @Override
     public void onLoadFinished(Loader<List<CoachingRelation>> loader, List<CoachingRelation> data) {
-        // TODO Handle several coach types
         ArrayList<UserProfile> listCr = new ArrayList<>();
         ArrayList<UserProfile> listLr = new ArrayList<>();
         ArrayList<UserProfile> Pending_listCr = new ArrayList<>();
@@ -82,17 +83,17 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
             for (CoachingRelation relation : data) {
                 if(relation.mIsPending== true)
                 {
-                    if (relation.mCoach.mId != 1)
+                    if (relation.mCoach.mIdDb != 1)
                         listCr.add(relation.mCoach);
                     else
-                        listLr.add(relation.mUser);
+                        listLr.add(relation.mTrainee);
                 }
                 else
                 {
-                    if (relation.mCoach.mId != 1)
+                    if (relation.mCoach.mIdDb != 1)
                         Pending_listCr.add(relation.mCoach);
                     else
-                        Pending_listLr.add(relation.mUser);
+                        Pending_listLr.add(relation.mTrainee);
                 }
             }
 

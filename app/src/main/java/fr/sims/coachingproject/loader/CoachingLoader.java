@@ -6,14 +6,20 @@ import android.support.v4.content.AsyncTaskLoader;
 import java.util.List;
 
 import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by dfour on 11/02/2016.
  */
-public class CoachingLoader extends AsyncTaskLoader<List<CoachingRelation>> {
+public class CoachingLoader extends GenericLocalLoader<List<CoachingRelation>> {
 
     public CoachingLoader(Context context) {
         super(context);
+    }
+
+    @Override
+    protected String getBroadcastEvent() {
+        return Const.BroadcastEvent.EVENT_COACHING_RELATIONS_UPDATED;
     }
 
     @Override

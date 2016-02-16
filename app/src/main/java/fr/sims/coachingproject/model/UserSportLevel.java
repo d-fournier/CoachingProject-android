@@ -1,8 +1,12 @@
 package fr.sims.coachingproject.model;
 
+import android.database.sqlite.SQLiteConstraintException;
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
@@ -14,14 +18,20 @@ import java.util.List;
 @Table(name="UserSportLevel")
 public class UserSportLevel extends Model {
 
-    @Column(name = "userId")
+    @Column(name = "userId", notNull = true, uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public long mUserId;
 
-    @Column(name = "sportLevel")
+    @Column(name = "sportLevel", notNull = true, uniqueGroups = {"group1"}, onUniqueConflicts = {Column.ConflictAction.IGNORE})
     public SportLevel mSportLevel;
 
-    public static List<SportLevel> getAllSportLevelByUserId(long id) {
-        return new Select("sportLevel").from(UserSportLevel.class).where("userId == ?", id).execute();
+    public UserSportLevel saveOrUpdate(){
+        mSportLevel = mSportLevel.saveOrUpdate();
+        this.save();
+        return this;
+    }
+
+    public static List<UserSportLevel> getAllSportLevelByUserId(long id) {
+        return new Select().from(UserSportLevel.class).where("userId == ?", id).execute();
     }
 
 }
