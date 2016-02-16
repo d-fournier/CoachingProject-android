@@ -93,7 +93,7 @@ public class CoachingProjectApplication extends Application {
             coach2.mCity = "Lyon (69000)";
             coach2.mIsCoach = true;
             coach2.mMail = "trainer@example.com";
-            coach2.mPicture = "https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png";
+            coach2.mPicture = "http://simpleicon.com/wp-content/uploads/user1.png";
             coach2.save();
 
             CoachingRelation cr = new CoachingRelation();
@@ -112,6 +112,7 @@ public class CoachingProjectApplication extends Application {
             cr1.mUser = me;
             cr1.mDate = "10/02/2016";
             cr1.mIsPending = true;
+            cr1.mSport = sp1;
             cr1.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
             cr1.save();
 
@@ -121,6 +122,7 @@ public class CoachingProjectApplication extends Application {
             cr2.mUser = User;
             cr2.mDate = "10/02/2016";
             cr2.mIsPending =true;
+            cr2.mSport = sp1;
             cr2.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
             cr2.save();
 
@@ -129,6 +131,7 @@ public class CoachingProjectApplication extends Application {
             cr5.mCoach = coach;
             cr5.mUser = me;
             cr5.mDate = "10/02/2016";
+            cr5.mSport = sp1;
             cr5.mIsPending =true;
             cr5.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
             cr5.save();
