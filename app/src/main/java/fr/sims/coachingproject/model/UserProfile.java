@@ -62,14 +62,20 @@ public class UserProfile extends Model{
     }
 
     public static UserProfile[] parseList(String json){
-        Gson gson = new Gson();
-        return gson.fromJson(json, UserProfile[].class);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        UserProfile[] res = null;
+        try {
+            res = gson.fromJson(json, UserProfile[].class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
     }
 
     /* Database Request */
     public static UserProfile getUserProfileById(long id) {
         UserProfile up = new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
-       // up.mSportsList = UserSportLevel.getAllSportLevelByUserId(id);
+        up.mSportsList = UserSportLevel.getAllSportLevelByUserId(id);
         return up;
     }
 
