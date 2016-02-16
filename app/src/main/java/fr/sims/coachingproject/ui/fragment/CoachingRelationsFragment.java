@@ -25,8 +25,10 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     public static final String TABS_TITLE = "Coaching";
 
+
     private RecyclerView mCoachList;
     CoachListAdapter mRecyclerAdapter;
+   // private int mDataSetTypes[]= {HEADER, COACH};
 
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
@@ -72,11 +74,35 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onLoadFinished(Loader<List<CoachingRelation>> loader, List<CoachingRelation> data) {
         // TODO Handle several coach types
-        ArrayList<UserProfile> list = new ArrayList<>();
-        for(CoachingRelation relation : data){
-            list.add(relation.mCoach);
-        }
-        mRecyclerAdapter.setData(list);
+        ArrayList<UserProfile> listCr = new ArrayList<>();
+        ArrayList<UserProfile> listLr = new ArrayList<>();
+        ArrayList<UserProfile> Pending_listCr = new ArrayList<>();
+        ArrayList<UserProfile> Pending_listLr = new ArrayList<>();
+
+            for (CoachingRelation relation : data) {
+                if(relation.mIsPending== true)
+                {
+                    if (relation.mCoach.mId != 1)
+                        listCr.add(relation.mCoach);
+                    else
+                        listLr.add(relation.mUser);
+                }
+                else
+                {
+                    if (relation.mCoach.mId != 1)
+                        Pending_listCr.add(relation.mCoach);
+                    else
+                        Pending_listLr.add(relation.mUser);
+                }
+            }
+
+
+            mRecyclerAdapter.setDataCr(listCr);
+            mRecyclerAdapter.setDataLr(listLr);
+            mRecyclerAdapter.setDataPendingCr(Pending_listCr);
+            mRecyclerAdapter.setDataPendingLr(Pending_listLr);
+
+
     }
 
     @Override
