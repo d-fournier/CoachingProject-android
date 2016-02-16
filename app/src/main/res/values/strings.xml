@@ -12,6 +12,8 @@
                                         Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux.
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_coach">My trainer</string>
+    <string name="my_trainee">My Learner</string>
+    <string name="pending_coach_request">"Pending trainer request "</string>
+    <string name="pending_trainee_request">My requests</string>
 </resources>
