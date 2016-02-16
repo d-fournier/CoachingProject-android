@@ -1,5 +1,8 @@
 package fr.sims.coachingproject.model;
 
+import android.util.Log;
+
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -10,32 +13,30 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by dfour on 10/02/2016.
  */
 
-@Table(name="UserProfile", id="_id")
+@Table(name="UserProfile")
 public class UserProfile extends Model{
 
     public UserProfile(){}
 
-    @Column(name = "id", unique = true)
+    @Column(name = "idDb", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     @Expose
     @SerializedName("id")
-    public long mId;
+    public long mIdDb;
 
     @Column(name = "displayName")
     @Expose
     @SerializedName("displayName")
     public String mDisplayName;
 
-    @Column(name = "email")
-    public String mMail;
-
     @Column(name = "picture")
-    public String mPicture;
+    public String mPicture = "http://p7.storage.canalblog.com/77/74/402370/21923602.jpg";
 
     @Column(name = "birthdate")
     @Expose
@@ -52,8 +53,9 @@ public class UserProfile extends Model{
     @SerializedName("isCoach")
     public boolean mIsCoach;
 
-
-    public List<SportLevel> mSportsList = null;
+    @Expose
+    @SerializedName("levels")
+    public SportLevel[] mSportsList = null;
 
     /* Json Builder */
     public static UserProfile parseItem(String json){
@@ -79,30 +81,56 @@ public class UserProfile extends Model{
     }
 
     /* Database Request */
+    public UserProfile saveOrUpdate(){
+        UserProfile res = new Select().from(UserProfile.class).where("idDb = ?", mIdDb).executeSingle();
+        if(res != null) {
+            res.bindProperties(this);
+            res.save();
+        } else {
+            this.save();
+            res = this;
+        }
+
+        saveSportLevel();
+
+        return res;
+    }
+
+    private void bindProperties(UserProfile up) {
+        this.mDisplayName = up.mDisplayName;
+        this.mSportsList = up.mSportsList;
+        this.mPicture = up.mPicture;
+        this.mBirthdate = up.mBirthdate;
+        this.mCity = up.mCity;
+        this.mIsCoach = up.mIsCoach;
+    }
+
+    private void saveSportLevel(){
+        List<UserSportLevel> userSportLevel = new ArrayList<>();
+        for(SportLevel sportLevel : mSportsList) {
+            UserSportLevel usl = new UserSportLevel();
+            usl.mUserId = mIdDb;
+            usl.mSportLevel = sportLevel;
+            userSportLevel.add(usl);
+        }
+        for(UserSportLevel usl : userSportLevel) {
+            usl.saveOrUpdate();
+        }
+    }
+
     public static UserProfile getUserProfileById(long id) {
-        UserProfile up = new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
-        up.mSportsList = UserSportLevel.getAllSportLevelByUserId(id);
+        UserProfile up = new Select().from(UserProfile.class).where("idDb = ?", id).executeSingle();
+        try {
+            List<UserSportLevel> list = UserSportLevel.getAllSportLevelByUserId(id);
+            int size = list.size();
+            up.mSportsList = new SportLevel[size];
+            for (int i = 0; i < size; i++) {
+                up.mSportsList[i] = list.get(i).mSportLevel;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return up;
     }
 
-    public static List<UserProfile> getAllUserProfile() {
-        return new Select().from(UserProfile.class).execute();
-    }
-
-    public static void deleteUserProfileById(long id) {
-        long[]ids = {id};
-        deleteUserProfileByIds(ids);
-    }
-
-
-    public static void deleteUserProfileByIds(long[] ids) {
-        int length = ids.length;
-        if(length > 0) {
-            String inList = "(" + ids[0];
-            for(int i = 1 ; i < length ; i++)
-                inList += ","+ids[i];
-            inList += ")";
-            new Delete().from(UserProfile.class).where("id IN "+inList).execute();
-        }
-    }
 }

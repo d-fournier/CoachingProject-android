@@ -3,9 +3,14 @@ package fr.sims.coachingproject;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 
+import java.util.List;
+
+import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -27,11 +32,11 @@ public class NetworkService extends IntentService {
         intent.setAction(ACTION_CONNECTED_USER_INFO);
         context.startService(intent);
     }
-    /*public static void startActionCoachingRelations(Context context) {
+    public static void startActionCoachingRelations(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_COACHING_RELATIONS);
         context.startService(intent);
-    }*/
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -56,14 +61,11 @@ public class NetworkService extends IntentService {
 
             ActiveAndroid.beginTransaction();
             try {
-                UserProfile.deleteUserProfileById(id);
-                up.save();
+                up.saveOrUpdate();
                 ActiveAndroid.setTransactionSuccessful();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 ActiveAndroid.endTransaction();
             }
         }
@@ -72,7 +74,19 @@ public class NetworkService extends IntentService {
     protected void handleActionCoachingRelation() {
         String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
         if(!res.isEmpty()) {
-            UserProfile.parseItem(res).save();
+            CoachingRelation[] crList = CoachingRelation.parseList(res);
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(CoachingRelation cr : crList) {
+                    cr.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
         }
     }
 

@@ -94,12 +94,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
 
         // Set values
-        tv_Id.setText(Long.toString(data.mId));
+        tv_Id.setText(Long.toString(data.mIdDb));
         tv_Name.setText(data.mDisplayName);
         tv_Birthday.setText(data.mBirthdate);
         tv_City.setText(data.mCity);
         tv_IsCoach.setText(Boolean.toString(data.mIsCoach));
-        tv_Mail.setText(data.mMail);
+        tv_Mail.setText(data.mDisplayName);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
     }
 

@@ -82,14 +82,14 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
             for (CoachingRelation relation : data) {
                 if(relation.mIsPending== true)
                 {
-                    if (relation.mCoach.mId != 1)
+                    if (relation.mCoach.mIdDb != 1)
                         listCr.add(relation.mCoach);
                     else
                         listLr.add(relation.mTrainee);
                 }
                 else
                 {
-                    if (relation.mCoach.mId != 1)
+                    if (relation.mCoach.mIdDb != 1)
                         Pending_listCr.add(relation.mCoach);
                     else
                         Pending_listLr.add(relation.mTrainee);

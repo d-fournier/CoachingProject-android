@@ -19,7 +19,7 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="fr.sims.coachingproject.model.UserProfile,              fr.sims.coachingproject.model.CoachingRelation,              fr.sims.coachingproject.model.Sport,              fr.sims.coachingproject.model.SportLevel,              fr.sims.coachingproject.model.UserSportLevel" />
+            android:value="fr.sims.coachingproject.model.UserProfile,fr.sims.coachingproject.model.CoachingRelation,fr.sims.coachingproject.model.Sport,fr.sims.coachingproject.model.SportLevel,fr.sims.coachingproject.model.UserSportLevel" />
 
         <activity
             android:name=".ui.activity.MainActivity"
