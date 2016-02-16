@@ -1,20 +1,20 @@
 package fr.sims.coachingproject.loader;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+
+import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 
 /**
  * Created by Donovan on 16/02/2016.
  */
-public abstract class GenericLocalLoader<D> extends AsyncTaskLoader<D> {
+public abstract class GenericLocalLoader<D> extends AsyncTaskLoader<D> implements GenericBroadcastReceiver.BroadcastReceiverListener {
 
     LocalBroadcastManager mLocalBroadcastManager;
-    LoaderBroadcastReceiver mLoaderBroadcastReceiver;
+    GenericBroadcastReceiver mLoaderBroadcastReceiver;
 
     public GenericLocalLoader(Context context) {
         super(context);
@@ -30,7 +30,7 @@ public abstract class GenericLocalLoader<D> extends AsyncTaskLoader<D> {
 
         String event = getBroadcastEvent();
         if(event != null) {
-            mLoaderBroadcastReceiver = new LoaderBroadcastReceiver(this);
+            mLoaderBroadcastReceiver = new GenericBroadcastReceiver(this);
             mLocalBroadcastManager.registerReceiver(mLoaderBroadcastReceiver, new IntentFilter(event));
         }
     }
@@ -44,19 +44,8 @@ public abstract class GenericLocalLoader<D> extends AsyncTaskLoader<D> {
         }
     }
 
-    private class LoaderBroadcastReceiver extends BroadcastReceiver {
-        private Loader loader;
-
-        public LoaderBroadcastReceiver(Loader loader)
-        {
-            this.loader = loader;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            loader.onContentChanged();
-        }
+    @Override
+    public void onBroadcastReceive(Intent intent) {
+        this.onContentChanged();
     }
-
 }

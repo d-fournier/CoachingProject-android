@@ -1,8 +1,12 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
@@ -16,20 +20,25 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
+import fr.sims.coachingproject.util.Const;
 
 
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class CoachingRelationsFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, RecyclerView.OnItemTouchListener {
+public class CoachingRelationsFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, RecyclerView.OnItemTouchListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener {
 
     public static final String TABS_TITLE = "Coaching";
 
 
     private RecyclerView mCoachList;
-    CoachListAdapter mRecyclerAdapter;
-   // private int mDataSetTypes[]= {HEADER, COACH};
+    private SwipeRefreshLayout mRefreshLayout;
+
+    GenericBroadcastReceiver mBroadcastReceiver;
+
+    private CoachListAdapter mRecyclerAdapter;
 
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
@@ -48,29 +57,41 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        setupRecyclerView(view);
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        NetworkService.startActionCoachingRelations(getContext());
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    private void setupRecyclerView(View view) {
         mCoachList = (RecyclerView) view.findViewById(R.id.coach_list);
         mCoachList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerAdapter = new CoachListAdapter();
         mCoachList.setAdapter(mRecyclerAdapter);
         mCoachList.addOnItemTouchListener(this);
+
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh);
+        mRefreshLayout.setOnRefreshListener(this);
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+            }
+        });
+        NetworkService.startActionCoachingRelations(getContext());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
+
+        mBroadcastReceiver = new GenericBroadcastReceiver(this);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
     public Loader<List<CoachingRelation>> onCreateLoader(int id, Bundle args) {
-        return (new CoachingLoader(getContext()));
+        return new CoachingLoader(getContext());
     }
 
     @Override
@@ -96,14 +117,10 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
                         Pending_listLr.add(relation.mTrainee);
                 }
             }
-
-
             mRecyclerAdapter.setDataCr(listCr);
             mRecyclerAdapter.setDataLr(listLr);
             mRecyclerAdapter.setDataPendingCr(Pending_listCr);
             mRecyclerAdapter.setDataPendingLr(Pending_listLr);
-
-
     }
 
     @Override
@@ -124,5 +141,17 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        NetworkService.startActionCoachingRelations(getContext());
+    }
+
+    @Override
+    public void onBroadcastReceive(Intent intent) {
+        if(intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_COACHING_RELATIONS) && mRefreshLayout != null) {
+            mRefreshLayout.setRefreshing(false);
+        }
     }
 }

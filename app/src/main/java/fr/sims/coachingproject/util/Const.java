@@ -22,6 +22,9 @@ public class Const {
     }
 
     public static class BroadcastEvent {
+        public final static String EVENT_END_SERVICE_ACTION = "fr.sims.coachingproject.event.END_SERVICE_ACTION";
+        public final static String EXTRA_ACTION_NAME = "fr.sims.coachingproject.extra.ACTION_NAME";
+
         public final static String EVENT_COACHING_RELATIONS_UPDATED = "fr.sims.coachingproject.event.COACHING_RELATIONS_UPDATED";
         public final static String EVENT_USER_PROFILE_UPDATED = "fr.sims.coachingproject.event.USER_PROFILE_UPDATED";
     }
