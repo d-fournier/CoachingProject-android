@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        //startActivity(new Intent(this, ProfileActivity.class));
     }
 
     @Override
