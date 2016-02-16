@@ -9,7 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.activity.ProfileActivity">
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -27,7 +26,6 @@
                 android:layout_height="100dp"
                 android:id="@+id/imagePicture"
                 />
-                <!--android:background="@mipmap/lena_color"-->
 
 
             <LinearLayout
@@ -35,13 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="60dp">
-<!--            me.mId = 1;
-            me.mName = "John Doe";
-            me.mBirthday = "01/01/1990";
-            me.mCity = "Villeurbanne (69100)";
-            me.mIsCoach = false;
-            me.mMail = "j.doe@example.com";
-            me.mPicture = "https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png";  -->
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,28 +44,26 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textName"
                     />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textBirthday"
-                />
-
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textCity"
-                />
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textIsCoach"
-                />
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textMail"
-                />
+                    />
             </LinearLayout>
         </LinearLayout>
 
@@ -83,21 +73,12 @@
             android:id="@+id/listView1"
             android:layout_marginTop="10dp"
             />
-<!--        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Basketball      3 ans    \n Football &#45;&#45;&#45;&#45; ans"
-            android:id="@+id/textView2"
-            android:layout_marginTop="20dp" />-->
-
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="190dp"
             android:id="@+id/listView"
             android:layout_marginTop="20dp"
             />
-
         <Button
             android:id="@+id/button1"
             android:layout_width="50dp"
@@ -106,5 +87,4 @@
             android:layout_marginTop="10dp"
             />
     </LinearLayout>
-
 </RelativeLayout>

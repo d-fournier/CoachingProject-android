@@ -19,8 +19,6 @@ import fr.sims.coachingproject.model.UserProfile;
 
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
 
-    private Button btn;
-
     private static final String[] messages = new String[] {
             "Message : Demande de coaching", "Message : Demande de coaching",
             "Message : Demande de coaching", "Message : Demande de coaching",
@@ -39,13 +37,13 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        btn = (Button) findViewById(R.id.button1);
+        Button btn = (Button) findViewById(R.id.button1);
 
         btn.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //Picasso.with(ProfileActivity.this).load("https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png").into(view);
-        }
+            @Override
+            public void onClick(View v) {
+                //Picasso.with(ProfileActivity.this).load("https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png").into(view);
+            }
         });
 
 
