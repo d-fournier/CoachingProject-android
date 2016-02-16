@@ -85,14 +85,14 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
                     if (relation.mCoach.mId != 1)
                         listCr.add(relation.mCoach);
                     else
-                        listLr.add(relation.mUser);
+                        listLr.add(relation.mTrainee);
                 }
                 else
                 {
                     if (relation.mCoach.mId != 1)
                         Pending_listCr.add(relation.mCoach);
                     else
-                        Pending_listLr.add(relation.mUser);
+                        Pending_listLr.add(relation.mTrainee);
                 }
             }
 

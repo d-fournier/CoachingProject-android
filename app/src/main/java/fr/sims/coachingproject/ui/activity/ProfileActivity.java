@@ -95,8 +95,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         // Set values
         tv_Id.setText(Long.toString(data.mId));
-        tv_Name.setText(data.mName);
-        tv_Birthday.setText(data.mBirthday);
+        tv_Name.setText(data.mDisplayName);
+        tv_Birthday.setText(data.mBirthdate);
         tv_City.setText(data.mCity);
         tv_IsCoach.setText(Boolean.toString(data.mIsCoach));
         tv_Mail.setText(data.mMail);
