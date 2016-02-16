@@ -17,6 +17,9 @@ public class UserProfile extends Model{
     @Column(name = "id", unique = true)
     public long mId;
 
+    @Column(name ="Title")
+    public String mTitle = "Mes Coachs";
+
     @Column(name = "name")
     public String mName;
 
