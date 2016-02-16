@@ -45,4 +45,9 @@ public class CoachingRelation extends Model {
                 .where("coach == ?", id).or("user == ?", id)
                 .execute();
     }
+    public static List<CoachingRelation> getAllCoachingRelation() {
+        return new Select()
+                .from(CoachingRelation.class)
+                .execute();
+    }
 }
