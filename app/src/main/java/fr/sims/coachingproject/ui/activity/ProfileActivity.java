@@ -19,7 +19,6 @@ import fr.sims.coachingproject.model.UserProfile;
 
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
 
-    private ListView list_message;
     private Button btn;
 
     private static final String[] messages = new String[] {
@@ -42,7 +41,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         btn = (Button) findViewById(R.id.button1);
 
-        final ImageView view = (ImageView)findViewById(R.id.imagePicture);
         btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
