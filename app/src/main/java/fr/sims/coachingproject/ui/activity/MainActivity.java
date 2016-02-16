@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -33,17 +34,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Floating Action Button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserProfile up = UserProfile.getUserProfileById(1);
-                Snackbar.make(view, up.mDisplayName, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         // Drawer Pattern
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,7 +51,6 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        NetworkService.startActionConnectedUserInfo(this);
     }
 
     @Override

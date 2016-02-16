@@ -31,6 +31,12 @@ public class UserProfile extends Model{
     @SerializedName("displayName")
     public String mDisplayName;
 
+    @Column(name = "email")
+    public String mMail;
+
+    @Column(name = "picture")
+    public String mPicture;
+
     @Column(name = "birthdate")
     @Expose
     @SerializedName("birthdate")
