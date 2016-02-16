@@ -20,4 +20,9 @@ public class Const {
         public final static String USER_PROFILE = "users/";
         public final static String COACHING_RELATION = "relations/";
     }
+
+    public static class BroadcastEvent {
+        public final static String EVENT_COACHING_RELATIONS_UPDATED = "fr.sims.coachingproject.event.COACHING_RELATIONS_UPDATED";
+        public final static String EVENT_USER_PROFILE_UPDATED = "fr.sims.coachingproject.event.USER_PROFILE_UPDATED";
+    }
 }

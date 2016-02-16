@@ -1,7 +1,7 @@
 package fr.sims.coachingproject.ui.activity;
 
-import android.app.LoaderManager;
-import android.content.Loader;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -47,8 +47,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         });
 
 
-//        getIntent().get
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
 
         // fill message list
         ListView lv = (ListView) findViewById(R.id.listView);
@@ -66,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onStart() {
         super.onStart();
-        getLoaderManager().restartLoader(0,null, this);
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -74,14 +73,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         return new UserLoader(this, 1);
     }
 
-/*    me.mId = 1;
-    me.mName = "John Doe";
-    me.mBirthday = "01/01/1990";
-    me.mCity = "Villeurbanne (69100)";
-    me.mIsCoach = false;
-    me.mMail = "j.doe@example.com";
-    me.mPicture = "https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png";
-    */
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         // Get components id

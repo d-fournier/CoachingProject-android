@@ -3,6 +3,7 @@ package fr.sims.coachingproject;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
@@ -21,11 +22,9 @@ public class NetworkService extends IntentService {
     private static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     private static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
 
-
     public NetworkService() {
         super("NetworkService");
     }
-
 
     public static void startActionConnectedUserInfo(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
@@ -68,6 +67,8 @@ public class NetworkService extends IntentService {
             } finally {
                 ActiveAndroid.endTransaction();
             }
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_USER_PROFILE_UPDATED));
         }
     }
 
@@ -87,6 +88,8 @@ public class NetworkService extends IntentService {
             } finally {
                 ActiveAndroid.endTransaction();
             }
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_COACHING_RELATIONS_UPDATED));
         }
     }
 
