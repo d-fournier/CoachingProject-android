@@ -31,11 +31,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
     private List<UserProfile> userList;
 
-    private List<UserProfile> filteredUserList;
-
     public SearchListAdapter(Context context) {
         this.userList = new ArrayList<>();
-        this.filteredUserList = new ArrayList<>();
     }
 
 
@@ -57,7 +54,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
     public SearchListAdapter() {
         this.userList = new ArrayList<>();
-        this.filteredUserList = new ArrayList<>();
     }
 
     @Override
@@ -70,7 +66,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
         UserProfile user;
-        user = filteredUserList.get(position);
+        user = userList.get(position);
         vh.mNameTV.setText(user.mDisplayName);
         vh.mDescTV.setText(user.mCity);
 
@@ -90,20 +86,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     @Override
     public int getItemCount()
     {
-        return filteredUserList.size();
+        return userList.size();
     }
 
 
-    public void setFilter(CharSequence cs) {
-        filteredUserList = new ArrayList<>();
-        final String filterPattern = cs.toString().toLowerCase();
-        for ( UserProfile user : userList) {
-            final String text = user.mDisplayName.toLowerCase();
-            if(!filterPattern.isEmpty()) {
-                if (text.contains(filterPattern))
-                    filteredUserList.add(user);
-            }
-        }
-        notifyDataSetChanged();
-    }
 }
