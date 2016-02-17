@@ -27,7 +27,5 @@ public class CoachingProjectApplication extends Application {
         super.onCreate();
         ActiveAndroid.initialize(this);
 
-        SharedPrefUtil.putConnectedUserId(this, 1);
-        SharedPrefUtil.putConnectedToken(this, "5fb6c2bb21d2df27979c47d27a586f46e2f9127b");
     }
 }
