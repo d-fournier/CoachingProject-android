@@ -1,8 +1,6 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.model;
 
-/**
- * Created by damien on 2016/2/14.
- */
+// TODO Review
 public class Message {
     private String aSender;
     private String aSubject;

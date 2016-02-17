@@ -149,7 +149,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetCr.get(position - 1);
                     Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
 
                 if(mOnItemClickListener != null) {
@@ -182,39 +182,39 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
                     Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_COACH:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
                     Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_LEARNER:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
                     Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mName);
+                    cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case HEADER_COACH:
                 hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText("My trainer");
+                hvh.mTitleTv.setText(R.string.my_coach);
                 break;
             case HEADER_LEARNER:
                 hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText("My Learner");
+                hvh.mTitleTv.setText(R.string.my_trainee);
                 break;
             case HEADER_REQUEST_COACH:
                 hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText("Pending trainer request ");
+                hvh.mTitleTv.setText(R.string.pending_coach_request);
                 break;
             default:
             case HEADER_REQUEST_LEARNER:
                 hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText("My requests");
+                hvh.mTitleTv.setText(R.string.pending_trainee_request);
                 break;
         }
 

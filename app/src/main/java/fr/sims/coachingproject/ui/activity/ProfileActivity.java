@@ -1,8 +1,8 @@
 package fr.sims.coachingproject.ui.activity;
 
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,9 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         });
 
 
-
-
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
 
         // fill message list
         ListView lv = (ListView) findViewById(R.id.listView);
@@ -75,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onStart() {
         super.onStart();
-        getLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -83,14 +81,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         return new UserLoader(this, mId);
     }
 
-/*    me.mId = 1;
-    me.mName = "John Doe";
-    me.mBirthday = "01/01/1990";
-    me.mCity = "Villeurbanne (69100)";
-    me.mIsCoach = false;
-    me.mMail = "j.doe@example.com";
-    me.mPicture = "https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png";
-    */
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         // Get components id
@@ -104,11 +94,11 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         // Set values
         //tv_Id.setText("UserID: " + Long.toString(data.mId));
-        tv_Name.setText("Name: " + data.mName);
-        tv_Birthday.setText("Birthday: " + data.mBirthday);
+        tv_Name.setText("Name: " + data.mDisplayName);
+        tv_Birthday.setText("Birthday: " + data.mBirthdate);
         tv_City.setText("City:" + data.mCity);
         tv_IsCoach.setText("Is Coach:" + Boolean.toString(data.mIsCoach));
-        tv_Mail.setText("Email: " + data.mMail);
+        tv_Mail.setText("Email: " + data.mDisplayName);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
     }
 
