@@ -4,31 +4,14 @@ package fr.sims.coachingproject.ui.activity;
 import android.app.Activity;
 
 
-import android.app.ListActivity;
-import android.content.CursorLoader;
+
 import android.os.Bundle;
-
-import android.support.v4.app.FragmentActivity;
-
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.SimpleCursorAdapter;
-
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
