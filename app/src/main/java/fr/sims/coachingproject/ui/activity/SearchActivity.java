@@ -4,7 +4,8 @@ package fr.sims.coachingproject.ui.activity;
 import android.app.Activity;
 
 
-
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.loader.CoachLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
 
@@ -25,22 +27,31 @@ import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends Activity {//implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
+public class SearchActivity extends Activity implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
 
     EditText inputSearch;
     RecyclerView mRecycleView;
     List<UserProfile> mlist;
     SearchListAdapter mAdapter;
+    Bundle searchArgs;
 
-    ArrayList<HashMap<String,String>> productList;
+    ArrayList<HashMap<String, String>> productList;
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getLoaderManager().restartLoader(0, searchArgs, this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        searchArgs = new Bundle();
+        getLoaderManager().initLoader(0, searchArgs, this);
 
         ArrayList<UserProfile> ListCoach = new ArrayList<>();
 
@@ -51,10 +62,6 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
         mAdapter = new SearchListAdapter();
         mRecycleView.setAdapter(mAdapter);
 
-        for(UserProfile user : mlist)
-            ListCoach.add(user);
-
-        mAdapter.setData(ListCoach);
 
         inputSearch = (EditText) findViewById(R.id.inputSearch);
 
@@ -63,8 +70,8 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-
-                SearchActivity.this.mAdapter.setFilter(cs);
+                searchArgs.putCharSequence("searchText", inputSearch.getText().toString());
+                getLoaderManager().restartLoader(0, searchArgs, SearchActivity.this);
 
             }
 
@@ -80,6 +87,22 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
                 // TODO Auto-generated method stub
             }
         });
+
+    }
+
+    @Override
+    public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+        return new CoachLoader(this, searchArgs.getString("searchText",""));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
+        mlist = data;
+        mAdapter.setData(mlist);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<UserProfile>> loader) {
 
     }
 }
