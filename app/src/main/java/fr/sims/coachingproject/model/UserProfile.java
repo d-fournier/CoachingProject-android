@@ -17,8 +17,6 @@ public class UserProfile extends Model{
     @Column(name = "id", unique = true)
     public long mId;
 
-    @Column(name ="Title")
-    public String mTitle = "Mes Coachs";
 
     @Column(name = "name")
     public String mName;
@@ -41,6 +39,10 @@ public class UserProfile extends Model{
 
     public List<SportLevel> mSportsList = null;
 
+    public String getName()
+    {
+        return mName;
+    }
 
     public static UserProfile getUserProfileById(long id) {
         UserProfile up = new Select().from(UserProfile.class).where("id = ?", id).executeSingle();
@@ -50,5 +52,10 @@ public class UserProfile extends Model{
 
     public static List<UserProfile> getAllUserProfile() {
         return new Select().from(UserProfile.class).execute();
+    }
+
+    public static List<UserProfile> getAllCoachProfile()
+    {
+        return new Select().from(UserProfile.class).where("isCoach = ?", true).execute();
     }
 }

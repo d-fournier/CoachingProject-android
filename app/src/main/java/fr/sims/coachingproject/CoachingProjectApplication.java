@@ -48,7 +48,7 @@ public class CoachingProjectApplication extends Application {
 
             UserProfile me = new UserProfile();
             me.mId = 1;
-            me.mName = "John Doe";
+            me.mName = "John";
             me.mBirthday = "01/01/1990";
             me.mCity = "Villeurbanne (69100)";
             me.mIsCoach = true;
@@ -63,7 +63,7 @@ public class CoachingProjectApplication extends Application {
 
             UserProfile User = new UserProfile();
             User.mId = 2;
-            User.mName = "Johnny Cash";
+            User.mName = "Johnny";
             User.mBirthday = "01/01/1990";
             User.mCity = "Villeurbanne (69100)";
             User.mIsCoach = false;
@@ -73,7 +73,7 @@ public class CoachingProjectApplication extends Application {
 
             UserProfile coach = new UserProfile();
             coach.mId = 3;
-            coach.mName = "Bernard Louis";
+            coach.mName = "Bernard";
             coach.mBirthday = "11/11/1990";
             coach.mCity = "Villeurbanne (69100)";
             coach.mIsCoach = true;
@@ -88,7 +88,7 @@ public class CoachingProjectApplication extends Application {
 
             UserProfile coach2 = new UserProfile();
             coach2.mId = 4;
-            coach2.mName = "Jean Benoit";
+            coach2.mName = "Antoine";
             coach2.mBirthday = "11/11/1990";
             coach2.mCity = "Lyon (69000)";
             coach2.mIsCoach = true;
@@ -113,6 +113,7 @@ public class CoachingProjectApplication extends Application {
             cr1.mDate = "10/02/2016";
             cr1.mIsPending = true;
             cr1.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
+            cr1.mSport = sp2;
             cr1.save();
 
             CoachingRelation cr2 = new CoachingRelation();
@@ -122,6 +123,7 @@ public class CoachingProjectApplication extends Application {
             cr2.mDate = "10/02/2016";
             cr2.mIsPending =true;
             cr2.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
+            cr2.mSport  = sp1;
             cr2.save();
 
             CoachingRelation cr5 = new CoachingRelation();
@@ -131,6 +133,7 @@ public class CoachingProjectApplication extends Application {
             cr5.mDate = "10/02/2016";
             cr5.mIsPending =true;
             cr5.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
+            cr5.mSport = sp1;
             cr5.save();
 
             CoachingRelation cr3 = new CoachingRelation();
@@ -140,6 +143,7 @@ public class CoachingProjectApplication extends Application {
             cr3.mDate = "10/02/2016";
             cr3.mIsPending = false;
             cr3.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
+            cr3.mSport = sp1;
             cr3.save();
 
             CoachingRelation cr4 = new CoachingRelation();
@@ -149,6 +153,7 @@ public class CoachingProjectApplication extends Application {
             cr4.mDate = "10/02/2016";
             cr4.mIsPending = false;
             cr4.mComment = "Je suis à la recherche non pas de la vérité, mais simplement d'une aventure qui sorte un peu de la banalité !";
+            cr4.mSport = sp2;
             cr4.save();
 
 

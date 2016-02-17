@@ -28,7 +28,6 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     private RecyclerView mCoachList;
     CoachListAdapter mRecyclerAdapter;
-   // private int mDataSetTypes[]= {HEADER, COACH};
 
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
@@ -61,7 +60,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     private void setupRecyclerView(View view) {
         mCoachList = (RecyclerView) view.findViewById(R.id.coach_list);
         mCoachList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerAdapter = new CoachListAdapter();
+        mRecyclerAdapter = new CoachListAdapter(getContext());
         mCoachList.setAdapter(mRecyclerAdapter);
         mCoachList.addOnItemTouchListener(this);
     }
