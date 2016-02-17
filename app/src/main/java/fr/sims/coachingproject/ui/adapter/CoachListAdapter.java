@@ -141,82 +141,80 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        final CoachViewHolder cvh;
-        HeaderViewHolder hvh;
-        UserProfile cr;
-        switch (vh.getItemViewType()) {
-            case LIST_COACH:
-                cvh = (CoachViewHolder) vh;
+        if(vh.getItemViewType()== LIST_COACH || vh.getItemViewType()== LIST_LEARNER
+                || vh.getItemViewType()== LIST_PENDING_COACH || vh.getItemViewType()== LIST_PENDING_LEARNER ){
+
+            final CoachViewHolder cvh;
+            UserProfile cr=null;
+            cvh = (CoachViewHolder) vh;
+
+            switch (vh.getItemViewType()) {
+                case LIST_COACH:
                     cr = mDatasetCr.get(position - 1);
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-
-                if(mOnItemClickListener != null) {
-                    /**
-                     * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
-                     * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
-                     * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
-                     */
-                    if(!cvh.itemView.hasOnClickListeners()) {
-                        cvh.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                int pos = cvh.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(v, pos);
-                            }
-                        });
-                        cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                int pos = cvh.getAdapterPosition();
-                                mOnItemClickListener.onItemLongClick(v, pos);
-                                return true;
-                            }
-                        });
-                    }
-                }
-
-                break;
-            case LIST_LEARNER:
-                cvh = (CoachViewHolder) vh;
+                    break;
+                case LIST_LEARNER:
                     cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case LIST_PENDING_COACH:
-                cvh = (CoachViewHolder) vh;
+                    break;
+                case LIST_PENDING_COACH:
                     cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case LIST_PENDING_LEARNER:
-                cvh = (CoachViewHolder) vh;
+                    break;
+                case LIST_PENDING_LEARNER:
                     cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case HEADER_COACH:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.my_coach);
-                break;
-            case HEADER_LEARNER:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.my_trainee);
-                break;
-            case HEADER_REQUEST_COACH:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.pending_coach_request);
-                break;
-            default:
-            case HEADER_REQUEST_LEARNER:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.pending_trainee_request);
-                break;
+                    break;
+            }
+
+            Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
+            cvh.mNameTV.setText(cr.mDisplayName);
+            cvh.mDescTV.setText(cr.mCity);
+
+            if(mOnItemClickListener != null) {
+                /**
+                 * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
+                 * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
+                 * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
+                 */
+                if(!cvh.itemView.hasOnClickListeners()) {
+                    cvh.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemClick(v, pos);
+                        }
+                    });
+                    cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemLongClick(v, pos);
+                            return true;
+                        }
+                    });
+                }
+            }
+        }else{
+            HeaderViewHolder hvh;
+            switch (vh.getItemViewType()) {
+                case HEADER_COACH:
+                    hvh = (HeaderViewHolder) vh;
+                    hvh.mTitleTv.setText(R.string.my_coach);
+                    break;
+                case HEADER_LEARNER:
+                    hvh = (HeaderViewHolder) vh;
+                    hvh.mTitleTv.setText(R.string.my_trainee);
+                    break;
+                case HEADER_REQUEST_COACH:
+                    hvh = (HeaderViewHolder) vh;
+                    hvh.mTitleTv.setText(R.string.pending_coach_request);
+                    break;
+                default:
+                case HEADER_REQUEST_LEARNER:
+                    hvh = (HeaderViewHolder) vh;
+                    hvh.mTitleTv.setText(R.string.pending_trainee_request);
+                    break;
+            }
         }
+
+
 
     }
 

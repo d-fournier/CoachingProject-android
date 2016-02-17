@@ -133,7 +133,23 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
                  @Override
                  public void onItemClick(View view, int position) {
                      Intent i = new Intent(getContext(), ProfileActivity.class);
-                     i.putExtra("id",listCr.get(position - 1).mIdDb);
+                     switch(mRecyclerAdapter.getItemViewType(position)){
+                         case CoachListAdapter.LIST_COACH:
+                             i.putExtra("id",listCr.get(position - 1).mIdDb);
+                             break;
+                         case CoachListAdapter.LIST_LEARNER:
+                             position = position - (listCr.size() + 1);
+                             i.putExtra("id",listLr.get(position - 1).mIdDb);
+                             break;
+                         case CoachListAdapter.LIST_PENDING_COACH:
+                             position = position - (listCr.size() + listLr.size() + 2);
+                             i.putExtra("id",Pending_listCr.get(position - 1).mIdDb);
+                             break;
+                         case CoachListAdapter.LIST_PENDING_LEARNER:
+                             position = position - (mRecyclerAdapter.getItemCount()-2);
+                             i.putExtra("id",Pending_listLr.get(position - 1).mIdDb);
+                             break;
+                     }
                      startActivity(i);
                  }
 
