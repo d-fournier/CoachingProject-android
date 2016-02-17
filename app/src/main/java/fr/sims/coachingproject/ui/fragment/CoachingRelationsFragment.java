@@ -108,7 +108,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
             Pending_listLr.clear();
 
             for (CoachingRelation relation : data) {
-                if(relation.mIsPending == true)
+                if(!relation.mIsPending)
                 {
                     if (relation.mCoach.mIdDb != 1)
                         listCr.add(relation.mCoach);
