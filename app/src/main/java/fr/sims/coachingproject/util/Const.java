@@ -19,6 +19,7 @@ public class Const {
         public final static String AUTH = "auth/";
 
         public final static String LOGIN = "login/";
+        public final static String ME = "me/";
         public final static String USER_PROFILE = "users/";
         public final static String COACHING_RELATION = "relations/";
 

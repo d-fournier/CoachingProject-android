@@ -3,6 +3,8 @@ package fr.sims.coachingproject.ui.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,10 +19,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * A login screen that offers login via email/password.
@@ -37,6 +41,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    public static void startActivity(Context ctx){
+        Intent intent = new Intent(ctx,LoginActivity.class);
+        ctx.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, String> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
         private final String mPassword;
@@ -174,19 +183,32 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
-            String response = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(mUsername, mPassword)).toJson());
-            // TODO: register the new account here.
-            LoginResponse lResponse = LoginResponse.fromJson(response);
-            return lResponse.token;
+        protected Boolean doInBackground(Void... params) {
+            String response_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(mUsername, mPassword)).toJson());
+            if(response_token.isEmpty())
+                return false;
+            LoginResponse lResponse = LoginResponse.fromJson(response_token);
+
+            String response_user = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + Const.WebServer.ME,
+                    lResponse.token);
+            if(response_user.isEmpty())
+                return false;
+
+            UserProfile up = UserProfile.parseItem(response_user);
+            up.saveOrUpdate();
+
+            SharedPrefUtil.putConnectedToken(getApplicationContext(),lResponse.token);
+            SharedPrefUtil.putConnectedUserId(getApplicationContext(),up.mIdDb);
+
+            return true;
         }
 
         @Override
-        protected void onPostExecute(final String token) {
+        protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
 
-            if (token != null) {
+            if (success) {
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect));
@@ -200,5 +222,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
     }
+
+
 }
 

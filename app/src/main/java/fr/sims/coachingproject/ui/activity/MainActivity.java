@@ -25,7 +25,7 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile> {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity
         // Drawer Items
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = navigationView.getHeaderView(0);
+        mDrawerHeader.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity
 
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -103,12 +110,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
-        ((TextView) mDrawerHeader.findViewById(R.id.drawer_header_name)).setText(user.mDisplayName);
-        Picasso.with(MainActivity.this).load(user.mPicture).into(((ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture)));
+        TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
+        ImageView profilePicture =(ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+        if (user != null) {
+            header.setText(user.mDisplayName);
+            Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
+            profilePicture.setVisibility(View.VISIBLE);
+            mDrawerHeader.setOnClickListener(null);
+        }else{
+            header.setText(R.string.connect);
+            profilePicture.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<UserProfile> loader) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        LoginActivity.startActivity(this);
     }
 }
