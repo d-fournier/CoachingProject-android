@@ -33,4 +33,5 @@
         completions."
     </string>
     <string name="connect">Connect</string>
+    <string name="search_hint">Search trainer..</string>
 </resources>
