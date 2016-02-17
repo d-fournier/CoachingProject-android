@@ -27,5 +27,6 @@ public class CoachingProjectApplication extends Application {
         super.onCreate();
         ActiveAndroid.initialize(this);
 
+
     }
 }

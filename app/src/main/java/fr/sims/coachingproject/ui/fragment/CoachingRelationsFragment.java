@@ -35,6 +35,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
 
     private RecyclerView mCoachList;
+
     private SwipeRefreshLayout mRefreshLayout;
 
     GenericBroadcastReceiver mBroadcastReceiver;
@@ -45,6 +46,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     private ArrayList<UserProfile> listLr = new ArrayList<>();
     private ArrayList<UserProfile> Pending_listCr = new ArrayList<>();
     private ArrayList<UserProfile> Pending_listLr = new ArrayList<>();
+
 
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
@@ -94,6 +96,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
         super.onStart();
         getLoaderManager().restartLoader(0, null, this);
     }
+
 
     @Override
     public Loader<List<CoachingRelation>> onCreateLoader(int id, Bundle args) {
