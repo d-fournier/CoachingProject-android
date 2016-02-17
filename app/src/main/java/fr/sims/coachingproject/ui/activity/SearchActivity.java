@@ -35,14 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.CoachingLoader;
-import fr.sims.coachingproject.loader.UserLoader;
-import fr.sims.coachingproject.model.CoachingRelation;
-import fr.sims.coachingproject.model.Sport;
-import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.model.UserSportLevel;
-import fr.sims.coachingproject.ui.adapter.UserListAdapter;
+import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
 
 /**
  * Created by Anthony Barbosa on 16/02/2016.
@@ -54,7 +48,7 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
     EditText inputSearch;
     RecyclerView mRecycleView;
     List<UserProfile> mlist;
-    UserListAdapter mAdapter;
+    SearchListAdapter mAdapter;
 
     ArrayList<HashMap<String,String>> productList;
 
@@ -71,7 +65,7 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new UserListAdapter();
+        mAdapter = new SearchListAdapter();
         mRecycleView.setAdapter(mAdapter);
 
         for(UserProfile user : mlist)

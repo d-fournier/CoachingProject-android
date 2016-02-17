@@ -21,18 +21,19 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.ui.activity.SearchActivity;
 
 /**
- * Created by Anthony Barbosa on 16/02/2016.
+ * Created by Anthony Barbosa on 17/02/2016.
  */
 
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
+public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ViewHolder> {
 
     private List<UserProfile> userList;
 
     private List<UserProfile> filteredUserList;
 
-    public UserListAdapter(Context context) {
+    public SearchListAdapter(Context context) {
         this.userList = new ArrayList<>();
         this.filteredUserList = new ArrayList<>();
     }
@@ -54,7 +55,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
 
-    public UserListAdapter() {
+    public SearchListAdapter() {
         this.userList = new ArrayList<>();
         this.filteredUserList = new ArrayList<>();
     }
@@ -63,9 +64,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_coach, parent, false);
-                return new ViewHolder(v);
-        }
+                .inflate(R.layout.list_item_coach, parent, false);
+        return new ViewHolder(v);
+    }
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
         UserProfile user;
@@ -82,7 +83,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     public void clearData() {
-       userList.clear();
+        userList.clear();
         notifyDataSetChanged();
     }
 
@@ -105,4 +106,4 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
         notifyDataSetChanged();
     }
-    }
+}
