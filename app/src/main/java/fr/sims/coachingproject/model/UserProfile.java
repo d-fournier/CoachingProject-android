@@ -23,8 +23,6 @@ import java.util.List;
 @Table(name="UserProfile")
 public class UserProfile extends Model{
 
-    public UserProfile(){}
-
     @Column(name = "idDb", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     @Expose
     @SerializedName("id")
@@ -92,7 +90,6 @@ public class UserProfile extends Model{
         }
 
         saveSportLevel();
-
         return res;
     }
 
@@ -132,5 +129,4 @@ public class UserProfile extends Model{
         }
         return up;
     }
-
 }
