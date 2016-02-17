@@ -94,7 +94,7 @@ public class CoachingRelation extends Model {
             res = gson.fromJson(json, CoachingRelation.class);
             if(res.mRequestStatus == null) {
                 res.mIsPending = true;
-                res.mIsAccepted = true;
+                res.mIsAccepted = false;
             } else {
                 res.mIsPending = false;
                 res.mIsAccepted = res.mRequestStatus;
@@ -105,11 +105,21 @@ public class CoachingRelation extends Model {
         return res;
     }
 
+
     public static CoachingRelation[] parseList(String json){
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         CoachingRelation[] res = null;
         try {
             res = gson.fromJson(json, CoachingRelation[].class);
+            for(CoachingRelation cr : res) {
+                if(cr.mRequestStatus == null) {
+                    cr.mIsPending = true;
+                    cr.mIsAccepted = false;
+                } else {
+                    cr.mIsPending = false;
+                    cr.mIsAccepted = cr.mRequestStatus;
+                }
+            }
         } catch (Exception e){
             e.printStackTrace();
         }

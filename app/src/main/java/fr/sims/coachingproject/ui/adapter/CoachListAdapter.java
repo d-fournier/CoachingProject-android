@@ -1,17 +1,23 @@
 package fr.sims.coachingproject.ui.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.ui.activity.MainActivity;
 
 /**
  * Created by dfour on 11/02/2016.
@@ -22,17 +28,18 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     private List<UserProfile> mDatasetLr;
     private List<UserProfile> mDatasetPendingCr;
     private List<UserProfile> mDatasetPendingLr;
+    private Context mCtx;
 
-    public static final int HEADER_COACH =0;
-    public static final int LIST_COACH =1;
-    public static final int HEADER_LEARNER=2;
-    public static final int HEADER_REQUEST_COACH=3;
-    public static final int HEADER_REQUEST_LEARNER=4;
-    public static final int LIST_LEARNER =5;
-    public static final int LIST_PENDING_LEARNER =6;
-    public static final int LIST_PENDING_COACH =7;
+    public static final int HEADER_COACH = 0;
+    public static final int LIST_COACH = 1;
+    public static final int HEADER_LEARNER = 2;
+    public static final int HEADER_REQUEST_COACH = 3;
+    public static final int HEADER_REQUEST_LEARNER = 4;
+    public static final int LIST_LEARNER = 5;
+    public static final int LIST_PENDING_LEARNER = 6;
+    public static final int LIST_PENDING_COACH = 7;
 
-
+    private OnItemClickListener mOnItemClickListener;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -47,31 +54,34 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         protected TextView mNameTV;
         protected TextView mDescTV;
 
-
         public CoachViewHolder(View v) {
             super(v);
             this.mPictureIV = (ImageView) v.findViewById(R.id.user_picture);
             this.mNameTV = (TextView) v.findViewById(R.id.user_name);
             this.mDescTV = (TextView) v.findViewById(R.id.user_description);
         }
+
+
     }
 
-    protected  class HeaderViewHolder extends ViewHolder{
+    protected  class HeaderViewHolder extends ViewHolder {
         protected TextView mTitleTv;
 
         public HeaderViewHolder(View v) {super(v);
         this.mTitleTv = (TextView) v.findViewById(R.id.header);}
     }
 
-    public CoachListAdapter() {
+    public CoachListAdapter(Context ctx) {
+        mCtx = ctx;
         mDatasetCr = new ArrayList<>();
         mDatasetLr = new ArrayList<>();
         mDatasetPendingCr = new ArrayList<>();
         mDatasetPendingLr = new ArrayList<>();
     }
 
-    public CoachListAdapter(List<UserProfile> datasetCr, List<UserProfile> datasetLr,
+    public CoachListAdapter(Context ctx,List<UserProfile> datasetCr, List<UserProfile> datasetLr,
                             List<UserProfile> datasetPendingCr, List<UserProfile> datasetPendingLr  ) {
+        mCtx = ctx;
         mDatasetCr = datasetCr;
         mDatasetLr = datasetLr;
         mDatasetPendingLr = datasetPendingLr;
@@ -107,8 +117,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
         View v;
 
         switch (viewType)
@@ -117,51 +126,76 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             case HEADER_REQUEST_COACH :
             case HEADER_LEARNER :
             case HEADER_COACH :
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.group_header_item, parent, false);
-            return new HeaderViewHolder(v);
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.group_header_item, parent, false);
+                return new HeaderViewHolder(v);
             default :
             case LIST_PENDING_COACH :
             case LIST_PENDING_LEARNER :
             case LIST_LEARNER :
             case LIST_COACH : // normal list - Coach
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_coach, parent, false);
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_coach, parent, false);
+
                 return new CoachViewHolder(v);
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        CoachViewHolder cvh;
+        final CoachViewHolder cvh;
         HeaderViewHolder hvh;
         UserProfile cr;
         switch (vh.getItemViewType()) {
             case LIST_COACH:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetCr.get(position - 1);
-                    // TODO Image Loader        vh.mPictureIV
+                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
                     cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
+
+                if(mOnItemClickListener != null) {
+                    /**
+                     * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
+                     * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
+                     * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
+                     */
+                    if(!cvh.itemView.hasOnClickListeners()) {
+                        cvh.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                int pos = cvh.getAdapterPosition();
+                                mOnItemClickListener.onItemClick(v, pos);
+                            }
+                        });
+                        cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                int pos = cvh.getAdapterPosition();
+                                mOnItemClickListener.onItemLongClick(v, pos);
+                                return true;
+                            }
+                        });
+                    }
+                }
+
                 break;
             case LIST_LEARNER:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
-                    // TODO Image Loader        vh.mPictureIV
+                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
                     cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_COACH:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
-                    // TODO Image Loader        vh.mPictureIV
+                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
                     cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
             case LIST_PENDING_LEARNER:
                 cvh = (CoachViewHolder) vh;
                     cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
-                    // TODO Image Loader        vh.mPictureIV
+                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
                     cvh.mNameTV.setText(cr.mDisplayName);
                     cvh.mDescTV.setText(cr.mCity);
                 break;
@@ -183,7 +217,6 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 hvh.mTitleTv.setText(R.string.pending_trainee_request);
                 break;
         }
-
 
     }
 
@@ -213,7 +246,20 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     public int getItemCount() {
        return mDatasetCr.size()+ mDatasetLr.size() +
                mDatasetPendingCr.size() + mDatasetPendingLr.size() + 4;
-
     }
+
+
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+    /**
+     * 处理item的点击事件和长按事件
+     */
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+        public void onItemLongClick(View view, int position);
+    }
+
+
 
 }

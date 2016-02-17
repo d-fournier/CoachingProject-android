@@ -103,8 +103,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
-        ((TextView) mDrawerHeader.findViewById(R.id.drawer_header_name)).setText(user.mDisplayName);
-        Picasso.with(MainActivity.this).load(user.mPicture).into(((ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture)));
+        if(user != null) {
+            ((TextView) mDrawerHeader.findViewById(R.id.drawer_header_name)).setText(user.mDisplayName);
+            Picasso.with(MainActivity.this).load(user.mPicture).into(((ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture)));
+        }
     }
 
     @Override

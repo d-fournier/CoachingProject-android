@@ -1,15 +1,18 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -32,16 +35,21 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
             "Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux."
     };
 
+    private long mId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         Button btn = (Button) findViewById(R.id.button1);
+        // Get the transferred id
+        Intent mIntent = getIntent();
+        mId = mIntent.getLongExtra("id", 0);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("id",Long.toString(mId));
                 //Picasso.with(ProfileActivity.this).load("https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png").into(view);
             }
         });
@@ -70,13 +78,13 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<UserProfile> onCreateLoader(int id, Bundle args) {
-        return new UserLoader(this, 1);
+        return new UserLoader(this, mId);
     }
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         // Get components id
-        TextView tv_Id = (TextView) findViewById(R.id.textID);
+        //TextView tv_Id = (TextView) findViewById(R.id.textID);
         TextView tv_Name = (TextView) findViewById(R.id.textName);
         TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
         TextView tv_City = (TextView) findViewById(R.id.textCity);
@@ -85,12 +93,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
 
         // Set values
-        tv_Id.setText(Long.toString(data.mIdDb));
-        tv_Name.setText(data.mDisplayName);
-        tv_Birthday.setText(data.mBirthdate);
-        tv_City.setText(data.mCity);
-        tv_IsCoach.setText(Boolean.toString(data.mIsCoach));
-        tv_Mail.setText(data.mDisplayName);
+        //tv_Id.setText("UserID: " + Long.toString(data.mId));
+        tv_Name.setText("Name: " + data.mDisplayName);
+        tv_Birthday.setText("Birthday: " + data.mBirthdate);
+        tv_City.setText("City:" + data.mCity);
+        tv_IsCoach.setText("Is Coach:" + Boolean.toString(data.mIsCoach));
+        tv_Mail.setText("Email: " + data.mDisplayName);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
     }
 
