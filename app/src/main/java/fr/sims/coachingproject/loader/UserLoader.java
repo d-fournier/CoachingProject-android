@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.loader;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -10,19 +9,25 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by dfour on 10/02/2016.
  */
-public class UserLoader extends AsyncTaskLoader<UserProfile> {
+public class UserLoader extends GenericLocalLoader<UserProfile> {
 
     private Context mCtx;
     private long mId;
 
     public UserLoader(Context context, long id) {
         super(context);
-        mCtx = context;
+
         mId = id;
+        mCtx = getContext();
     }
 
     public UserLoader(Context context) {
         this(context, -1);
+    }
+
+    @Override
+    protected String getBroadcastEvent() {
+        return Const.BroadcastEvent.EVENT_USER_PROFILE_UPDATED;
     }
 
     @Override

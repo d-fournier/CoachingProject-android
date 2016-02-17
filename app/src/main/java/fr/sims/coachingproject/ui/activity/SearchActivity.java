@@ -44,7 +44,7 @@ public class SearchActivity extends Activity {//implements LoaderManager.LoaderC
 
         ArrayList<UserProfile> ListCoach = new ArrayList<>();
 
-        mlist = UserProfile.getAllCoachProfile();
+        mlist = new ArrayList<>();//UserProfile.getAllCoachProfile();
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));

@@ -71,7 +71,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     public void onBindViewHolder(ViewHolder vh, int position) {
         UserProfile user;
         user = filteredUserList.get(position);
-        vh.mNameTV.setText(user.mName);
+        vh.mNameTV.setText(user.mDisplayName);
         vh.mDescTV.setText(user.mCity);
 
 
@@ -98,7 +98,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         filteredUserList = new ArrayList<>();
         final String filterPattern = cs.toString().toLowerCase();
         for ( UserProfile user : userList) {
-            final String text = user.mName.toLowerCase();
+            final String text = user.mDisplayName.toLowerCase();
             if(!filterPattern.isEmpty()) {
                 if (text.contains(filterPattern))
                     filteredUserList.add(user);
