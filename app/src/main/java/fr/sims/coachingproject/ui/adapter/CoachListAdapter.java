@@ -133,7 +133,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(mOnItemClickListener != null) {
+                        if (mOnItemClickListener != null) {
                             int pos = cvh.getAdapterPosition();
                             mOnItemClickListener.onItemClick(v, pos);
                         }
@@ -142,7 +142,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        if(mOnItemClickListener != null) {
+                        if (mOnItemClickListener != null) {
                             int pos = cvh.getAdapterPosition();
                             mOnItemClickListener.onItemLongClick(v, pos);
                             return true;

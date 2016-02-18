@@ -33,14 +33,12 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     public static final String TABS_TITLE = "Coaching";
 
-
     private RecyclerView mCoachList;
-
     private SwipeRefreshLayout mRefreshLayout;
 
-    GenericBroadcastReceiver mBroadcastReceiver;
-
     private CoachListAdapter mRecyclerAdapter;
+
+    GenericBroadcastReceiver mBroadcastReceiver;
 
     public static CoachingRelationsFragment newInstance() {
         CoachingRelationsFragment fragment = new CoachingRelationsFragment();
