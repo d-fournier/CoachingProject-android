@@ -232,8 +232,12 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         return up;
     }
 
+    private UserProfile getItem(int position) {
+        return getItem(getItemViewType(position), position);
+    }
+
     public long getUserProfileId(int position) {
-        UserProfile up = getItem(getItemViewType(position), position);
+        UserProfile up = getItem(position);
         if (up != null) {
             return up.mIdDb;
         } else {
