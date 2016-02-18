@@ -49,7 +49,7 @@ public class SearchActivity extends Activity {
     protected void onStart() {
         super.onStart();
         getLoaderManager().restartLoader(0, null, mSportLoader);
-        getLoaderManager().restartLoader(0, mSearchArgs, mCoachLoader);
+        getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SearchActivity extends Activity {
         mSportLoader = new SportLoaderCallbacks();
         mCoachLoader = new CoachLoaderCallbacks();
         getLoaderManager().initLoader(0, mSearchArgs, mSportLoader);
-        getLoaderManager().initLoader(0, mSearchArgs, mCoachLoader);
+        getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
 
         mUserList = new ArrayList<>();
         mSportList = new ArrayList<>();
@@ -75,6 +75,7 @@ public class SearchActivity extends Activity {
         mSportsAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, mSportList);
         mSportsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSportsSpinner.setAdapter(mSportsAdapter);
 
         mSearchInput = (EditText) findViewById(R.id.inputSearch);
         mSearchButton = (Button) findViewById(R.id.search_button);
@@ -84,7 +85,7 @@ public class SearchActivity extends Activity {
             public void onClick(View v) {
                 mSearchArgs.putCharSequence("searchText", mSearchInput.getText().toString());
                 mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
-                getLoaderManager().restartLoader(0, mSearchArgs, mCoachLoader);
+                getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
             }
         });
 
@@ -121,8 +122,8 @@ public class SearchActivity extends Activity {
         @Override
         public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
             mSportList = data;
-            mSportsAdapter.notifyDataSetChanged();
-            mSportsSpinner.setAdapter(mSportsAdapter);
+            mSportsAdapter.clear();
+            mSportsAdapter.addAll(mSportList);
         }
 
         @Override
