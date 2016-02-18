@@ -17,6 +17,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinner_sports"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_button"
+        android:text="@string/search_text"/>
+
    <!-- <ListView
         android:id="@+id/Search_List"
         android:layout_width="fill_parent"

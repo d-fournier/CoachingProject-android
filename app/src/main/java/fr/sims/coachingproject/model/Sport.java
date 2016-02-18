@@ -56,4 +56,12 @@ public class Sport extends Model {
         return res;
     }
 
+    @Override
+    public String toString() {
+        return this.mName;
+    }
+
+    public long getmIdDb() {
+        return mIdDb;
+    }
 }
