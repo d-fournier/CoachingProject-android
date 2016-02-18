@@ -31,14 +31,14 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     private List<UserProfile> mDatasetPendingLr;
     private Context mCtx;
 
-    public static final int HEADER_COACH = 0;
-    public static final int LIST_COACH = 1;
-    public static final int HEADER_LEARNER = 2;
-    public static final int HEADER_REQUEST_COACH = 3;
-    public static final int HEADER_REQUEST_LEARNER = 4;
-    public static final int LIST_LEARNER = 5;
-    public static final int LIST_PENDING_LEARNER = 6;
-    public static final int LIST_PENDING_COACH = 7;
+    private static final int HEADER_COACH = 0;
+    private static final int LIST_COACH = 1;
+    private static final int HEADER_LEARNER = 2;
+    private static final int HEADER_REQUEST_COACH = 3;
+    private static final int HEADER_REQUEST_LEARNER = 4;
+    private static final int LIST_LEARNER = 5;
+    private static final int LIST_PENDING_LEARNER = 6;
+    private static final int LIST_PENDING_COACH = 7;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -82,15 +82,6 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         mDatasetPendingLr = new ArrayList<>();
     }
 
-    public CoachListAdapter(Context ctx, List<UserProfile> datasetCr, List<UserProfile> datasetLr,
-                            List<UserProfile> datasetPendingCr, List<UserProfile> datasetPendingLr) {
-        mCtx = ctx;
-        mDatasetCr = datasetCr;
-        mDatasetLr = datasetLr;
-        mDatasetPendingLr = datasetPendingLr;
-        mDatasetPendingCr = datasetPendingCr;
-    }
-
     public void setDataCr(List<UserProfile> dataset) {
         mDatasetCr = dataset;
         notifyDataSetChanged();
@@ -114,6 +105,8 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     public void clearData() {
         mDatasetCr.clear();
         mDatasetLr.clear();
+        mDatasetPendingCr.clear();
+        mDatasetPendingLr.clear();
         notifyDataSetChanged();
     }
 
@@ -136,83 +129,63 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             case LIST_COACH: // normal list - Coach
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_coach, parent, false);
-                return new CoachViewHolder(v);
+                final CoachViewHolder cvh = new CoachViewHolder(v);
+                cvh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(mOnItemClickListener != null) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemClick(v, pos);
+                        }
+                    }
+                });
+                cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if(mOnItemClickListener != null) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemLongClick(v, pos);
+                            return true;
+                        } else
+                            return false;
+                    }
+                });
+
+                return cvh;
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        if(vh.getItemViewType()== LIST_COACH || vh.getItemViewType()== LIST_LEARNER
-                || vh.getItemViewType()== LIST_PENDING_COACH || vh.getItemViewType()== LIST_PENDING_LEARNER ){
+        int itemViewType = vh.getItemViewType();
+        if (itemViewType == LIST_COACH || itemViewType == LIST_LEARNER
+                || itemViewType == LIST_PENDING_COACH || itemViewType == LIST_PENDING_LEARNER) {
 
-            final CoachViewHolder cvh;
-            UserProfile cr=null;
-            cvh = (CoachViewHolder) vh;
-
-            switch (vh.getItemViewType()) {
-                case LIST_COACH:
-                    cr = mDatasetCr.get(position - 1);
-                    break;
-                case LIST_LEARNER:
-                    cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
-                    break;
-                case LIST_PENDING_COACH:
-                    cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
-                    break;
-                case LIST_PENDING_LEARNER:
-                    cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
-                    break;
-            }
+            final CoachViewHolder cvh = (CoachViewHolder) vh;
+            UserProfile cr = getItem(itemViewType, position);
 
             Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
             cvh.mNameTV.setText(cr.mDisplayName);
             cvh.mDescTV.setText(cr.mCity);
-
-            if(mOnItemClickListener != null) {
-                /**
-                 * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
-                 * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
-                 * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
-                 */
-                if(!cvh.itemView.hasOnClickListeners()) {
-                    cvh.itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int pos = cvh.getAdapterPosition();
-                            mOnItemClickListener.onItemClick(v, pos);
-                        }
-                    });
-                    cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            int pos = cvh.getAdapterPosition();
-                            mOnItemClickListener.onItemLongClick(v, pos);
-                            return true;
-                        }
-                    });
-                }
-            }
-        }else{
-            HeaderViewHolder hvh;
-            switch (vh.getItemViewType()) {
+        } else {
+            HeaderViewHolder hvh = (HeaderViewHolder) vh;
+            int resId;
+            switch (itemViewType) {
                 case HEADER_COACH:
-                    hvh = (HeaderViewHolder) vh;
-                    hvh.mTitleTv.setText(R.string.my_coach);
+                    resId = R.string.my_coach;
                     break;
                 case HEADER_LEARNER:
-                    hvh = (HeaderViewHolder) vh;
-                    hvh.mTitleTv.setText(R.string.my_trainee);
+                    resId = R.string.my_trainee;
                     break;
                 case HEADER_REQUEST_COACH:
-                    hvh = (HeaderViewHolder) vh;
-                    hvh.mTitleTv.setText(R.string.pending_coach_request);
+                    resId = R.string.pending_coach_request;
                     break;
                 default:
                 case HEADER_REQUEST_LEARNER:
-                    hvh = (HeaderViewHolder) vh;
-                    hvh.mTitleTv.setText(R.string.pending_trainee_request);
+                    resId = R.string.pending_trainee_request;
                     break;
             }
+            hvh.mTitleTv.setText(resId);
         }
 
     }
@@ -236,7 +209,36 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             return HEADER_REQUEST_LEARNER;
         else
             return LIST_PENDING_LEARNER;
+    }
 
+    private UserProfile getItem(int type, int position) {
+        UserProfile up;
+        switch (type) {
+            case LIST_COACH:
+                up = mDatasetCr.get(position - 1);
+                break;
+            case LIST_LEARNER:
+                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));
+                break;
+            case LIST_PENDING_COACH:
+                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
+                break;
+            case LIST_PENDING_LEARNER:
+                up = mDatasetPendingLr.get(position - (getItemCount() - 1));
+                break;
+            default:
+                up = null;
+        }
+        return up;
+    }
+
+    public long getUserProfileId(int position) {
+        UserProfile up = getItem(getItemViewType(position), position);
+        if (up != null) {
+            return up.mIdDb;
+        } else {
+            return -1;
+        }
     }
 
     @Override
@@ -253,9 +255,9 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
      * 处理item的点击事件和长按事件
      */
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
 
-        public void onItemLongClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
 
 }
