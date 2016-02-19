@@ -3,13 +3,16 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +45,6 @@ public class SearchActivity extends Activity {
     ArrayAdapter<Sport> mSportsAdapter;
     SportLoaderCallbacks mSportLoader;
     CoachLoaderCallbacks mCoachLoader;
-
 
 
     @Override
@@ -96,13 +98,25 @@ public class SearchActivity extends Activity {
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""),mSearchArgs.getLong("idSport", -1));
+            return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""), mSearchArgs.getLong("idSport", -1));
         }
 
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
             mUserList = data;
             mAdapter.setData(mUserList);
+            mAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                    i.putExtra("id", mUserList.get(position).mIdDb);
+                    startActivity(i);
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position) {
+                }
+            });
         }
 
         @Override
@@ -124,12 +138,27 @@ public class SearchActivity extends Activity {
             mSportList = data;
             mSportsAdapter.clear();
             mSportsAdapter.addAll(mSportList);
+
+            mAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                    i.putExtra("id", mSportList.get(position).mIdDb);
+                    startActivity(i);
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position) {
+
+                }
+            });
         }
 
         @Override
         public void onLoaderReset(Loader<List<Sport>> loader) {
 
         }
+
 
     }
 
