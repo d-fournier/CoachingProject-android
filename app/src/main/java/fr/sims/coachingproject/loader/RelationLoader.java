@@ -15,7 +15,6 @@ public class RelationLoader  extends GenericLocalLoader<CoachingRelation> {
 
     public RelationLoader(Context context, long id) {
         super(context);
-
         mId = id;
         mCtx = getContext();
     }
@@ -29,5 +28,11 @@ public class RelationLoader  extends GenericLocalLoader<CoachingRelation> {
     @Override
     public CoachingRelation loadInBackground() {
         return CoachingRelation.getCoachingRelationById(mId);
+    }
+
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
     }
 }

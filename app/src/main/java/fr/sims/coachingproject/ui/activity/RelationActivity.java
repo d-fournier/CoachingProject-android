@@ -18,7 +18,9 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.RelationPagerAdapter;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>{
 
@@ -38,9 +40,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra("id", 0);
 
-     //   Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-      //  setSupportActionBar(toolbar);
-
         // Tabs Pattern
         mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.messagePager);
@@ -49,19 +48,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         tabLayout.setupWithViewPager(mViewPager);
 
         mRelationArgs = new Bundle();
-    //    getSupportLoaderManager().initLoader(0, null, this);
-
-        TextView city = (TextView) findViewById(R.id.city);
-        TextView name = (TextView) findViewById(R.id.name);
-        TextView age = (TextView) findViewById(R.id.age);
-        TextView sport = (TextView) findViewById(R.id.sport);
-
-        city.setText("Lyon");
-        name.setText("Machin Truc");
-        age.setText("13/01/1993");
-        sport.setText("Badminton");
-
-
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -73,15 +60,24 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
         mRelation=data;
     //    ImageView picture = (ImageView) findViewById(R.id.image);
-      /*  TextView city = (TextView) findViewById(R.id.city);
+        TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView age = (TextView) findViewById(R.id.age);
         TextView sport = (TextView) findViewById(R.id.sport);
 
-        city.setText(mRelation.mCoach.mCity);
-        name.setText(mRelation.mCoach.mDisplayName);
-        age.setText(mRelation.mCoach.mBirthdate);
-        sport.setText(mRelation.mCoach.mSportsList[0].mTitle);*/
+        UserProfile partner;
+
+        if(mRelation.mTrainee.mIdDb== SharedPrefUtil.getConnectedUserId(this)){
+            partner=mRelation.mCoach;
+        }else{
+            partner=mRelation.mTrainee;
+        }
+
+        city.setText(partner.mCity);
+        name.setText(partner.mDisplayName);
+        age.setText(partner.mBirthdate);
+        sport.setText(mRelation.mSport.mName);
+
     }
 
     @Override
