@@ -7,7 +7,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,11 +24,10 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.RelationPagerAdapter;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
-public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>{
+public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener{
 
     RelationPagerAdapter mRelationPagerAdapter;
     ViewPager mViewPager;
-    Bundle mRelationArgs;
     CoachingRelation mRelation;
     private long mId;
 
@@ -45,7 +48,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        mRelationArgs = new Bundle();
+        View profileView=findViewById(R.id.profile_layout);
+        profileView.setOnClickListener(this);
+
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
@@ -57,7 +62,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
         mRelation=data;
-    //    ImageView picture = (ImageView) findViewById(R.id.image);
+        ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView age = (TextView) findViewById(R.id.age);
@@ -91,11 +96,19 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         name.setText(partner.mDisplayName);
         age.setText(String.valueOf(userAge)+" ans");
         sport.setText(mRelation.mSport.mName);
+        Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
 
     }
 
     @Override
     public void onLoaderReset(Loader<CoachingRelation> loader) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(this, ProfileActivity.class);
+        i.putExtra("id", mRelation.mIdDb);
+        startActivity(i);
     }
 }
