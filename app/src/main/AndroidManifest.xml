@@ -55,6 +55,17 @@
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login"></activity>
 
+        <activity
+            android:name=".ui.activity.RelationActivity"
+            android:label="Relation"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="ui.activity.ANOTHER_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

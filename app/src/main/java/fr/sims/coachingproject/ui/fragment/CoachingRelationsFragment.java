@@ -22,6 +22,7 @@ import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.activity.ProfileActivity;
+import fr.sims.coachingproject.ui.activity.RelationActivity;
 import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
 import fr.sims.coachingproject.util.Const;
 
@@ -97,29 +98,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     @Override
     public void onLoadFinished(Loader<List<CoachingRelation>> loader, List<CoachingRelation> data) {
-        ArrayList<UserProfile> listCr = new ArrayList<>();
-        ArrayList<UserProfile> listLr = new ArrayList<>();
-        ArrayList<UserProfile> Pending_listCr = new ArrayList<>();
-        ArrayList<UserProfile> Pending_listLr = new ArrayList<>();
-
-        for (CoachingRelation relation : data) {
-            if (!relation.mIsPending) {
-                if (relation.mCoach.mIdDb != 1)
-                    listCr.add(relation.mCoach);
-                else
-                    listLr.add(relation.mTrainee);
-            } else {
-                if (relation.mCoach.mIdDb != 1)
-                    Pending_listCr.add(relation.mCoach);
-                else
-                    Pending_listLr.add(relation.mTrainee);
-            }
-        }
-
-        mRecyclerAdapter.setDataCr(listCr);
-        mRecyclerAdapter.setDataLr(listLr);
-        mRecyclerAdapter.setDataPendingCr(Pending_listCr);
-        mRecyclerAdapter.setDataPendingLr(Pending_listLr);
+        mRecyclerAdapter.setData(data);
     }
 
     @Override
@@ -141,8 +120,8 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent i = new Intent(getContext(), ProfileActivity.class);
-        long id = mRecyclerAdapter.getUserProfileId(position);
+        Intent i = new Intent(getContext(), RelationActivity.class);
+        long id = mRecyclerAdapter.getRelationId(position);
         i.putExtra("id", id);
         startActivity(i);
     }
