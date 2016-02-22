@@ -86,20 +86,38 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     }
 
     public void setData(List<CoachingRelation> dataset){
-        mDatasetRelations = dataset;
-        for (CoachingRelation relation : mDatasetRelations) {
+        clearData();
+
+        List<CoachingRelation> relationsCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsLr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
+
+        for (CoachingRelation relation : dataset) {
             if (!relation.mIsPending) {
-                if (relation.mCoach.mIdDb != 1)
+                if (relation.mCoach.mIdDb != 1) {
                     mDatasetCr.add(relation.mCoach);
-                else
+                    relationsCr.add(relation);
+                }else {
                     mDatasetLr.add(relation.mTrainee);
+                    relationsLr.add(relation);
+                }
             } else {
-                if (relation.mCoach.mIdDb != 1)
+                if (relation.mCoach.mIdDb != 1) {
                     mDatasetPendingCr.add(relation.mCoach);
-                else
+                    relationsPendingCr.add(relation);
+                }else {
                     mDatasetPendingLr.add(relation.mTrainee);
+                    relationsPendingLr.add(relation);
+                }
             }
         }
+
+        mDatasetRelations.addAll(relationsCr);
+        mDatasetRelations.addAll(relationsLr);
+        mDatasetRelations.addAll(relationsPendingCr);
+        mDatasetRelations.addAll(relationsPendingLr);
+
         notifyDataSetChanged();
     }
 
@@ -248,7 +266,17 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     }
 
     public long getRelationId(int position){
-        CoachingRelation rel = mDatasetRelations.get(position);
+        int index;
+        if(position<=mDatasetCr.size()){
+            index=position-1;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+1)){
+            index=position-2;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+ mDatasetPendingCr.size()+2)){
+            index=position-3;
+        }else{
+            index=position-4;
+        }
+        CoachingRelation rel = mDatasetRelations.get(index);
         return rel.mIdDb;
     }
 
