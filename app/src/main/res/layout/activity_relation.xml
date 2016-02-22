@@ -13,58 +13,52 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/profile_layout"
             android:layout_margin="@dimen/fab_margin">
 
             <ImageView
-                android:layout_column="0"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:id="@+id/imagePicture"
-                />
+                android:id="@+id/imagePicture"/>
 
-            <LinearLayout
-                android:layout_column="1"
+            <RelativeLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/fab_margin">
+                android:layout_margin="@dimen/fab_margin"
+                android:layout_toRightOf="@id/imagePicture">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/name"
                     style="@style/TextAppearance.AppCompat.Title"/>
 
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
                     <TextView
-                        android:layout_column="0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/age"/>
+                        android:id="@+id/age"
+                        android:layout_below="@+id/name"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@+id/city"/>
 
                     <TextView
-                        android:layout_column="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/city"
-                        android:layout_gravity="right"/>
-                </GridLayout>
-
-
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/name"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/sport"/>
+                    android:id="@+id/sport"
+                    android:layout_below="@+id/age"/>
 
-            </LinearLayout>
-                </GridLayout>
+            </RelativeLayout>
+        </LinearLayout>
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
