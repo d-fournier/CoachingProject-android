@@ -7,15 +7,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
@@ -73,9 +71,25 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             partner=mRelation.mTrainee;
         }
 
+        Calendar birthdate = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        int userAge=0;
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat( "yyyy-MM-dd");
+            birthdate.setTime(sdf.parse(partner.mBirthdate));
+            userAge = today.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR);
+
+            if (today.get(Calendar.DAY_OF_YEAR) < birthdate.get(Calendar.DAY_OF_YEAR)){
+                userAge--;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         city.setText(partner.mCity);
         name.setText(partner.mDisplayName);
-        age.setText(partner.mBirthdate);
+        age.setText(String.valueOf(userAge)+" ans");
         sport.setText(mRelation.mSport.mName);
 
     }
