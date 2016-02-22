@@ -35,4 +35,5 @@
     <string name="connect">Connect</string>
     <string name="search_hint">Search trainer..</string>
     <string name="search_text">Search</string>
+    <string name="all_sports">All sports</string>
 </resources>

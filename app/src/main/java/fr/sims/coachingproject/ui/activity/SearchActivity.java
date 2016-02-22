@@ -1,18 +1,17 @@
 package fr.sims.coachingproject.ui.activity;
 
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends AppCompatActivity {
 
     EditText mSearchInput;
     RecyclerView mRecycleView;
@@ -39,29 +38,19 @@ public class SearchActivity extends Activity {
     SearchListAdapter mAdapter;
     Bundle mSearchArgs;
     Spinner mSportsSpinner;
+    ProgressBar mLoadingBar;
     ArrayAdapter<Sport> mSportsAdapter;
     SportLoaderCallbacks mSportLoader;
     CoachLoaderCallbacks mCoachLoader;
-
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getLoaderManager().restartLoader(0, null, mSportLoader);
-        getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        mLoadingBar = (ProgressBar)findViewById(R.id.loading_progress_bar);
+
         mSearchArgs = new Bundle();
-        mSportLoader = new SportLoaderCallbacks();
-        mCoachLoader = new CoachLoaderCallbacks();
-        getLoaderManager().initLoader(0, mSearchArgs, mSportLoader);
-        getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
 
         mUserList = new ArrayList<>();
         mSportList = new ArrayList<>();
@@ -77,7 +66,9 @@ public class SearchActivity extends Activity {
         mSportsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsSpinner.setAdapter(mSportsAdapter);
 
+
         mSearchInput = (EditText) findViewById(R.id.inputSearch);
+
         mSearchButton = (Button) findViewById(R.id.search_button);
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +80,11 @@ public class SearchActivity extends Activity {
             }
         });
 
+        mSportLoader = new SportLoaderCallbacks();
+        mCoachLoader = new CoachLoaderCallbacks();
+        getLoaderManager().initLoader(0, mSearchArgs, mSportLoader);
+        getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
+
     }
 
 
@@ -96,6 +92,8 @@ public class SearchActivity extends Activity {
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+            mLoadingBar.setVisibility(View.VISIBLE);
+            mRecycleView.setVisibility(View.GONE);
             return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""),mSearchArgs.getLong("idSport", -1));
         }
 
@@ -103,6 +101,8 @@ public class SearchActivity extends Activity {
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
             mUserList = data;
             mAdapter.setData(mUserList);
+            mLoadingBar.setVisibility(View.GONE);
+            mRecycleView.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -123,7 +123,17 @@ public class SearchActivity extends Activity {
         public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
             mSportList = data;
             mSportsAdapter.clear();
+
+            //Create fake sport for "All sports" with ID -1
+            Sport allSports = new Sport();
+            allSports.mName = getString(R.string.all_sports);
+            allSports.mIdDb = -1;
+            mSportsAdapter.add(allSports);
+
+            //Add all sports got from server
             mSportsAdapter.addAll(mSportList);
+
+
         }
 
         @Override
