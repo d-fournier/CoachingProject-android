@@ -11,6 +11,8 @@ import fr.sims.coachingproject.ui.fragment.RelationChatFragment;
  * Created by Segolene on 18/02/2016.
  */
 public class RelationPagerAdapter extends FragmentPagerAdapter {
+
+
     public RelationPagerAdapter(FragmentManager fm) {
         super(fm);
     }

@@ -36,20 +36,20 @@
                     android:id="@+id/name"
                     style="@style/TextAppearance.AppCompat.Title"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/age"
-                        android:layout_below="@+id/name"
-                        android:layout_alignParentLeft="true"
-                        android:layout_toLeftOf="@+id/city"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/age"
+                    android:layout_below="@+id/name"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/city"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/city"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/name"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/city"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/name"/>
 
                 <TextView
                     android:layout_width="wrap_content"
