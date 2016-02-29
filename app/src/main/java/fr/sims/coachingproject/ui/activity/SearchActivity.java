@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     Spinner mSportsSpinner;
     ProgressBar mLoadingBar;
     Spinner mLevelsSpinner;
+    TextView mEmptyCoachListText;
     ArrayAdapter<Sport> mSportsAdapter;
     ArrayAdapter<SportLevel> mLevelsAdapter;
     SportLoaderCallbacks mSportLoader;
@@ -85,6 +87,7 @@ public class SearchActivity extends AppCompatActivity {
 
         mSearchInput = (EditText) findViewById(R.id.inputSearch);
         mSearchButton = (Button) findViewById(R.id.search_button);
+        mEmptyCoachListText = (TextView) findViewById(R.id.no_coach_text);
 
         mSportsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -128,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
             mLoadingBar.setVisibility(View.VISIBLE);
             mRecycleView.setVisibility(View.GONE);
+            mEmptyCoachListText.setVisibility(View.GONE);
             return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""), mSearchArgs.getLong("idSport", -1), mSearchArgs.getLong("idLevel", -1));
         }
 
@@ -136,20 +140,26 @@ public class SearchActivity extends AppCompatActivity {
             mUserList = data;
             mSearchListAdapter.setData(mUserList);
             mLoadingBar.setVisibility(View.GONE);
-            mRecycleView.setVisibility(View.VISIBLE);
 
-            mSearchListAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                    i.putExtra("id", mUserList.get(position).mIdDb);
-                    startActivity(i);
-                }
+            if(mUserList.isEmpty()){
+                mRecycleView.setVisibility(View.GONE);
+                mEmptyCoachListText.setVisibility(View.VISIBLE);
+            }else {
+                mRecycleView.setVisibility(View.VISIBLE);
+                mEmptyCoachListText.setVisibility(View.GONE);
+                mSearchListAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                        i.putExtra("id", mUserList.get(position).mIdDb);
+                        startActivity(i);
+                    }
 
-                @Override
-                public void onItemLongClick(View view, int position) {
-                }
-            });
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                    }
+                });
+            }
 
         }
 
