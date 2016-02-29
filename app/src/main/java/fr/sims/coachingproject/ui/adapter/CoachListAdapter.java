@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.activity.MainActivity;
 
@@ -29,6 +30,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     private List<UserProfile> mDatasetLr;
     private List<UserProfile> mDatasetPendingCr;
     private List<UserProfile> mDatasetPendingLr;
+    private List<CoachingRelation> mDatasetRelations;
     private Context mCtx;
 
     private static final int HEADER_COACH = 0;
@@ -80,25 +82,42 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         mDatasetLr = new ArrayList<>();
         mDatasetPendingCr = new ArrayList<>();
         mDatasetPendingLr = new ArrayList<>();
+        mDatasetRelations = new ArrayList<>();
     }
 
-    public void setDataCr(List<UserProfile> dataset) {
-        mDatasetCr = dataset;
-        notifyDataSetChanged();
-    }
+    public void setData(List<CoachingRelation> dataset){
+        clearData();
 
-    public void setDataLr(List<UserProfile> dataset) {
-        mDatasetLr = dataset;
-        notifyDataSetChanged();
-    }
+        List<CoachingRelation> relationsCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsLr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
 
-    public void setDataPendingCr(List<UserProfile> dataset) {
-        mDatasetPendingCr = dataset;
-        notifyDataSetChanged();
-    }
+        for (CoachingRelation relation : dataset) {
+            if (!relation.mIsPending) {
+                if (relation.mCoach.mIdDb != 1) {
+                    mDatasetCr.add(relation.mCoach);
+                    relationsCr.add(relation);
+                }else {
+                    mDatasetLr.add(relation.mTrainee);
+                    relationsLr.add(relation);
+                }
+            } else {
+                if (relation.mCoach.mIdDb != 1) {
+                    mDatasetPendingCr.add(relation.mCoach);
+                    relationsPendingCr.add(relation);
+                }else {
+                    mDatasetPendingLr.add(relation.mTrainee);
+                    relationsPendingLr.add(relation);
+                }
+            }
+        }
 
-    public void setDataPendingLr(List<UserProfile> dataset) {
-        mDatasetPendingLr = dataset;
+        mDatasetRelations.addAll(relationsCr);
+        mDatasetRelations.addAll(relationsLr);
+        mDatasetRelations.addAll(relationsPendingCr);
+        mDatasetRelations.addAll(relationsPendingLr);
+
         notifyDataSetChanged();
     }
 
@@ -107,6 +126,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         mDatasetLr.clear();
         mDatasetPendingCr.clear();
         mDatasetPendingLr.clear();
+        mDatasetRelations.clear();
         notifyDataSetChanged();
     }
 
@@ -243,6 +263,21 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         } else {
             return -1;
         }
+    }
+
+    public long getRelationId(int position){
+        int index;
+        if(position<=mDatasetCr.size()){
+            index=position-1;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+1)){
+            index=position-2;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+ mDatasetPendingCr.size()+2)){
+            index=position-3;
+        }else{
+            index=position-4;
+        }
+        CoachingRelation rel = mDatasetRelations.get(index);
+        return rel.mIdDb;
     }
 
     @Override
