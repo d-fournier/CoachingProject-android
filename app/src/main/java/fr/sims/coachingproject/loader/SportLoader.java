@@ -30,7 +30,11 @@ public class SportLoader extends AsyncTaskLoader<List<Sport>> {
     public List<Sport> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
         String response = NetworkUtil.get(request,null);
-        return Arrays.asList(Sport.parseList(response));
+        if(response.isEmpty()){
+            return null;
+        }else{
+            return Arrays.asList(Sport.parseList(response));
+        }
     }
 
 

@@ -48,7 +48,12 @@ public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
             e.printStackTrace();
         }
         String response = NetworkUtil.get(request, null);
-        return Arrays.asList(UserProfile.parseList(response));
+        if(response.isEmpty()){
+            return null;
+        }else{
+            return Arrays.asList(UserProfile.parseList(response));
+        }
+
     }
 
 

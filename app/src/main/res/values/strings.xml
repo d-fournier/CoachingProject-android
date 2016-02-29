@@ -38,4 +38,6 @@
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
     <string name="no_coach_found">No coach found</string>
+    <string name="no_connectivity">No connection available</string>
+    <string name="retry">Retry</string>
 </resources>

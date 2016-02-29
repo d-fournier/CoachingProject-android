@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -63,7 +64,9 @@ public class NetworkUtil {
                 br.close();
             }
             urlConnection.disconnect();
-        } catch (Exception e) {
+        }catch(UnknownHostException e1){
+            //Returns empty string with res.toString()
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return res.toString();
