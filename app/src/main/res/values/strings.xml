@@ -38,4 +38,9 @@
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
     <string name="no_coach_found">No coach found</string>
+
+    <plurals name="user_age">
+        <item quantity="one">%1$d year old</item>
+        <item quantity="other">%1$d years old</item>
+    </plurals>
 </resources>

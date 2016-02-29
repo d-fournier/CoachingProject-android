@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -22,6 +23,9 @@ import fr.sims.coachingproject.model.UserProfile;
 
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
 
+    private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
+
+
     private static final String[] messages = new String[] {
             "Message : Demande de coaching", "Message : Demande de coaching",
             "Message : Demande de coaching", "Message : Demande de coaching",
@@ -36,6 +40,13 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     };
 
     private long mId;
+
+    public static void startActivity(Context ctx, long id){
+        Intent intent = new Intent(ctx,ProfileActivity.class);
+        intent.putExtra(EXTRA_USER_PROFILE_ID, id);
+        ctx.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         Button btn = (Button) findViewById(R.id.button1);
         // Get the transferred id
         Intent mIntent = getIntent();
-        mId = mIntent.getLongExtra("id", 0);
+        mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

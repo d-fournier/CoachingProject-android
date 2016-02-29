@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -27,10 +28,20 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 
 public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener{
 
+    private static final String EXTRA_COACHING_RELATION_ID = "fr.sims.coachingproject.extra.COACHING_RELATION_ID";
+
     RelationPagerAdapter mRelationPagerAdapter;
     ViewPager mViewPager;
     CoachingRelation mRelation;
     private long mId;
+
+
+    public static void startActivity(Context ctx, long id){
+        Intent intent = new Intent(ctx,RelationActivity.class);
+        intent.putExtra(EXTRA_COACHING_RELATION_ID, id);
+        ctx.startActivity(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -40,7 +51,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         // Get the transferred id
         Intent mIntent = getIntent();
-        mId = mIntent.getLongExtra("id", 0);
+        mId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
 
         // Tabs Pattern
         mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager(), mId);
@@ -77,29 +88,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             partner=mRelation.mTrainee;
         }
 
-        Calendar birthdate = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
-        int userAge=0;
-        try {
-            SimpleDateFormat sdf=new SimpleDateFormat( "yyyy-MM-dd");
-            birthdate.setTime(sdf.parse(partner.mBirthdate));
-            userAge = today.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR);
-
-            if (today.get(Calendar.DAY_OF_YEAR) < birthdate.get(Calendar.DAY_OF_YEAR)){
-                userAge--;
-            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        int userAge = partner.getAge();
 
         city.setText(partner.mCity);
         name.setText(partner.mDisplayName);
-        age.setText(String.valueOf(userAge)+" ans");
+        age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
-
-//        NetworkService.startActionMessages(this, mRelation.mIdDb);
     }
 
     @Override
@@ -109,8 +104,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onClick(View v) {
-        Intent i = new Intent(this, ProfileActivity.class);
-        i.putExtra("id", mRelation.mIdDb);
-        startActivity(i);
+        ProfileActivity.startActivity(this, mRelation.mIdDb);
     }
 }
