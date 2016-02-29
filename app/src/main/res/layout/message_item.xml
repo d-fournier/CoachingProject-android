@@ -15,7 +15,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/message_bg"
-        android:id="@+id/content_layout">
+        android:id="@+id/content_layout"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp">
 
         <TextView
             android:layout_width="wrap_content"

@@ -91,6 +91,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
         mMessageAdapter.setData(data);
+        if (mMessageAdapter.isEmpty()){
+            getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
+        }else{
+            getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
+        }
 
     }
 
