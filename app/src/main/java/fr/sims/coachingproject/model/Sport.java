@@ -6,6 +6,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -43,8 +45,24 @@ public class Sport extends Model {
         this.mName = sport.mName;
     }
 
-    public static List<Sport> getAllSport() {
-        return new Select().from(Sport.class).execute();
+    public static Sport[] parseList(String json){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Sport[] res = null;
+        try {
+            res = gson.fromJson(json, Sport[].class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return this.mName;
+    }
+
+    public long getmIdDb() {
+        return mIdDb;
     }
 
 }

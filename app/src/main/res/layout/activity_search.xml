@@ -6,17 +6,36 @@
 
     <!-- Editext for Search -->
     <EditText android:id="@+id/inputSearch"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search trainer.."
+        android:hint="@string/search_hint"
         android:inputType="textVisiblePassword"/>
+    
+    <!-- Combobox for sports -->
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_sports"/>
 
+    <!-- Combobox for levels -->
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_levels"/>
 
-   <!-- <ListView
-        android:id="@+id/Search_List"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
--->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_button"
+        android:text="@string/search_text"/>
+
+    <ProgressBar
+        android:id="@+id/loading_progress_bar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
     <android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/Search_List"
