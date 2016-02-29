@@ -33,7 +33,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     private long mRelationId;
 
-
+    private final String RELATION_ID="relationId";
     public static final String TABS_TITLE = "Messages";
 
     public static android.support.v4.app.Fragment newInstance(long relationId) {
@@ -48,6 +48,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState!=null){
+            mRelationId=savedInstanceState.getLong(RELATION_ID);
+        }
+
         getLoaderManager().initLoader(0, null, this);
 
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
@@ -109,5 +114,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_COACHING_RELATION_ITEM) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(RELATION_ID, mRelationId);
     }
 }
