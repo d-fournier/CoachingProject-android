@@ -37,4 +37,5 @@
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
+    <string name="no_coach_found">No coach found</string>
 </resources>
