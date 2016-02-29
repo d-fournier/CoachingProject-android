@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="app_name">CoachingProject</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -37,5 +37,6 @@
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
+    <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
 </resources>
