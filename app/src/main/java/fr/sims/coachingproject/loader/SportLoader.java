@@ -20,6 +20,7 @@ public class SportLoader extends AsyncTaskLoader<List<Sport>> {
 
     List<Sport> mSportList;
 
+
     public SportLoader(Context context) {
         super(context);
         mSportList = null;

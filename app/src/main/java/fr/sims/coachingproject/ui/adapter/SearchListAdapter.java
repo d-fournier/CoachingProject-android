@@ -37,6 +37,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     private Context mCtx;
 
     public SearchListAdapter(Context context) {
+
         this.userList = new ArrayList<>();
     }
 
