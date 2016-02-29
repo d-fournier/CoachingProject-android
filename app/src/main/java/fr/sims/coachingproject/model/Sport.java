@@ -64,4 +64,5 @@ public class Sport extends Model {
     public long getmIdDb() {
         return mIdDb;
     }
+
 }

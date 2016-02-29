@@ -142,7 +142,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        final CoachViewHolder cvh;
+        final CoachViewHolder cvh ;
         HeaderViewHolder hvh;
         UserProfile cr;
         switch (vh.getItemViewType()) {
@@ -153,12 +153,12 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 cvh.mNameTV.setText(cr.mDisplayName);
                 cvh.mDescTV.setText(cr.mCity);
 
-                if (mOnItemClickListener != null) {
+               if (mOnItemClickListener != null) {
                     /**
                      * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
                      * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
                      * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
-                     */
+                     **/
                     if (!cvh.itemView.hasOnClickListeners()) {
                         cvh.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -218,7 +218,6 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 hvh.mTitleTv.setText(R.string.pending_trainee_request);
                 break;
         }
-
     }
 
     @Override

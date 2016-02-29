@@ -17,6 +17,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinner_sports"/>
 
+    <!-- Combobox for levels -->
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_levels"/>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

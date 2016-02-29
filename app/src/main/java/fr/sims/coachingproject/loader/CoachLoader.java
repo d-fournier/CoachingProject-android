@@ -19,11 +19,13 @@ public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
 
     private String mKeywords;
     private long mSport;
+    private long mLevel;
 
-    public CoachLoader(Context context, String keywords, long sport) {
+    public CoachLoader(Context context, String keywords, long sport, long level) {
         super(context);
         mKeywords = keywords;
         mSport = sport;
+        mLevel =level;
     }
 
     @Override
@@ -37,6 +39,9 @@ public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
             }
             if(mSport != -1){
                 request +=  "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
+            }
+            if(mLevel != -1) {
+                request += "&" + Const.WebServer.LEVEL_PARAMETER + "=" + mLevel;
             }
 
         } catch (UnsupportedEncodingException e) {
