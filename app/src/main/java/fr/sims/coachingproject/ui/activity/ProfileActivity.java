@@ -92,6 +92,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         return new UserLoader(this, mId);
     }
 
+
+    // TODO Crash sometimes Data == null
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         // Get components id

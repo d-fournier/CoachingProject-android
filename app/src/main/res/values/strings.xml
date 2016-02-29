@@ -43,4 +43,7 @@
         <item quantity="one">%1$d year old</item>
         <item quantity="other">%1$d years old</item>
     </plurals>
+
+    <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
+    <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
 </resources>
