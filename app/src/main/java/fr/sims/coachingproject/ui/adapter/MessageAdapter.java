@@ -1,31 +1,24 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Message;
 
 
-public class MessageAdapter extends ArrayAdapter implements ListAdapter {
+public class MessageAdapter extends ArrayAdapter {
     private List<Message> mMessageList;
 
     private Context mContext;
@@ -35,36 +28,21 @@ public class MessageAdapter extends ArrayAdapter implements ListAdapter {
     public MessageAdapter(Context ctxt) {
         super(ctxt, R.layout.message_item);
 
-        mMessageList=new ArrayList<Message>();
+        mMessageList=new ArrayList<>();
         this.mContext = ctxt;
         mInflater = LayoutInflater.from( mContext );
     }
 
     public void setData(List<Message> dataset){
-        mMessageList=dataset;
-        notifyDataSetChanged();
+        mMessageList.clear();
+        mMessageList.addAll(dataset);
+        this.notifyDataSetChanged();
     }
 
     public void clearData(){
         mMessageList.clear();
         notifyDataSetChanged();
     }
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled(int position) {
-        return false;
-    }
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver observer){ }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) { }
 
     @Override
     public int getCount() {
@@ -81,11 +59,6 @@ public class MessageAdapter extends ArrayAdapter implements ListAdapter {
     public long getItemId(int position) {
 
         return mMessageList.get(position).mIdDb;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
     }
 
     @Override
@@ -106,10 +79,6 @@ public class MessageAdapter extends ArrayAdapter implements ListAdapter {
         if(message.mSender != null){
             Picasso.with(mContext).load(message.mSender.mPicture).into(picture);
         }
-
-
-
-
         return convertView;
     }
 
@@ -125,6 +94,6 @@ public class MessageAdapter extends ArrayAdapter implements ListAdapter {
 
     @Override
     public boolean isEmpty() {
-        return mMessageList.size()>0;
+        return mMessageList.size()==0;
     }
 }

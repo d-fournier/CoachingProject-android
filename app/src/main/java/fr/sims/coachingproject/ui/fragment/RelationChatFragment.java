@@ -31,11 +31,14 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
 
+    private long mRelationId;
+
 
     public static final String TABS_TITLE = "Messages";
 
-    public static android.support.v4.app.Fragment newInstance() {
+    public static android.support.v4.app.Fragment newInstance(long relationId) {
         RelationChatFragment fragment = new RelationChatFragment();
+        fragment.mRelationId=relationId;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -72,17 +75,17 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
                 mRefreshLayout.setRefreshing(true);
             }
         });
-        NetworkService.startActionMessages(getContext());
+        NetworkService.startActionMessages(getContext(), mRelationId);
     }
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionMessages(getContext());
+        NetworkService.startActionMessages(getContext(),mRelationId);
     }
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
-        return new MessageLoader(getContext());
+        return new MessageLoader(getContext(), mRelationId);
     }
 
     @Override
@@ -98,7 +101,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onBroadcastReceive(Intent intent) {
-        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_MESSAGES) && mRefreshLayout != null) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_COACHING_RELATION_ITEM) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
     }

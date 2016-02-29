@@ -12,9 +12,11 @@ import fr.sims.coachingproject.ui.fragment.RelationChatFragment;
  */
 public class RelationPagerAdapter extends FragmentPagerAdapter {
 
+    private long mRelationId;
 
-    public RelationPagerAdapter(FragmentManager fm) {
+    public RelationPagerAdapter(FragmentManager fm, long relationId) {
         super(fm);
+        mRelationId=relationId;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 0:
             default:
-                fragment = RelationChatFragment.newInstance();
+                fragment = RelationChatFragment.newInstance(mRelationId);
                 break;
         }
         return fragment;

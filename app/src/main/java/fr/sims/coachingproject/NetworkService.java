@@ -22,7 +22,9 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 public class NetworkService extends IntentService {
     public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
-    public static final String ACTION_MESSAGES = "fr.sims.coachingproject.action.MESSAGES";
+    public static final String ACTION_COACHING_RELATION_ITEM = "fr.sims.coachingproject.action.COACHING_RELATION_ITEM";
+
+    private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
 
     public NetworkService() {
         super("NetworkService");
@@ -39,9 +41,10 @@ public class NetworkService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionMessages(Context context) {
+    public static void startActionMessages(Context context, long id) {
         Intent intent = new Intent(context, NetworkService.class);
-        intent.setAction(ACTION_MESSAGES);
+        intent.setAction(ACTION_COACHING_RELATION_ITEM);
+        intent.putExtra(EXTRA_ITEM_ID, id);
         context.startService(intent);
     }
 
@@ -56,8 +59,8 @@ public class NetworkService extends IntentService {
                 case ACTION_COACHING_RELATIONS:
                     handleActionCoachingRelation();
                     break;
-                case ACTION_MESSAGES:
-                    handleActionMessages();
+                case ACTION_COACHING_RELATION_ITEM:
+                    handleActionCoachingRelationItem(intent.getLongExtra(EXTRA_ITEM_ID, -1));
                     break;
             }
 
@@ -109,14 +112,15 @@ public class NetworkService extends IntentService {
         }
     }
 
-    protected void handleActionMessages() {
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES, getToken());
+    protected void handleActionCoachingRelationItem(long relationId) {
+        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/"+Const.WebServer.MESSAGES, getToken());
         if(!res.isEmpty()) {
-            Message[] msList = Message.parseList(res);
+            Message[] messages = Message.parseList(res);
 
             ActiveAndroid.beginTransaction();
+
             try {
-                for(Message ms : msList) {
+                for(Message ms : messages){
                     ms.saveOrUpdate();
                 }
                 ActiveAndroid.setTransactionSuccessful();
@@ -126,7 +130,9 @@ public class NetworkService extends IntentService {
                 ActiveAndroid.endTransaction();
             }
 
-            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED));
+            Intent intent = new Intent(Const.BroadcastEvent.EVENT_COACHING_RELATIONS_ITEM_UPDATED);
+            intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, relationId);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
     }
 

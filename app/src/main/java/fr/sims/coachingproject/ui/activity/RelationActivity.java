@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -42,7 +43,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mId = mIntent.getLongExtra("id", 0);
 
         // Tabs Pattern
-        mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager());
+        mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager(), mId);
         mViewPager = (ViewPager) findViewById(R.id.messagePager);
         mViewPager.setAdapter(mRelationPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -98,6 +99,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
 
+//        NetworkService.startActionMessages(this, mRelation.mIdDb);
     }
 
     @Override

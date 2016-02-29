@@ -12,13 +12,16 @@ import fr.sims.coachingproject.util.Const;
  */
 public class MessageLoader extends GenericLocalLoader<List<Message>> {
 
-    public MessageLoader(Context context) {
+    private long mRelationId;
+
+    public MessageLoader(Context context, long relationId) {
         super(context);
+        mRelationId=relationId;
     }
 
     @Override
     protected String getBroadcastEvent() {
-        return Const.BroadcastEvent.EVENT_MESSAGES_UPDATED;
+        return Const.BroadcastEvent.EVENT_COACHING_RELATIONS_ITEM_UPDATED;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class MessageLoader extends GenericLocalLoader<List<Message>> {
 
     @Override
     public List<Message> loadInBackground() {
-        List<Message> r = Message.getAllMessages();
+        List<Message> r = Message.getAllMessagesByRelationId(mRelationId);
         return r;
     }
 }

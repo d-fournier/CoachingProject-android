@@ -58,11 +58,22 @@ public class Message extends Model {
         return res;
     }
 
-    public Message saveOrUpdate(){
-        mSender.saveOrUpdate();
-        mRelation.saveOrUpdate();
+    public static Message parseItem(String json){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Message res = null;
+        try {
+            res = gson.fromJson(json, Message.class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
 
-        Message res = (Message) new Select().from(Message.class).where("idDb = ?", mIdDb).execute().get(0);
+    public Message saveOrUpdate(){
+        mRelation=mRelation.saveOrUpdate();
+        mSender=mSender.saveOrUpdate();
+
+        Message res = new Select().from(Message.class).where("idDb = ?", mIdDb).executeSingle();
         if(res != null) {
             res.bindProperties(this);
             res.save();
@@ -73,9 +84,13 @@ public class Message extends Model {
         return res;
     }
 
-    public static List<Message> getAllMessages() {
-        return new Select()
+    public static List<Message> getAllMessagesByRelationId(long id) {
+        CoachingRelation rel=new Select().from(CoachingRelation.class).where("idDb == ?", id).executeSingle();
+        List<Message> res= new Select()
                 .from(Message.class)
+                .where("relation == ?", rel.getId())
                 .execute();
+
+        return res;
     }
 }
