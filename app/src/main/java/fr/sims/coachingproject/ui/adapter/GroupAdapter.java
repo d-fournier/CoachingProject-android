@@ -30,15 +30,15 @@ public class GroupAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView==null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item_group, parent, false);
-            vh.name = (TextView)convertView.findViewById(R.id.group_item_name);
-            vh.description = (TextView)convertView.findViewById(R.id.group_item_description);
-            vh.sport = (TextView)convertView.findViewById(R.id.group_item_sport);
+            vh.name = (TextView) convertView.findViewById(R.id.group_item_name);
+            vh.description = (TextView) convertView.findViewById(R.id.group_item_description);
+            vh.sport = (TextView) convertView.findViewById(R.id.group_item_sport);
             convertView.setTag(vh);
-        }else{
-            vh = (ViewHolder)convertView.getTag();
+        } else {
+            vh = (ViewHolder) convertView.getTag();
         }
 
         Group g = mGroupList.get(position);
@@ -48,22 +48,22 @@ public class GroupAdapter extends ArrayAdapter {
         return convertView;
     }
 
-    static class ViewHolder {
-        TextView name;
-        TextView description;
-        TextView sport;
-    }
-
     @Override
     public int getCount() {
         return mGroupList.size();
     }
 
-    public void setData(List<Group> gList){
-        mGroupList = gList;
+    public void setData(List<Group> gList) {
+        mGroupList.addAll(gList);
     }
 
-    public void clearData(){
+    public void clearData() {
         mGroupList.clear();
+    }
+
+    static class ViewHolder {
+        TextView name;
+        TextView description;
+        TextView sport;
     }
 }

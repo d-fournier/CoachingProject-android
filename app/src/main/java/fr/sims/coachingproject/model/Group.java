@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Benjamin on 01/03/2016.
  */
-@Table(name="Group")
+@Table(name="UserGroup")
 public class Group extends Model{
 
     @Column(name = "idDb", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -46,6 +46,10 @@ public class Group extends Model{
     @Expose
     @SerializedName("sport")
     public Sport mSport;
+
+    public Group(){
+
+    }
 
     public Group saveOrUpdate(){
         for(UserProfile up : mMembers){

@@ -9,6 +9,7 @@ import java.util.List;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Benjamin on 01/03/2016.
@@ -22,7 +23,7 @@ public class GroupLoader  extends AsyncTaskLoader<List<Group>> {
     @Override
     public List<Group> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS;
-        String response = NetworkUtil.get(request, null);
+        String response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
         if(response.isEmpty()){
             return null;
         }
