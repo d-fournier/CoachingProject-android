@@ -80,7 +80,7 @@
             android:layout_marginTop="20dp"
             />
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/send_request"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/coaching"
