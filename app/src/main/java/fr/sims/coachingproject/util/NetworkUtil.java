@@ -24,8 +24,8 @@ public class NetworkUtil {
         return request(url, "POST", token, body);
     }
 
-    public static String put(String url, String token, String body){
-        return request(url, "PUT", token, body);
+    public static String patch(String url, String token, String body){
+        return request(url, "PATCH", token, body);
     }
 
     private static String request(String urlString, String method, String token, String body) {

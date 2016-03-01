@@ -39,4 +39,5 @@
     <string name="all_levels">All levels </string>
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
+    <string name="pin_message">Pin message</string>
 </resources>

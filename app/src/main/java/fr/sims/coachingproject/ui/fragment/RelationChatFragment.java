@@ -8,10 +8,16 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +29,13 @@ import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
+public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener{
 
     private MessageAdapter mMessageAdapter;
     private SwipeRefreshLayout mRefreshLayout;
@@ -138,4 +146,35 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         super.onSaveInstanceState(outState);
         outState.putLong(RELATION_ID, mRelationId);
     }
+    @Override
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
+        registerForContextMenu(getListView());
+    }
+
+    @Override
+    public void onCreateContextMenu(final ContextMenu menu,
+                                    final View v, final ContextMenu.ContextMenuInfo menuInfo) {
+        menu.setHeaderTitle("Message");
+        menu.add(R.string.pin_message);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Message message=mMessageAdapter.getItem(menuInfo.position);
+
+        String body="";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("is_pinned", Boolean.toString(true));
+            body=json.toString(2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + message.mIdDb, SharedPrefUtil.getConnectedToken(getContext()), body );
+        return true;
+    }
 }
+
