@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
@@ -25,8 +26,10 @@ import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
+import static fr.sims.coachingproject.NetworkService.startActionCoachingRelations;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile> {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
@@ -43,12 +46,25 @@ public class MainActivity extends AppCompatActivity
         // Drawer Pattern
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 0) {
+                    // drawer closed (update the coaching list)
+                    startActionCoachingRelations(getApplicationContext());
+                } else if (slideOffset != 0) {
+                    // started opening
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
         // Drawer Items
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = navigationView.getHeaderView(0);
+        mDrawerHeader.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
@@ -58,10 +74,27 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        //startActivity(new Intent(this, ProfileActivity.class));
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(0, null, this);
         startActivity(new Intent(this, message_activity.class));
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -73,6 +106,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -106,9 +140,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
-        if(user != null) {
-            ((TextView) mDrawerHeader.findViewById(R.id.drawer_header_name)).setText(user.mDisplayName);
-            Picasso.with(MainActivity.this).load(user.mPicture).into(((ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture)));
+        TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
+        ImageView profilePicture =(ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+        if (user != null) {
+            header.setText(user.mDisplayName);
+            Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
+            profilePicture.setVisibility(View.VISIBLE);
+            mDrawerHeader.setOnClickListener(null);
+        }else{
+            header.setText(R.string.connect);
+            profilePicture.setVisibility(View.GONE);
         }
     }
 
@@ -116,4 +157,12 @@ public class MainActivity extends AppCompatActivity
     public void onLoaderReset(Loader<UserProfile> loader) {
 
     }
+
+    @Override
+    public void onClick(View v) {
+        LoginActivity.startActivity(this);
+    }
+
 }
+
+

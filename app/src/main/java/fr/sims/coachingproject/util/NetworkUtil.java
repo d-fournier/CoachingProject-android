@@ -16,15 +16,15 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class NetworkUtil {
 
-    public static String get(String url, String token){
+    public static String get(String url, String token) {
         return request(url, "GET", token, null);
     }
 
-    public static String post(String url, String token, String body){
+    public static String post(String url, String token, String body) {
         return request(url, "POST", token, body);
     }
 
-    public static String put(String url, String token, String body){
+    public static String put(String url, String token, String body) {
         return request(url, "PUT", token, body);
     }
 
@@ -40,11 +40,11 @@ public class NetworkUtil {
             urlConnection.setRequestMethod(method);
 
             urlConnection.setRequestProperty("Content-Type", "application/json");
-            if(token != null) {
-                urlConnection.setRequestProperty("authorization", "Token "+token);
+            if (token != null) {
+                urlConnection.setRequestProperty("Authorization", "Token " + token);
             }
 
-            if(method.equals("PUT") || method.equals("POST")) {
+            if (method.equals("PUT") || method.equals("POST")) {
                 urlConnection.setDoOutput(true);
                 DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
                 os.write(body.getBytes());
@@ -53,7 +53,7 @@ public class NetworkUtil {
             }
 
             int code = urlConnection.getResponseCode();
-            if(code == HttpURLConnection.HTTP_OK||code ==HttpURLConnection.HTTP_CREATED) {
+            if (code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_CREATED) {
                 InputStream is = urlConnection.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
                 String line;

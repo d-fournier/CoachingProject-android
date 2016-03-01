@@ -6,6 +6,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -53,4 +55,25 @@ public class SportLevel extends Model {
         this.mTitle = sl.mTitle;
         this.mRank = sl.mRank;
     }
+
+    public static SportLevel[] parseList(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        SportLevel[] res = null;
+        try {
+            res = gson.fromJson(json, SportLevel[].class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return this.mTitle;
+    }
+
+    public long getmIdDb() {
+        return mIdDb;
+    }
+
 }
