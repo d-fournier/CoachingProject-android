@@ -1,12 +1,12 @@
 package fr.sims.coachingproject.ui.fragment;
 
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.widget.ListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
@@ -15,15 +15,13 @@ import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 
 
-public class GroupFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<Group>>{
+public class GroupFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<Group>>{
 
     public static final String TABS_TITLE = "Groups";
 
-    private RecyclerView mGroupList;
     private GroupAdapter mGroupAdapter;
 
     public GroupFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -40,19 +38,16 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         return fragment;
     }
 
-
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_group;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mGroupAdapter = new GroupAdapter(getContext(), R.layout.list_item_group);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
-    protected void bindView(View view) {
-        super.bindView(view);
-        mGroupList = (RecyclerView) view.findViewById(R.id.group_list);
-        mGroupList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mGroupAdapter = new GroupAdapter(getContext());
-        mGroupList.setAdapter(mGroupAdapter);
+    public void setListAdapter(ListAdapter adapter) {
+        super.setListAdapter(adapter);
     }
 
     @Override
@@ -62,11 +57,19 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
-
+        if(data != null) {
+            mGroupAdapter.clearData();
+            mGroupAdapter.setData(data);
+            this.setListAdapter(mGroupAdapter);
+        }else{
+            mGroupAdapter.setData(new ArrayList<Group>());
+            this.setListAdapter(mGroupAdapter);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<List<Group>> loader) {
 
     }
+
 }

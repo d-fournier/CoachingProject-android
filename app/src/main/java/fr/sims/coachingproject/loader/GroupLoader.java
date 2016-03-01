@@ -1,7 +1,7 @@
 package fr.sims.coachingproject.loader;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,5 +27,11 @@ public class GroupLoader  extends AsyncTaskLoader<List<Group>> {
             return null;
         }
         return Arrays.asList(Group.parseList(response));
+    }
+
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
     }
 }
