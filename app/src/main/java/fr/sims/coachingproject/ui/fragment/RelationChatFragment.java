@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -11,7 +12,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +29,18 @@ import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
+public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
 
     private MessageAdapter mMessageAdapter;
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
+    private EditText mMessageET;
 
     private long mRelationId;
     private boolean mPinned;
@@ -90,6 +99,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
             }
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
+
+        Button btn = (Button) view.findViewById(R.id.send_button);
+        btn.setOnClickListener(this);
+
+        mMessageET = (EditText) view.findViewById(R.id.message_editText);
     }
 
     @Override
@@ -137,5 +151,48 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(RELATION_ID, mRelationId);
+    }
+
+    @Override
+    public void onClick(View v) {
+        String message = mMessageET.getText().toString();
+
+        String body = "";
+
+        try {
+            JSONObject parent = new JSONObject();
+            parent.put("content",message);
+            parent.put("to_relation", ""+mRelationId);
+            parent.put("is_pinned", false);
+
+            body = parent.toString(2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new SendRequestTask().execute(body);
+    }
+
+
+    private class SendRequestTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            if(params.length > 0) {
+                String body = params[0];
+                String connectedToken = SharedPrefUtil.getConnectedToken(getContext());
+                String response = NetworkUtil.post("https://coachingproject.herokuapp.com/api/messages/", connectedToken, body);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
     }
 }
