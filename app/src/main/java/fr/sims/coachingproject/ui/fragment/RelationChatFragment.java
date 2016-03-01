@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,8 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     private long mRelationId;
     private boolean mPinned;
+
+    private TextView mNoMessageText;
 
     private final String RELATION_ID="relationId";
     public static final String MESSAGES_TITLE = "Messages";
@@ -67,6 +70,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_relation_chat, container, false);
+        mNoMessageText=(TextView)view.findViewById(R.id.emptyList);
         bindView(view);
         return view;
     }
@@ -86,17 +90,18 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
             }
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
-        view.findViewById(R.id.emptyList).setVisibility(View.GONE);
     }
 
     @Override
     public void onRefresh() {
-        getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
         NetworkService.startActionMessages(getContext(), mRelationId);
     }
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
+        if(mNoMessageText!=null){
+            mNoMessageText.setVisibility(View.GONE);
+        }
         return new MessageLoader(getContext(), mRelationId);
     }
 
@@ -110,11 +115,10 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         }
         mMessageAdapter.setData(filteredData);
         if (mMessageAdapter.isEmpty()){
-            getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
+            mNoMessageText.setVisibility(View.VISIBLE);
         }else{
-            getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
+            mNoMessageText.setVisibility(View.GONE);
         }
-
     }
 
     @Override
