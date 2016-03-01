@@ -1,56 +1,155 @@
 package fr.sims.coachingproject.ui.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 
+import static fr.sims.coachingproject.util.NetworkUtil.post;
+import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedToken;
+import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedUserId;
+
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
 
-    private static final String[] messages = new String[] {
+    private static final String[] messages = new String[]{
             "Message : Demande de coaching", "Message : Demande de coaching",
             "Message : Demande de coaching", "Message : Demande de coaching",
             "Message : Demande de coaching"
     };
 
-    private static final String[] sports = new String[] {
-            "Saisons 2012 à 2014 : Sporting Club de Bastia : CFA 2 ( Convention payée ).",
-            "Saisons 2010 à 2012 : Sporting Club de Bastia : U 19 National ( Convention payée ).",
-            "Saisons 2007 à 2010 : Sporting Club de Bastia : U 17 National ( Contrat aspirant ).",
-            "Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux."
-    };
-
     private long mId;
+    private String mConnectedToken;
+    private long mConnectedUserId;
+    private long mCoachUserId;
+    private UserProfile mData;
+    private String mRequest_Body;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        Button btn = (Button) findViewById(R.id.button1);
+        final Button btn_send_request = (Button) findViewById(R.id.send_request);
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra("id", 0);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        btn_send_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("id",Long.toString(mId));
-                //Picasso.with(ProfileActivity.this).load("https://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png").into(view);
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                final View popupView = layoutInflater.inflate(R.layout.popup_send_request_coaching, null);
+                final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+
+                // Send Button
+                Button btn_confirm_send_request = (Button) popupView.findViewById(R.id.confirm_send_request);
+                btn_confirm_send_request.setOnClickListener(new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        // Get the token of connected user
+                        mConnectedToken = getConnectedToken(ProfileActivity.this);
+                        // Get the trainee id
+                        mConnectedUserId = getConnectedUserId(ProfileActivity.this);
+                        // Get the coach id
+                        mCoachUserId = mData.mIdDb;
+                        // Get checked sport id
+                        ListView lv = (ListView) findViewById(R.id.listView1);
+                        int checked_sport = lv.getCheckedItemPosition();
+                        long check_sport_id = mData.mSportsList[checked_sport].mSport.mIdDb;
+                        // Get request comment
+                        EditText et = (EditText) popupView.findViewById(R.id.request_comment);
+                        String request_comment = et.getText().toString();
+                        // Only keep the first 200 characters
+                        if (request_comment.length() > 200) {
+                            request_comment = request_comment.substring(0,200);
+                        }
+                        // Create request to post
+                        try {
+                            JSONObject parent = new JSONObject();
+                            parent.put("coach", Long.toString(mCoachUserId));
+                            parent.put("trainee", Long.toString(mConnectedUserId));
+                            parent.put("sport", Long.toString(check_sport_id));
+                            parent.put("comment", request_comment);
+                            Log.d("output", parent.toString(2));
+                            mRequest_Body = parent.toString(2);
+                            class SendRequest extends AsyncTask<String, Void, String> {
+                                String response;
+                                @Override
+                                protected String doInBackground(String... params) {
+                                    response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(String result) {
+                                    if (response.length() != 0){
+                                        Toast.makeText(getApplicationContext(), "Your request has been sent successfully!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "An error occurred while processing your request!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                protected void onPreExecute() {
+                                }
+
+                                @Override
+                                protected void onProgressUpdate(Void... values) {
+                                }
+                            }
+                            new SendRequest().execute("");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            popupWindow.dismiss();
+                        }
+                    }
+                });
+
+                // Cancel Button
+                Button btn_cancel_send_request = (Button) popupView.findViewById(R.id.cancel_send_request);
+                btn_cancel_send_request.setOnClickListener(new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+
+                // No selected sport, no pop-up window
+                ListView lv = (ListView) findViewById(R.id.listView1);
+                if (lv.getCheckedItemPosition() != -1) {
+                    popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                    // Set focus to popup window
+                    popupWindow.setFocusable(true);
+                    popupWindow.update();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "You should choose a sport first !", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -59,15 +158,10 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         // fill message list
         ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(new ArrayAdapter<String>(this,
+        lv.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_single_choice, messages));
 
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        // fill sport list
-        ListView lv_sport = (ListView) findViewById(R.id.listView1);
-        lv_sport.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, sports));
     }
 
     @Override
@@ -83,7 +177,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
-        // Get components id
+        mData = data;
+        // Get components
         //TextView tv_Id = (TextView) findViewById(R.id.textID);
         TextView tv_Name = (TextView) findViewById(R.id.textName);
         TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
@@ -91,6 +186,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         TextView tv_IsCoach = (TextView) findViewById(R.id.textIsCoach);
         TextView tv_Mail = (TextView) findViewById(R.id.textMail);
         ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
+        ListView lv_sport = (ListView) findViewById(R.id.listView1);
 
         // Set values
         //tv_Id.setText("UserID: " + Long.toString(data.mId));
@@ -100,6 +196,16 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         tv_IsCoach.setText("Is Coach:" + Boolean.toString(data.mIsCoach));
         tv_Mail.setText("Email: " + data.mDisplayName);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
+
+        // fill sport list
+        String[] SportsNameList = new String[data.mSportsList.length];
+        for (int i = 0; i < data.mSportsList.length; i++)
+        {
+            SportsNameList[i] = data.mSportsList[i].mSport.mName + "\t\tRank: " + data.mSportsList[i].mRank;
+        }
+        lv_sport.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_single_choice, SportsNameList));
+        lv_sport.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
