@@ -53,7 +53,7 @@ public class NetworkUtil {
             }
 
             int code = urlConnection.getResponseCode();
-            if(code == HttpURLConnection.HTTP_OK) {
+            if(code == HttpURLConnection.HTTP_OK||code ==HttpURLConnection.HTTP_CREATED) {
                 InputStream is = urlConnection.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
                 String line;

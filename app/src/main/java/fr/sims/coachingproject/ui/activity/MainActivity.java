@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity
 
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(0, null, this);
+        startActivity(new Intent(this, message_activity.class));
+
     }
 
     @Override
