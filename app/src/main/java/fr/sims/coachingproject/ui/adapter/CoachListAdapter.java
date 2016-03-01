@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,9 +12,11 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.activity.MainActivity;
 
@@ -24,20 +25,22 @@ import fr.sims.coachingproject.ui.activity.MainActivity;
  */
 public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.ViewHolder> {
 
+
     private List<UserProfile> mDatasetCr;
     private List<UserProfile> mDatasetLr;
     private List<UserProfile> mDatasetPendingCr;
     private List<UserProfile> mDatasetPendingLr;
+    private List<CoachingRelation> mDatasetRelations;
     private Context mCtx;
 
-    public static final int HEADER_COACH = 0;
-    public static final int LIST_COACH = 1;
-    public static final int HEADER_LEARNER = 2;
-    public static final int HEADER_REQUEST_COACH = 3;
-    public static final int HEADER_REQUEST_LEARNER = 4;
-    public static final int LIST_LEARNER = 5;
-    public static final int LIST_PENDING_LEARNER = 6;
-    public static final int LIST_PENDING_COACH = 7;
+    private static final int HEADER_COACH = 0;
+    private static final int LIST_COACH = 1;
+    private static final int HEADER_LEARNER = 2;
+    private static final int HEADER_REQUEST_COACH = 3;
+    private static final int HEADER_REQUEST_LEARNER = 4;
+    private static final int LIST_LEARNER = 5;
+    private static final int LIST_PENDING_LEARNER = 6;
+    private static final int LIST_PENDING_COACH = 7;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -64,11 +67,13 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
 
     }
 
-    protected  class HeaderViewHolder extends ViewHolder {
+    protected class HeaderViewHolder extends ViewHolder {
         protected TextView mTitleTv;
 
-        public HeaderViewHolder(View v) {super(v);
-        this.mTitleTv = (TextView) v.findViewById(R.id.header);}
+        public HeaderViewHolder(View v) {
+            super(v);
+            this.mTitleTv = (TextView) v.findViewById(R.id.header);
+        }
     }
 
     public CoachListAdapter(Context ctx) {
@@ -77,189 +82,221 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         mDatasetLr = new ArrayList<>();
         mDatasetPendingCr = new ArrayList<>();
         mDatasetPendingLr = new ArrayList<>();
+        mDatasetRelations = new ArrayList<>();
     }
 
-    public CoachListAdapter(Context ctx,List<UserProfile> datasetCr, List<UserProfile> datasetLr,
-                            List<UserProfile> datasetPendingCr, List<UserProfile> datasetPendingLr  ) {
-        mCtx = ctx;
-        mDatasetCr = datasetCr;
-        mDatasetLr = datasetLr;
-        mDatasetPendingLr = datasetPendingLr;
-        mDatasetPendingCr = datasetPendingCr;
-    }
+    public void setData(List<CoachingRelation> dataset){
+        clearData();
 
-    public void setDataCr(List<UserProfile> dataset){
-        mDatasetCr = dataset;
+        List<CoachingRelation> relationsCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsLr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingCr = new ArrayList<CoachingRelation>();
+        List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
+
+        for (CoachingRelation relation : dataset) {
+            if (!relation.mIsPending) {
+                if (relation.mCoach.mIdDb != 1) {
+                    mDatasetCr.add(relation.mCoach);
+                    relationsCr.add(relation);
+                }else {
+                    mDatasetLr.add(relation.mTrainee);
+                    relationsLr.add(relation);
+                }
+            } else {
+                if (relation.mCoach.mIdDb != 1) {
+                    mDatasetPendingCr.add(relation.mCoach);
+                    relationsPendingCr.add(relation);
+                }else {
+                    mDatasetPendingLr.add(relation.mTrainee);
+                    relationsPendingLr.add(relation);
+                }
+            }
+        }
+
+        mDatasetRelations.addAll(relationsCr);
+        mDatasetRelations.addAll(relationsLr);
+        mDatasetRelations.addAll(relationsPendingCr);
+        mDatasetRelations.addAll(relationsPendingLr);
+
         notifyDataSetChanged();
     }
 
-    public void setDataLr(List<UserProfile> dataset)
-    {
-        mDatasetLr = dataset;
-        notifyDataSetChanged();
-    }
-
-    public void setDataPendingCr(List<UserProfile> dataset){
-        mDatasetPendingCr = dataset;
-        notifyDataSetChanged();
-    }
-
-    public void setDataPendingLr(List<UserProfile> dataset)
-    {
-        mDatasetPendingLr = dataset;
-        notifyDataSetChanged();
-    }
-
-    public void clearData(){
+    public void clearData() {
         mDatasetCr.clear();
         mDatasetLr.clear();
+        mDatasetPendingCr.clear();
+        mDatasetPendingLr.clear();
+        mDatasetRelations.clear();
         notifyDataSetChanged();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
 
-        switch (viewType)
-        {
-            case HEADER_REQUEST_LEARNER :
-            case HEADER_REQUEST_COACH :
-            case HEADER_LEARNER :
-            case HEADER_COACH :
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.group_header_item, parent, false);
+        switch (viewType) {
+            case HEADER_REQUEST_LEARNER:
+            case HEADER_REQUEST_COACH:
+            case HEADER_LEARNER:
+            case HEADER_COACH:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.group_header_item, parent, false);
                 return new HeaderViewHolder(v);
-            default :
-            case LIST_PENDING_COACH :
-            case LIST_PENDING_LEARNER :
-            case LIST_LEARNER :
-            case LIST_COACH : // normal list - Coach
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_coach, parent, false);
+            default:
+            case LIST_PENDING_COACH:
+            case LIST_PENDING_LEARNER:
+            case LIST_LEARNER:
+            case LIST_COACH: // normal list - Coach
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_coach, parent, false);
+                final CoachViewHolder cvh = new CoachViewHolder(v);
+                cvh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemClick(v, pos);
+                        }
+                    }
+                });
+                cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            int pos = cvh.getAdapterPosition();
+                            mOnItemClickListener.onItemLongClick(v, pos);
+                            return true;
+                        } else
+                            return false;
+                    }
+                });
 
-                return new CoachViewHolder(v);
+                return cvh;
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        final CoachViewHolder cvh;
-        HeaderViewHolder hvh;
-        UserProfile cr;
-        switch (vh.getItemViewType()) {
-            case LIST_COACH:
-                cvh = (CoachViewHolder) vh;
-                    cr = mDatasetCr.get(position - 1);
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
+        int itemViewType = vh.getItemViewType();
+        if (itemViewType == LIST_COACH || itemViewType == LIST_LEARNER
+                || itemViewType == LIST_PENDING_COACH || itemViewType == LIST_PENDING_LEARNER) {
 
-                if(mOnItemClickListener != null) {
-                    /**
-                     * 这里加了判断，itemViewHolder.itemView.hasOnClickListeners()
-                     * 目的是减少对象的创建，如果已经为view设置了click监听事件,就不用重复设置了
-                     * 不然每次调用onBindViewHolder方法，都会创建两个监听事件对象，增加了内存的开销
-                     */
-                    if(!cvh.itemView.hasOnClickListeners()) {
-                        cvh.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                int pos = cvh.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(v, pos);
-                            }
-                        });
-                        cvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                int pos = cvh.getAdapterPosition();
-                                mOnItemClickListener.onItemLongClick(v, pos);
-                                return true;
-                            }
-                        });
-                    }
-                }
+            final CoachViewHolder cvh = (CoachViewHolder) vh;
+            UserProfile cr = getItem(itemViewType, position);
 
-                break;
-            case LIST_LEARNER:
-                cvh = (CoachViewHolder) vh;
-                    cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case LIST_PENDING_COACH:
-                cvh = (CoachViewHolder) vh;
-                    cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case LIST_PENDING_LEARNER:
-                cvh = (CoachViewHolder) vh;
-                    cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
-                    Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-                    cvh.mNameTV.setText(cr.mDisplayName);
-                    cvh.mDescTV.setText(cr.mCity);
-                break;
-            case HEADER_COACH:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.my_coach);
-                break;
-            case HEADER_LEARNER:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.my_trainee);
-                break;
-            case HEADER_REQUEST_COACH:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.pending_coach_request);
-                break;
-            default:
-            case HEADER_REQUEST_LEARNER:
-                hvh = (HeaderViewHolder) vh;
-                hvh.mTitleTv.setText(R.string.pending_trainee_request);
-                break;
+            Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
+            cvh.mNameTV.setText(cr.mDisplayName);
+            cvh.mDescTV.setText(cr.mCity);
+        } else {
+            HeaderViewHolder hvh = (HeaderViewHolder) vh;
+            int resId;
+            switch (itemViewType) {
+                case HEADER_COACH:
+                    resId = R.string.my_coach;
+                    break;
+                case HEADER_LEARNER:
+                    resId = R.string.my_trainee;
+                    break;
+                case HEADER_REQUEST_COACH:
+                    resId = R.string.pending_coach_request;
+                    break;
+                default:
+                case HEADER_REQUEST_LEARNER:
+                    resId = R.string.pending_trainee_request;
+                    break;
+            }
+            hvh.mTitleTv.setText(resId);
         }
 
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
-       if(position==0)
-           return HEADER_COACH;
-       else if( position > 0 && position <= mDatasetCr.size())
-           return LIST_COACH;
-        else if (position == mDatasetCr.size()+1)
-           return HEADER_LEARNER;
-       else if( position > mDatasetCr.size()+1 && position <= mDatasetCr.size() + (1 + mDatasetLr.size()))
-           return LIST_LEARNER;
-        else if(position == mDatasetCr.size() + (mDatasetLr.size() + 2) )
-           return HEADER_REQUEST_COACH;
-       else if( position >  mDatasetCr.size() + (mDatasetLr.size() + 2) && position <= (mDatasetCr.size() +
-               mDatasetLr.size() + mDatasetPendingCr.size() +2) )
-           return LIST_PENDING_COACH;
-        else if(position == mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 3)
-           return HEADER_REQUEST_LEARNER;
-       else
-           return LIST_PENDING_LEARNER;
-
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return HEADER_COACH;
+        else if (position > 0 && position <= mDatasetCr.size())
+            return LIST_COACH;
+        else if (position == mDatasetCr.size() + 1)
+            return HEADER_LEARNER;
+        else if (position > mDatasetCr.size() + 1 && position <= mDatasetCr.size() + (1 + mDatasetLr.size()))
+            return LIST_LEARNER;
+        else if (position == mDatasetCr.size() + (mDatasetLr.size() + 2))
+            return HEADER_REQUEST_COACH;
+        else if (position > mDatasetCr.size() + (mDatasetLr.size() + 2) && position <= (mDatasetCr.size() +
+                mDatasetLr.size() + mDatasetPendingCr.size() + 2))
+            return LIST_PENDING_COACH;
+        else if (position == mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 3)
+            return HEADER_REQUEST_LEARNER;
+        else
+            return LIST_PENDING_LEARNER;
     }
+
+    private UserProfile getItem(int type, int position) {
+        UserProfile up;
+        switch (type) {
+            case LIST_COACH:
+                up = mDatasetCr.get(position - 1);
+                break;
+            case LIST_LEARNER:
+                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));
+                break;
+            case LIST_PENDING_COACH:
+                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
+                break;
+            case LIST_PENDING_LEARNER:
+                up = mDatasetPendingLr.get(position - (getItemCount() - 1));
+                break;
+            default:
+                up = null;
+        }
+        return up;
+    }
+
+    private UserProfile getItem(int position) {
+        return getItem(getItemViewType(position), position);
+    }
+
+    public long getUserProfileId(int position) {
+        UserProfile up = getItem(position);
+        if (up != null) {
+            return up.mIdDb;
+        } else {
+            return -1;
+        }
+    }
+
+    public long getRelationId(int position){
+        int index;
+        if(position<=mDatasetCr.size()){
+            index=position-1;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+1)){
+            index=position-2;
+        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+ mDatasetPendingCr.size()+2)){
+            index=position-3;
+        }else{
+            index=position-4;
+        }
+        CoachingRelation rel = mDatasetRelations.get(index);
+        return rel.mIdDb;
+    }
+
     @Override
     public int getItemCount() {
-       return mDatasetCr.size()+ mDatasetLr.size() +
-               mDatasetPendingCr.size() + mDatasetPendingLr.size() + 4;
+        return mDatasetCr.size() + mDatasetLr.size() +
+                mDatasetPendingCr.size() + mDatasetPendingLr.size() + 4;
     }
-
 
     public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
+
     /**
      * 处理item的点击事件和长按事件
      */
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
-        public void onItemLongClick(View view, int position);
+        void onItemClick(View view, int position);
+
+        void onItemLongClick(View view, int position);
     }
-
-
 
 }

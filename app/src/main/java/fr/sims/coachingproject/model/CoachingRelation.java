@@ -138,4 +138,10 @@ public class CoachingRelation extends Model {
                 .from(CoachingRelation.class)
                 .execute();
     }
+    public static CoachingRelation getCoachingRelationById(long id){
+        return new Select()
+                .from(CoachingRelation.class)
+                .where("idDb = ?", id)
+                .executeSingle();
+    }
 }
