@@ -120,10 +120,8 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent i = new Intent(getContext(), RelationActivity.class);
         long id = mRecyclerAdapter.getRelationId(position);
-        i.putExtra("id", id);
-        startActivity(i);
+        RelationActivity.startActivity(getContext(), id);
     }
 
     @Override

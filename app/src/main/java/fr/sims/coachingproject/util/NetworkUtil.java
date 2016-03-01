@@ -28,6 +28,11 @@ public class NetworkUtil {
         return request(url, "PUT", token, body);
     }
 
+    public static String patch(String url, String token, String body){
+        String res = request(url, "PATCH", token, body);
+        return res;
+    }
+
     private static String request(String urlString, String method, String token, String body) {
         StringBuilder res = new StringBuilder();
 
@@ -44,7 +49,7 @@ public class NetworkUtil {
                 urlConnection.setRequestProperty("Authorization", "Token "+token);
             }
 
-            if(method.equals("PUT") || method.equals("POST")) {
+            if(method.equals("PUT") || method.equals("POST") || method.equals("PATCH")) {
                 urlConnection.setDoOutput(true);
                 DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
                 os.write(body.getBytes());

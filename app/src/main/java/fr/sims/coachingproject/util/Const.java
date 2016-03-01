@@ -26,7 +26,8 @@ public class Const {
         public final static String LEVELS = "levels/";
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
-        public final static String RELATIONS = "relations/";
+        public final static String SEPARATOR = "/";
+
 
         public final static String COACH_PARAMETER = "coach";
         public final static String SPORT_PARAMETER = "sport";

@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,10 +58,12 @@
 
             </RelativeLayout>
         </LinearLayout>
+
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -70,6 +71,83 @@
         android:id="@+id/messagePager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/invitationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/coaching_invitation_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Title"/>
+
+            <TextView
+                android:id="@+id/coaching_invitation_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_vertical_margin"
+                android:background="@color/colorBackgroundDark"/>
+
+            <LinearLayout
+                android:id="@+id/coaching_invitation_buttons"
+                android:layout_gravity="end"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- TODO handle Pressed / Focused State -->
+                <ImageButton
+                    android:id="@+id/coaching_invitation_refuse"
+                    android:src="@drawable/ic_refuse"
+                    android:contentDescription="@string/refuse"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_circle_background"
+                    android:tint="@color/ko"
+                    android:backgroundTint="@color/ko"/>
+
+                <ImageButton
+                    android:id="@+id/coaching_invitation_accept"
+                    android:src="@drawable/ic_validate"
+                    android:contentDescription="@string/accept"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginStart="@dimen/activity_vertical_margin"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_circle_background"
+                    android:tint="@color/ok"
+                    android:backgroundTint="@color/ok"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/coaching_invitation_progress"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/coaching_invitation_refused"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:text="You request has been refused by the coach."
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

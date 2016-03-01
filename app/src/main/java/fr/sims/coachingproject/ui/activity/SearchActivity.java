@@ -150,9 +150,7 @@ public class SearchActivity extends AppCompatActivity {
                 mSearchListAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                        i.putExtra("id", mUserList.get(position).mIdDb);
-                        startActivity(i);
+                        ProfileActivity.startActivity(getApplicationContext(), mUserList.get(position).mIdDb);
                     }
 
                     @Override

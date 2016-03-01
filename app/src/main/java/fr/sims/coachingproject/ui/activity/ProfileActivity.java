@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
@@ -35,11 +36,7 @@ import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedUserId;
 
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
 
-    private static final String[] messages = new String[]{
-            "Message : Demande de coaching", "Message : Demande de coaching",
-            "Message : Demande de coaching", "Message : Demande de coaching",
-            "Message : Demande de coaching"
-    };
+    private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
 
     private long mId;
     private String mConnectedToken;
@@ -48,6 +45,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private UserProfile mData;
     private String mRequest_Body;
 
+    public static void startActivity(Context ctx, long id){
+        Intent intent = new Intent(ctx,ProfileActivity.class);
+        intent.putExtra(EXTRA_USER_PROFILE_ID, id);
+        ctx.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         final Button btn_send_request = (Button) findViewById(R.id.send_request);
         // Get the transferred id
         Intent mIntent = getIntent();
-        mId = mIntent.getLongExtra("id", 0);
+        mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
 
         btn_send_request.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,13 +158,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
 
         getSupportLoaderManager().initLoader(0, null, this);
-
-        // fill message list
-        ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice, messages));
-
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -175,6 +171,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         return new UserLoader(this, mId);
     }
 
+
+    // TODO Crash sometimes Data == null
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         mData = data;
