@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.NetworkService;
@@ -32,13 +33,16 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private long mRelationId;
+    private boolean mPinned;
 
     private final String RELATION_ID="relationId";
-    public static final String TABS_TITLE = "Messages";
+    public static final String MESSAGES_TITLE = "Messages";
+    public static final String PINNED_TITLE = "Favoris";
 
-    public static android.support.v4.app.Fragment newInstance(long relationId) {
+    public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
         RelationChatFragment fragment = new RelationChatFragment();
         fragment.mRelationId=relationId;
+        fragment.mPinned=pinnedMessages;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -74,6 +78,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
         mRefreshLayout.setOnRefreshListener(this);
+
         mRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -81,11 +86,13 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
             }
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
+        view.findViewById(R.id.emptyList).setVisibility(View.GONE);
     }
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionMessages(getContext(),mRelationId);
+        getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
+        NetworkService.startActionMessages(getContext(), mRelationId);
     }
 
     @Override
@@ -95,7 +102,13 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
-        mMessageAdapter.setData(data);
+        List<Message> filteredData= new ArrayList<>();
+        for(Message mess : data){
+            if (mess.mIsPinned==mPinned){
+                filteredData.add(mess);
+            }
+        }
+        mMessageAdapter.setData(filteredData);
         if (mMessageAdapter.isEmpty()){
             getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
         }else{

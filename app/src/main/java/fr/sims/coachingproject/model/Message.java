@@ -41,11 +41,18 @@ public class Message extends Model {
     @SerializedName("to_relation")
     public CoachingRelation mRelation;
 
+    @Column(name = "isPinned")
+    @Expose
+    @SerializedName("is_pinned")
+    public boolean mIsPinned;
+
+
     private void bindProperties(Message message) {
         this.mContent = message.mContent;
         this.mSender = message.mSender;
         this.mRelation = message.mRelation;
         this.mTime = message.mTime;
+        this.mIsPinned=message.mIsPinned;
     }
 
     public static Message[] parseList(String json){
