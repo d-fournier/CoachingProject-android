@@ -38,13 +38,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
 
-
-    private static final String[] messages = new String[] {
-            "Message : Demande de coaching", "Message : Demande de coaching",
-            "Message : Demande de coaching", "Message : Demande de coaching",
-            "Message : Demande de coaching"
-    };
-
     private long mId;
     private String mConnectedToken;
     private long mConnectedUserId;
@@ -165,13 +158,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
 
         getSupportLoaderManager().initLoader(0, null, this);
-
-        // fill message list
-        ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice, messages));
-
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
