@@ -74,8 +74,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
 
-        View profileView=findViewById(R.id.profile_layout);
-        profileView.setOnClickListener(this);
+        findViewById(R.id.profile_layout).setOnClickListener(this);
+        findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
+        findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -148,10 +149,10 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 ProfileActivity.startActivity(this, mRelation.mIdDb);
                 break;
             case R.id.coaching_invitation_accept:
-                // Send Accept Request
+                new AnswerInvitationTask().execute(true);
                 break;
             case R.id.coaching_invitation_refuse:
-                // Send Refuse Request
+                new AnswerInvitationTask().execute(false);
                 break;
             default:
 
@@ -163,7 +164,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         private class Answer {
             @Expose
             @SerializedName("requestStatus")
-            public boolean mRequestStatus;
+            public Boolean mRequestStatus;
 
             public Answer(boolean requestStatus) {
                 mRequestStatus = requestStatus;
@@ -177,13 +178,22 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         @Override
         protected Boolean doInBackground(Boolean... params) {
             if(params.length > 0) {
-                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.COACHING_RELATION + mId;
+                boolean isAccepted = params[0];
+
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId;
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
-                String body = new Answer(params[0]).toJson();
+                String body = new Answer(isAccepted).toJson();
 
-                String res = NetworkUtil.put(url, token, body);
+                String res = NetworkUtil.patch(url, token, body);
 
-                return true;
+                if(!res.isEmpty()) {
+                    mRelation.mIsPending = false;
+                    mRelation.mIsAccepted = isAccepted;
+                    mRelation.save();
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }

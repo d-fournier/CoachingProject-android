@@ -46,4 +46,6 @@
 
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
+    <string name="refuse">Refuse</string>
+    <string name="accept">Accept</string>
 </resources>

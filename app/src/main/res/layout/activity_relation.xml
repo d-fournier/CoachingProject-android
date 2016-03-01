@@ -109,17 +109,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <Button
-                    android:text="accept"
-                    android:id="@+id/coaching_invitation_accept"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:text="refuse"
+                <!-- TODO handle Pressed / Focused State -->
+                <ImageButton
                     android:id="@+id/coaching_invitation_refuse"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:src="@drawable/ic_refuse"
+                    android:contentDescription="@string/refuse"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_circle_background"
+                    android:tint="@color/ko"
+                    android:backgroundTint="@color/ko"/>
+
+                <ImageButton
+                    android:id="@+id/coaching_invitation_accept"
+                    android:src="@drawable/ic_validate"
+                    android:contentDescription="@string/accept"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginStart="@dimen/activity_vertical_margin"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_circle_background"
+                    android:tint="@color/ok"
+                    android:backgroundTint="@color/ok"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
