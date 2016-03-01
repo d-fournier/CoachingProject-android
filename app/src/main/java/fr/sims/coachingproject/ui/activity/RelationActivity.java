@@ -110,7 +110,14 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onClick(View v) {
         Intent i = new Intent(this, ProfileActivity.class);
-        i.putExtra("id", mRelation.mIdDb);
+        UserProfile partner;
+
+        if(mRelation.mTrainee.mIdDb== SharedPrefUtil.getConnectedUserId(this)){
+            partner=mRelation.mCoach;
+        }else{
+            partner=mRelation.mTrainee;
+        }
+        i.putExtra("id", partner.mIdDb);
         startActivity(i);
     }
 }
