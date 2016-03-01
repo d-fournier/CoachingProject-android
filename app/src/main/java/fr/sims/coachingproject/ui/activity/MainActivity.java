@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,7 +34,11 @@ public class MainActivity extends AppCompatActivity
     ViewPager mViewPager;
     View mDrawerHeader;
 
-
+    public static void startActivity(Context ctx){
+        Intent startIntent = new Intent(ctx, MainActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ctx.startActivity(startIntent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,4 +152,6 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
         LoginActivity.startActivity(this);
     }
+
+
 }

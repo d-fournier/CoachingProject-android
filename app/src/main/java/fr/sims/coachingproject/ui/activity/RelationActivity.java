@@ -34,7 +34,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
-public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener{
+public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener {
 
     private static final String EXTRA_COACHING_RELATION_ID = "fr.sims.coachingproject.extra.COACHING_RELATION_ID";
 
@@ -47,15 +47,15 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private long mId;
 
 
-    public static void startActivity(Context ctx, long id){
-        Intent intent = new Intent(ctx,RelationActivity.class);
+    public static void startActivity(Context ctx, long id) {
+        Intent intent = new Intent(ctx, RelationActivity.class);
         intent.putExtra(EXTRA_COACHING_RELATION_ID, id);
         ctx.startActivity(intent);
     }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_relation);
@@ -70,13 +70,15 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-        
+
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
 
         findViewById(R.id.profile_layout).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
+        findViewById(R.id.End_Relation_Button).setOnClickListener(this);
+
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -88,7 +90,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
-        mRelation=data;
+        mRelation = data;
 
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
@@ -98,10 +100,10 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         UserProfile partner;
         boolean isCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
-        if(isCurrentUserCoach){
-            partner=mRelation.mTrainee;
+        if (isCurrentUserCoach) {
+            partner = mRelation.mTrainee;
         } else {
-            partner=mRelation.mCoach;
+            partner = mRelation.mCoach;
         }
 
         int userAge = partner.getAge();
@@ -113,14 +115,16 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
 
 
-        if(mRelation.mIsPending) {
+        if (mRelation.mIsPending) {
             mTabLayout.setVisibility(View.GONE);
             mViewPager.setVisibility(View.GONE);
+            findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
             mInvitationLayout.setVisibility(View.VISIBLE);
+
 
             ((TextView) findViewById(R.id.coaching_invitation_description)).setText(mRelation.mComment);
 
-            if(isCurrentUserCoach) {
+            if (isCurrentUserCoach) {
                 ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, partner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.VISIBLE);
             } else {
@@ -132,6 +136,11 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             mTabLayout.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
             mInvitationLayout.setVisibility(View.GONE);
+            if (!isCurrentUserCoach)
+                findViewById(R.id.End_Relation_Button).setVisibility(View.VISIBLE);
+            else
+                findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
+
         }
     }
 
@@ -151,6 +160,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);
                 break;
+            case R.id.End_Relation_Button:
+                new AnswerInvitationTask().execute(false);
+                MainActivity.startActivity(getBaseContext());
             case R.id.coaching_invitation_refuse:
                 new AnswerInvitationTask().execute(false);
                 break;
@@ -158,6 +170,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         }
     }
+
+
 
     private class AnswerInvitationTask extends AsyncTask<Boolean, Void, Boolean> {
 
@@ -177,16 +191,16 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         protected Boolean doInBackground(Boolean... params) {
-            if(params.length > 0) {
+            if (params.length > 0) {
                 boolean isAccepted = params[0];
 
-                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId;
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + "/";
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
                 String res = NetworkUtil.patch(url, token, body);
 
-                if(!res.isEmpty()) {
+                if (!res.isEmpty()) {
                     mRelation.mIsPending = false;
                     mRelation.mIsAccepted = isAccepted;
                     mRelation.save();

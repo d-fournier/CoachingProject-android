@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,48 +12,62 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <LinearLayout
+            android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/profile_layout"
             android:layout_margin="@dimen/fab_margin">
 
+
             <ImageView
+                android:id="@+id/imagePicture"
                 android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/imagePicture"/>
+                android:layout_height="100dp" />
 
             <RelativeLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/fab_margin"
-                android:layout_toRightOf="@id/imagePicture">
+                android:layout_toRightOf="@id/imagePicture"
+                android:orientation="vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/name"
-                    style="@style/TextAppearance.AppCompat.Title"/>
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/age"
-                    android:layout_below="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/city"/>
+                    android:layout_below="@+id/name"
+                    android:layout_toLeftOf="@+id/city" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/city"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/name"/>
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/name"
+                    android:layout_toRightOf="@+id/End_Relation_Button" />
+
+                <TextView
                     android:id="@+id/sport"
-                    android:layout_below="@+id/age"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/age" />
+
+                <ImageButton
+                    android:id="@+id/End_Relation_Button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_circle_background"
+                    android:backgroundTint="@color/ko"
+                    android:contentDescription="@string/refuse"
+                    android:src="@drawable/ic_refuse"
+                    android:tint="@color/ko" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -63,7 +76,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -71,66 +84,66 @@
         android:id="@+id/messagePager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <ScrollView
         android:id="@+id/invitationLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
 
             <TextView
                 android:id="@+id/coaching_invitation_title"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Title"/>
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/coaching_invitation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:padding="@dimen/activity_vertical_margin"
-                android:background="@color/colorBackgroundDark"/>
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@color/colorBackgroundDark"
+                android:padding="@dimen/activity_vertical_margin" />
 
             <LinearLayout
                 android:id="@+id/coaching_invitation_buttons"
-                android:layout_gravity="end"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="horizontal">
 
                 <!-- TODO handle Pressed / Focused State -->
                 <ImageButton
                     android:id="@+id/coaching_invitation_refuse"
-                    android:src="@drawable/ic_refuse"
-                    android:contentDescription="@string/refuse"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:background="@drawable/button_circle_background"
-                    android:tint="@color/ko"
-                    android:backgroundTint="@color/ko"/>
+                    android:backgroundTint="@color/ko"
+                    android:contentDescription="@string/refuse"
+                    android:src="@drawable/ic_refuse"
+                    android:tint="@color/ko" />
 
                 <ImageButton
                     android:id="@+id/coaching_invitation_accept"
-                    android:src="@drawable/ic_validate"
-                    android:contentDescription="@string/accept"
-                    android:layout_marginLeft="@dimen/activity_vertical_margin"
-                    android:layout_marginStart="@dimen/activity_vertical_margin"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginStart="@dimen/activity_vertical_margin"
                     android:background="@drawable/button_circle_background"
-                    android:tint="@color/ok"
-                    android:backgroundTint="@color/ok"/>
+                    android:backgroundTint="@color/ok"
+                    android:contentDescription="@string/accept"
+                    android:src="@drawable/ic_validate"
+                    android:tint="@color/ok" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
