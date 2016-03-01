@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -42,8 +43,12 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     ViewPager mViewPager;
     TabLayout mTabLayout;
     ScrollView mInvitationLayout;
+    TextView mRefusedInvitationTV;
+
 
     CoachingRelation mRelation;
+    UserProfile mPartner;
+    boolean mIsCurrentUserCoach;
     private long mId;
 
 
@@ -74,6 +79,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
 
+        mRefusedInvitationTV = ((TextView) findViewById(R.id.coaching_invitation_refused));
         findViewById(R.id.profile_layout).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
@@ -90,48 +96,60 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
         mRelation=data;
 
+        mIsCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
+        if(mIsCurrentUserCoach ){
+            mPartner=mRelation.mTrainee;
+        } else {
+            mPartner=mRelation.mCoach;
+        }
+
+        bindRelationDetails();
+        bindRelationContent();
+    }
+
+    private void bindRelationDetails(){
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView age = (TextView) findViewById(R.id.age);
         TextView sport = (TextView) findViewById(R.id.sport);
 
-        UserProfile partner;
-        boolean isCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
-        if(isCurrentUserCoach){
-            partner=mRelation.mTrainee;
-        } else {
-            partner=mRelation.mCoach;
-        }
+        int userAge = mPartner.getAge();
 
-        int userAge = partner.getAge();
-
-        city.setText(partner.mCity);
-        name.setText(partner.mDisplayName);
+        city.setText(mPartner.mCity);
+        name.setText(mPartner.mDisplayName);
         age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
-        Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
+        Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
+    }
 
+    private void bindRelationContent() {
+        // TODO Use Fragments ?
+        // Set everything to GONE and update only elements to display according to the relation state
+        mTabLayout.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.GONE);
+        mInvitationLayout.setVisibility(View.GONE);
+        mRefusedInvitationTV.setVisibility(View.GONE);
 
         if(mRelation.mIsPending) {
-            mTabLayout.setVisibility(View.GONE);
-            mViewPager.setVisibility(View.GONE);
             mInvitationLayout.setVisibility(View.VISIBLE);
 
             ((TextView) findViewById(R.id.coaching_invitation_description)).setText(mRelation.mComment);
 
-            if(isCurrentUserCoach) {
-                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, partner.mDisplayName));
+            if(mIsCurrentUserCoach ) {
+                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, mPartner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.VISIBLE);
             } else {
-                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_trainee_title, partner.mDisplayName));
+                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_trainee_title, mPartner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.GONE);
             }
-
         } else {
-            mTabLayout.setVisibility(View.VISIBLE);
-            mViewPager.setVisibility(View.VISIBLE);
-            mInvitationLayout.setVisibility(View.GONE);
+            if(mRelation.mIsAccepted) {
+                mTabLayout.setVisibility(View.VISIBLE);
+                mViewPager.setVisibility(View.VISIBLE);
+            } else {
+                mRefusedInvitationTV.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -176,6 +194,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         }
 
         @Override
+        protected void onPreExecute() {
+            findViewById(R.id.coaching_invitation_progress).setVisibility(View.VISIBLE);
+            findViewById(R.id.coaching_invitation_buttons).setVisibility(View.GONE);
+            super.onPreExecute();
+        }
+
+        @Override
         protected Boolean doInBackground(Boolean... params) {
             if(params.length > 0) {
                 boolean isAccepted = params[0];
@@ -197,6 +222,17 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             } else {
                 return false;
             }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isRequestSuccessful) {
+            if(!isRequestSuccessful) {
+                Snackbar.make(mInvitationLayout, "Network error", Snackbar.LENGTH_LONG).show();
+            }
+            findViewById(R.id.coaching_invitation_progress).setVisibility(View.GONE);
+            bindRelationContent();
+
+            super.onPostExecute(isRequestSuccessful);
         }
     }
 }

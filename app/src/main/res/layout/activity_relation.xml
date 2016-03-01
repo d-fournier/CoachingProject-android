@@ -132,6 +132,22 @@
                     android:tint="@color/ok"
                     android:backgroundTint="@color/ok"/>
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/coaching_invitation_progress"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/coaching_invitation_refused"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:text="You request has been refused by the coach."
+        android:visibility="gone"/>
+
 </android.support.design.widget.CoordinatorLayout>
