@@ -30,7 +30,6 @@ public class NetworkUtil {
 
     public static String patch(String url, String token, String body){
         String res = request(url, "PATCH", token, body);
-        Log.i("XXXXXX", res);
         return res;
     }
 

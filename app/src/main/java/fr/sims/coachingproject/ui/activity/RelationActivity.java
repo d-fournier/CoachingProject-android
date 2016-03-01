@@ -180,7 +180,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             if(params.length > 0) {
                 boolean isAccepted = params[0];
 
-                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId;
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + Const.WebServer.SEPARATOR;
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
