@@ -184,17 +184,17 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String response_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(mUsername, mPassword)).toJson());
-            if(response_token.isEmpty())
+            NetworkUtil.NetworkResponse response_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(mUsername, mPassword)).toJson());
+            if(response_token.getBody().isEmpty())
                 return false;
-            LoginResponse lResponse = LoginResponse.fromJson(response_token);
+            LoginResponse lResponse = LoginResponse.fromJson(response_token.getBody());
 
-            String response_user = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + Const.WebServer.ME,
+            NetworkUtil.NetworkResponse response_user = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + Const.WebServer.ME,
                     lResponse.token);
-            if(response_user.isEmpty())
+            if(response_user.getBody().isEmpty())
                 return false;
 
-            UserProfile up = UserProfile.parseItem(response_user);
+            UserProfile up = UserProfile.parseItem(response_user.getBody());
             up.saveOrUpdate();
 
             SharedPrefUtil.putConnectedToken(getApplicationContext(),lResponse.token);

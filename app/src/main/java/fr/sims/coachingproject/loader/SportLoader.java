@@ -29,8 +29,8 @@ public class SportLoader extends AsyncTaskLoader<List<Sport>> {
     @Override
     public List<Sport> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
-        String response = NetworkUtil.get(request,null);
-        return Arrays.asList(Sport.parseList(response));
+        NetworkUtil.NetworkResponse response = NetworkUtil.get(request,null);
+        return Arrays.asList(Sport.parseList(response.getBody()));
     }
 
 

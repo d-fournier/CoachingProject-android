@@ -72,9 +72,9 @@ public class NetworkService extends IntentService {
 
     protected void handleActionConnectedUserInfo() {
         long id = SharedPrefUtil.getConnectedUserId(this);
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
-        if(!res.isEmpty()) {
-            UserProfile up = UserProfile.parseItem(res);
+        NetworkUtil.NetworkResponse res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
+        if(!res.getBody().isEmpty()) {
+            UserProfile up = UserProfile.parseItem(res.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -92,9 +92,9 @@ public class NetworkService extends IntentService {
 
 
     protected void handleActionCoachingRelation() {
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
-        if(!res.isEmpty()) {
-            CoachingRelation[] crList = CoachingRelation.parseList(res);
+        NetworkUtil.NetworkResponse ress = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
+        if(!ress.getBody().isEmpty()) {
+            CoachingRelation[] crList = CoachingRelation.parseList(ress.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -113,9 +113,9 @@ public class NetworkService extends IntentService {
     }
 
     protected void handleActionCoachingRelationItem(long relationId) {
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/"+Const.WebServer.MESSAGES, getToken());
-        if(!res.isEmpty()) {
-            Message[] messages = Message.parseList(res);
+        NetworkUtil.NetworkResponse res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/"+Const.WebServer.MESSAGES, getToken());
+        if(!res.getBody().isEmpty()) {
+            Message[] messages = Message.parseList(res.getBody());
 
             ActiveAndroid.beginTransaction();
 

@@ -209,9 +209,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
-                String res = NetworkUtil.patch(url, token, body);
+                NetworkUtil.NetworkResponse res = NetworkUtil.patch(url, token, body);
 
-                if(!res.isEmpty()) {
+                if(!res.getBody().isEmpty()) {
                     mRelation.mIsPending = false;
                     mRelation.mIsAccepted = isAccepted;
                     mRelation.save();

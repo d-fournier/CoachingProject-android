@@ -30,8 +30,8 @@ public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API;
         if (mSport != -1) {
             request += Const.WebServer.SPORTS + mSport + "/" + Const.WebServer.LEVELS;
-            String response = NetworkUtil.get(request, null);
-            return Arrays.asList(SportLevel.parseList(response));
+            NetworkUtil.NetworkResponse response = NetworkUtil.get(request, null);
+            return Arrays.asList(SportLevel.parseList(response.getBody()));
         }else{
             return null;
         }
