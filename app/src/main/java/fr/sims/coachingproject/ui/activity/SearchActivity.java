@@ -98,7 +98,10 @@ public class SearchActivity extends AppCompatActivity {
         mSportsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //We get the Sport selected
                 long sportID = ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb();
+
+                //If it's not "All sports", we put the levels in the level spinner, and we displays it
                 mLevelsAdapter.clear();
                 if (sportID != -1) {
                     mSearchArgs.putLong(ID_SPORT, sportID);
@@ -149,6 +152,10 @@ public class SearchActivity extends AppCompatActivity {
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+            /*
+            When we load data from the server
+            We display the progressbar, we hide the list and the text for empty list
+             */
             mLoadingBar.setVisibility(View.VISIBLE);
             mRecycleView.setVisibility(View.GONE);
             mEmptyCoachListText.setVisibility(View.GONE);
@@ -157,30 +164,36 @@ public class SearchActivity extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
+            /*
+            If data is Null, it's because we got no response => We have no network connection
+             */
             if (data == null) {
+                /*
+                We display the snackbar with "No network" message
+                We hide the spinners for sports and levels
+                We clear the list of users so that it shows nothing
+                 */
                 mSnackbar = Snackbar.make(mRecycleView, R.string.no_connectivity, Snackbar.LENGTH_LONG);
                 mSportsSpinner.setVisibility(View.GONE);
                 mLevelsSpinner.setVisibility(View.GONE);
                 mSnackbar.show();
                 mUserList.clear();
             } else {
-                if(mSportList.size() == 1){//We only have "all sports"
+                if(mSportList.size() == 1) {
+                    //We only have "all sports" in the spinner, so we need to get sports from the server
                     getLoaderManager().restartLoader(0, mSearchArgs, mSportLoader);
-                    mSportsSpinner.setVisibility(View.VISIBLE);
-                }else{
-                    mSportsSpinner.setVisibility(View.VISIBLE);
-                    if(mSportsSpinner.getSelectedItemPosition() != 0){//We did not select "all sports"
-                        mLevelsSpinner.setVisibility(View.VISIBLE);
-                    }
                 }
+                //We clear and add the new data
                 mUserList.clear();
                 mUserList.addAll(data);
+                mSportsSpinner.setVisibility(View.VISIBLE);
             }
 
             mSearchListAdapter.setData(mUserList);
             mLoadingBar.setVisibility(View.GONE);
 
             if (mUserList.isEmpty()) {
+                //If the userList is empty, we display the message "No Coach found"
                 mRecycleView.setVisibility(View.GONE);
                 mEmptyCoachListText.setVisibility(View.VISIBLE);
             } else {
