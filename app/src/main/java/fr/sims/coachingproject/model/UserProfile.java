@@ -44,6 +44,26 @@ public class UserProfile extends Model{
     @SerializedName("birthdate")
     public String mBirthdate;
 
+    @Column(name = "description")
+    @Expose
+    @SerializedName("description")
+    public String mDescription;
+
+    @Column(name = "city")
+    @Expose
+    @SerializedName("city")
+    public String mCity;
+
+    @Column(name = "isCoach")
+    @Expose
+    @SerializedName("isCoach")
+    public boolean mIsCoach;
+
+    @Expose
+    @SerializedName("levels")
+    public SportLevel[] mSportsList = null;
+
+
     public int getAge(){
         Calendar birthdate = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
@@ -62,19 +82,6 @@ public class UserProfile extends Model{
         return userAge;
     }
 
-    @Column(name = "city")
-    @Expose
-    @SerializedName("city")
-    public String mCity;
-
-    @Column(name = "isCoach")
-    @Expose
-    @SerializedName("isCoach")
-    public boolean mIsCoach;
-
-    @Expose
-    @SerializedName("levels")
-    public SportLevel[] mSportsList = null;
 
     /* Json Builder */
     public static UserProfile parseItem(String json){
@@ -121,6 +128,7 @@ public class UserProfile extends Model{
         this.mBirthdate = up.mBirthdate;
         this.mCity = up.mCity;
         this.mIsCoach = up.mIsCoach;
+        this.mDescription = up.mDescription;
     }
 
     private void saveSportLevel(){

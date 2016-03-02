@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.ui.adapter.ProfileSportListAdapter;
 import fr.sims.coachingproject.util.NetworkUtil;
 
 import static fr.sims.coachingproject.util.NetworkUtil.post;
@@ -50,6 +51,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     private View mMainLayout;
 
+    private ProfileSportListAdapter mProfileAdapter;
+
     public static void startActivity(Context ctx, long id){
         Intent intent = new Intent(ctx,ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
@@ -68,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         mMainLayout = findViewById(R.id.profile_layout);
 
         btn_send_request.setOnClickListener(this);
-
+        mProfileAdapter=new ProfileSportListAdapter(this);
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -87,35 +90,37 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     // TODO Crash sometimes Data == null
     @Override
-    public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
+    public void onLoadFinished(Loader<UserProfile> loader, final UserProfile data) {
         mData = data;
         // Get components
         TextView tv_Name = (TextView) findViewById(R.id.textName);
         TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
         TextView tv_City = (TextView) findViewById(R.id.textCity);
         TextView tv_IsCoach = (TextView) findViewById(R.id.textIsCoach);
-        TextView tv_Mail = (TextView) findViewById(R.id.textMail);
+        TextView tv_Description = (TextView) findViewById(R.id.textDescription);
         ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
         ListView lv_sport = (ListView) findViewById(R.id.listView1);
 
         // Set values
         //tv_Id.setText("UserID: " + Long.toString(data.mId));
-        tv_Name.setText("Name: " + data.mDisplayName);
-        tv_Birthday.setText("Birthday: " + data.mBirthdate);
-        tv_City.setText("City:" + data.mCity);
-        tv_IsCoach.setText("Is Coach:" + Boolean.toString(data.mIsCoach));
-        tv_Mail.setText("Email: " + data.mDisplayName);
+        tv_Name.setText(data.mDisplayName);
+        tv_Birthday.setText(getResources().getQuantityString(R.plurals.user_age,data.getAge(), data.getAge()));
+        tv_City.setText(data.mCity);
+        tv_IsCoach.setText(data.mIsCoach ? "Can coach" : "Cannot coach");
+        tv_Description.setText(data.mDescription);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
 
         // fill sport list
         String[] SportsNameList = new String[data.mSportsList.length];
         for (int i = 0; i < data.mSportsList.length; i++)
         {
-            SportsNameList[i] = data.mSportsList[i].mSport.mName + "\t\tRank: " + data.mSportsList[i].mRank;
+            SportsNameList[i] = data.mSportsList[i].mSport.mName + " : " + data.mSportsList[i].mTitle;
         }
-        lv_sport.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice, SportsNameList));
-        lv_sport.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        mProfileAdapter.setData(data.mSportsList);
+
+        lv_sport.setAdapter(mProfileAdapter);
+
     }
 
     @Override
