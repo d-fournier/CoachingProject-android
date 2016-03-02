@@ -22,6 +22,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         Fragment fragment;
+        
         switch(i) {
             case 1:
                 fragment = QuestionsAnswersFragment.newInstance();
