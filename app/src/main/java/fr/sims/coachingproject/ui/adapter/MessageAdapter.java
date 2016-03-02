@@ -16,6 +16,8 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 public class MessageAdapter extends ArrayAdapter {
@@ -63,10 +65,19 @@ public class MessageAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        /* create a new view of my layout and inflate it in the row */
-        convertView = mInflater.inflate(R.layout.message_item,null );
 
         Message message = getItem( position );
+
+        /* create a new view of my layout and inflate it in the row */
+        if(message.mSender.mIdDb== SharedPrefUtil.getConnectedUserId(mContext)){
+            convertView = mInflater.inflate(R.layout.message_item_authored,null );
+        }else{
+            convertView = mInflater.inflate(R.layout.message_item,null );
+            ImageView picture = (ImageView) convertView.findViewById(R.id.picture);
+            if(message.mSender != null){
+                Picasso.with(mContext).load(message.mSender.mPicture).into(picture);
+            }
+        }
 
         TextView content = (TextView) convertView.findViewById(R.id.content);
         content.setText(message.mContent);
@@ -75,10 +86,6 @@ public class MessageAdapter extends ArrayAdapter {
         SimpleDateFormat sdf=new SimpleDateFormat( "dd-MM-yy HH:mm:ss");
         time.setText(sdf.format(message.mTime));
 
-        ImageView picture = (ImageView) convertView.findViewById(R.id.picture);
-        if(message.mSender != null){
-            Picasso.with(mContext).load(message.mSender.mPicture).into(picture);
-        }
         return convertView;
     }
 

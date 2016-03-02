@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,18 @@ public class Message extends Model {
     @SerializedName("to_relation")
     public CoachingRelation mRelation;
 
+    @Column(name = "isPinned")
+    @Expose
+    @SerializedName("is_pinned")
+    public boolean mIsPinned;
+
+
     private void bindProperties(Message message) {
         this.mContent = message.mContent;
         this.mSender = message.mSender;
         this.mRelation = message.mRelation;
         this.mTime = message.mTime;
+        this.mIsPinned=message.mIsPinned;
     }
 
     public static Message[] parseList(String json){
@@ -85,12 +93,16 @@ public class Message extends Model {
     }
 
     public static List<Message> getAllMessagesByRelationId(long id) {
+        List<Message> res=new ArrayList<>();
         CoachingRelation rel=new Select().from(CoachingRelation.class).where("idDb == ?", id).executeSingle();
-        List<Message> res= new Select()
-                .from(Message.class)
-                .where("relation == ?", rel.getId())
-                .execute();
+        if(rel!=null) {
+            res = new Select()
+                    .from(Message.class)
+                    .where("relation == ?", rel.getId())
+                    .execute();
+        }
 
         return res;
+
     }
 }

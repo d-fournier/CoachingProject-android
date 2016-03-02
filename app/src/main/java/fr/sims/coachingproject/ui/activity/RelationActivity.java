@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,8 +44,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     ViewPager mViewPager;
     TabLayout mTabLayout;
     ScrollView mInvitationLayout;
+    TextView mRefusedInvitationTV;
+    ImageButton mEndRelationButton;
+
 
     CoachingRelation mRelation;
+    UserProfile mPartner;
+    boolean mIsCurrentUserCoach;
     private long mId;
 
 
@@ -70,10 +77,12 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+        mEndRelationButton = (ImageButton) findViewById(R.id.End_Relation_Button);
 
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
 
+        mRefusedInvitationTV = ((TextView) findViewById(R.id.coaching_invitation_refused));
         findViewById(R.id.profile_layout).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
@@ -92,54 +101,73 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
         mRelation = data;
 
+        mIsCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
+        if (mIsCurrentUserCoach) {
+            mPartner = mRelation.mTrainee;
+        } else {
+            mPartner = mRelation.mCoach;
+        }
+
+        bindRelationDetails();
+        bindRelationContent();
+    }
+
+    private void bindRelationDetails() {
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView age = (TextView) findViewById(R.id.age);
         TextView sport = (TextView) findViewById(R.id.sport);
 
-        UserProfile partner;
-        boolean isCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
-        if (isCurrentUserCoach) {
-            partner = mRelation.mTrainee;
-        } else {
-            partner = mRelation.mCoach;
-        }
+        int userAge = mPartner.getAge();
 
-        int userAge = partner.getAge();
 
-        city.setText(partner.mCity);
-        name.setText(partner.mDisplayName);
+        city.setText(mPartner.mCity);
+        name.setText(mPartner.mDisplayName);
         age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
-        Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
+        Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
+    }
 
+
+    private void bindRelationContent() {
+        // TODO Use Fragments ?
+        // Set everything to GONE and update only elements to display according to the relation state
         mTabLayout.setVisibility(View.GONE);
         mViewPager.setVisibility(View.GONE);
-        findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
+        mInvitationLayout.setVisibility(View.GONE);
+        mRefusedInvitationTV.setVisibility(View.GONE);
+        mEndRelationButton.setVisibility(View.GONE);
 
 
         if (mRelation.mIsPending) {
             mInvitationLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.coaching_invitation_description)).setText(mRelation.mComment);
 
-            if (isCurrentUserCoach) {
-                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, partner.mDisplayName));
+            if (mIsCurrentUserCoach) {
+                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, mPartner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.VISIBLE);
             } else {
-                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_trainee_title, partner.mDisplayName));
+                ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_trainee_title, mPartner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.GONE);
             }
-
         } else {
+
             mTabLayout.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
             mInvitationLayout.setVisibility(View.GONE);
-            if (!isCurrentUserCoach)
+            if (!mIsCurrentUserCoach)
                 findViewById(R.id.End_Relation_Button).setVisibility(View.VISIBLE);
             else
                 findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
 
+
+            if (mRelation.mIsAccepted) {
+                mTabLayout.setVisibility(View.VISIBLE);
+                mViewPager.setVisibility(View.VISIBLE);
+            } else {
+                mRefusedInvitationTV.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -154,7 +182,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         switch (viewId) {
             case R.id.profile_layout:
-                ProfileActivity.startActivity(this, mRelation.mIdDb);
+                ProfileActivity.startActivity(this, mPartner.mIdDb);
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);
@@ -198,7 +226,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 String res = NetworkUtil.patch(url, token, body);
 
                 if (!res.isEmpty()) {
-                    mRelation.mActive =false;
+                    mRelation.mActive = false;
                     mRelation.save();
                     return true;
                 } else {
@@ -227,11 +255,20 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         }
 
         @Override
+        protected void onPreExecute() {
+            findViewById(R.id.coaching_invitation_progress).setVisibility(View.VISIBLE);
+            findViewById(R.id.coaching_invitation_buttons).setVisibility(View.GONE);
+            super.onPreExecute();
+        }
+
+        @Override
         protected Boolean doInBackground(Boolean... params) {
             if (params.length > 0) {
                 boolean isAccepted = params[0];
 
-                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + "/";
+
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + Const.WebServer.SEPARATOR;
+
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
@@ -249,5 +286,17 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 return false;
             }
         }
+
+        @Override
+        protected void onPostExecute(Boolean isRequestSuccessful) {
+            if (!isRequestSuccessful) {
+                Snackbar.make(mInvitationLayout, "Network error", Snackbar.LENGTH_LONG).show();
+            }
+            findViewById(R.id.coaching_invitation_progress).setVisibility(View.GONE);
+            bindRelationContent();
+
+            super.onPostExecute(isRequestSuccessful);
+        }
+
     }
 }

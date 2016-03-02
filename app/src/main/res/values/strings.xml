@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="app_name">CoachingProject</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -12,8 +12,8 @@
                                         Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux.
     </string>
 
-    <string name="my_coach">My trainer</string>
-    <string name="my_trainee">My Learner</string>
+    <string name="my_coach">My trainers</string>
+    <string name="my_trainee">My trainees</string>
     <string name="pending_coach_request">"Pending trainer request "</string>
     <string name="pending_trainee_request">My requests</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -37,6 +37,7 @@
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
+    <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
 
     <plurals name="user_age">
@@ -48,4 +49,6 @@
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
     <string name="accept">Accept</string>
+
+    <string name="no_group">No group found</string>
 </resources>

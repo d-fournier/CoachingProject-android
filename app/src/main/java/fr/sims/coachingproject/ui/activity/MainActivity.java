@@ -27,6 +27,8 @@ import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
+import static fr.sims.coachingproject.NetworkService.startActionCoachingRelations;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
@@ -34,11 +36,13 @@ public class MainActivity extends AppCompatActivity
     ViewPager mViewPager;
     View mDrawerHeader;
 
-    public static void startActivity(Context ctx){
+
+    public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(startIntent);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +54,21 @@ public class MainActivity extends AppCompatActivity
         // Drawer Pattern
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 0) {
+                    // drawer closed (update the coaching list)
+                    startActionCoachingRelations(getApplicationContext());
+                } else if (slideOffset != 0) {
+                    // started opening
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
         // Drawer Items
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = navigationView.getHeaderView(0);
@@ -131,13 +147,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
-        ImageView profilePicture =(ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+        ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
         if (user != null) {
             header.setText(user.mDisplayName);
             Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
             mDrawerHeader.setOnClickListener(null);
-        }else{
+        } else {
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
         }
@@ -153,5 +169,6 @@ public class MainActivity extends AppCompatActivity
         LoginActivity.startActivity(this);
     }
 
-
 }
+
+

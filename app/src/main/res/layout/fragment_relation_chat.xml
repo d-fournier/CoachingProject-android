@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_relation_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/fab_margin">
-
-    <ListView
-        android:id="@id/android:list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:paddingLeft="@dimen/fab_margin"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@id/android:empty"
+        android:id="@+id/emptyList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Pas de message"/>
+        android:layout_height="wrap_content"
+        android:text="@string/no_message"
+        android:gravity="center"
+        android:paddingTop="@dimen/fab_margin"
+        android:visibility="gone"/>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_relation_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@id/android:list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

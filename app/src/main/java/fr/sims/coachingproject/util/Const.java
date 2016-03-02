@@ -22,9 +22,12 @@ public class Const {
         public final static String ME = "me/";
         public final static String USER_PROFILE = "users/";
         public final static String SPORTS = "sports/";
+        public final static String GROUPS = "groups/";
         public final static String LEVELS = "levels/";
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
+        public final static String SEPARATOR = "/";
+
 
 
         public final static String COACH_PARAMETER = "coach";

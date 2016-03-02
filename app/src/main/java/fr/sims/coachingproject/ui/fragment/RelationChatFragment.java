@@ -11,7 +11,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.NetworkService;
@@ -32,13 +34,18 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private long mRelationId;
+    private boolean mPinned;
 
+    private TextView mNoMessageText;
 
-    public static final String TABS_TITLE = "Messages";
+    private final String RELATION_ID="relationId";
+    public static final String MESSAGES_TITLE = "Messages";
+    public static final String PINNED_TITLE = "Favoris";
 
-    public static android.support.v4.app.Fragment newInstance(long relationId) {
+    public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
         RelationChatFragment fragment = new RelationChatFragment();
         fragment.mRelationId=relationId;
+        fragment.mPinned=pinnedMessages;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -48,6 +55,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState!=null){
+            mRelationId=savedInstanceState.getLong(RELATION_ID);
+        }
+
         getLoaderManager().initLoader(0, null, this);
 
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
@@ -58,6 +70,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_relation_chat, container, false);
+        mNoMessageText=(TextView)view.findViewById(R.id.emptyList);
         bindView(view);
         return view;
     }
@@ -69,6 +82,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
         mRefreshLayout.setOnRefreshListener(this);
+
         mRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -80,18 +94,31 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionMessages(getContext(),mRelationId);
+        NetworkService.startActionMessages(getContext(), mRelationId);
     }
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
+        if(mNoMessageText!=null){
+            mNoMessageText.setVisibility(View.GONE);
+        }
         return new MessageLoader(getContext(), mRelationId);
     }
 
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
-        mMessageAdapter.setData(data);
-
+        List<Message> filteredData= new ArrayList<>();
+        for(Message mess : data){
+            if (mess.mIsPinned==mPinned){
+                filteredData.add(mess);
+            }
+        }
+        mMessageAdapter.setData(filteredData);
+        if (mMessageAdapter.isEmpty()){
+            mNoMessageText.setVisibility(View.VISIBLE);
+        }else{
+            mNoMessageText.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -104,5 +131,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_COACHING_RELATION_ITEM) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(RELATION_ID, mRelationId);
     }
 }
