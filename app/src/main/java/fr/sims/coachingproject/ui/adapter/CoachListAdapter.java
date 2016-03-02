@@ -103,7 +103,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
     }
 
-    public void setData(List<CoachingRelation> dataset){
+    public void setData(List<CoachingRelation> dataset) {
         clearData();
 
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
@@ -114,23 +114,25 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
 
         for (CoachingRelation relation : dataset) {
-            if (!relation.mIsPending) {
-                if (relation.mCoach.mIdDb != mCurrentUserId) {
-                    mDatasetCr.add(relation.mCoach);
-                    relationsCr.add(relation);
-                }else {
-                    mDatasetLr.add(relation.mTrainee);
-                    relationsLr.add(relation);
+           if(relation.mActive) {
+                if (!relation.mIsPending) {
+                    if (relation.mCoach.mIdDb != mCurrentUserId) {
+                        mDatasetCr.add(relation.mCoach);
+                        relationsCr.add(relation);
+                    } else {
+                        mDatasetLr.add(relation.mTrainee);
+                        relationsLr.add(relation);
+                    }
+                } else {
+                    if (relation.mCoach.mIdDb != mCurrentUserId) {
+                        mDatasetPendingCr.add(relation.mCoach);
+                        relationsPendingCr.add(relation);
+                    } else {
+                        mDatasetPendingLr.add(relation.mTrainee);
+                        relationsPendingLr.add(relation);
+                    }
                 }
-            } else {
-                if (relation.mCoach.mIdDb != mCurrentUserId) {
-                    mDatasetPendingCr.add(relation.mCoach);
-                    relationsPendingCr.add(relation);
-                }else {
-                    mDatasetPendingLr.add(relation.mTrainee);
-                    relationsPendingLr.add(relation);
-                }
-            }
+           }
         }
 
         mDatasetRelations.addAll(relationsCr);
@@ -285,16 +287,16 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         }
     }
 
-    public long getRelationId(int position){
+    public long getRelationId(int position) {
         int index;
-        if(position<=mDatasetCr.size()){
-            index=position-1;
-        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+1)){
-            index=position-2;
-        }else if(position<=(mDatasetCr.size()+mDatasetLr.size()+ mDatasetPendingCr.size()+2)){
-            index=position-3;
-        }else{
-            index=position-4;
+        if (position <= mDatasetCr.size()) {
+            index = position - 1;
+        } else if (position <= (mDatasetCr.size() + mDatasetLr.size() + 1)) {
+            index = position - 2;
+        } else if (position <= (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 2)) {
+            index = position - 3;
+        } else {
+            index = position - 4;
         }
         CoachingRelation rel = mDatasetRelations.get(index);
         return rel.mIdDb;
