@@ -15,6 +15,7 @@ import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 
 import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
@@ -27,6 +28,7 @@ public class NetworkService extends IntentService {
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
     public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.COACHING_RELATION_ITEM";
     public static final String ACTION_TOGGLE_PIN_MESSAGES="fr.sims.coachingproject.action.TOGGLE_PIN_MESSAGES";
+    public static final String ACTION_GROUPS = "fr.sims.coachingproject.action.GROUPS";
 
     private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
     private static final String EXTRA_PINNED_VALUE = "fr.sims.coachingproject.extra.PINNED_VALUE";
@@ -44,6 +46,12 @@ public class NetworkService extends IntentService {
     public static void startActionCoachingRelations(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_COACHING_RELATIONS);
+        context.startService(intent);
+    }
+
+    public static void startActionGroups(Context context) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_GROUPS);
         context.startService(intent);
     }
 
@@ -78,6 +86,9 @@ public class NetworkService extends IntentService {
                     break;
                 case ACTION_TOGGLE_PIN_MESSAGES:
                     handleActionTogglePinMesages(intent.getLongExtra(EXTRA_MESSAGE_ID, -1),intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
+                    break;
+                case ACTION_GROUPS:
+                    handleActionGroups();
                     break;
             }
 
@@ -130,6 +141,26 @@ public class NetworkService extends IntentService {
         }
     }
 
+    protected void handleActionGroups() {
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());
+        if(!res.getBody().isEmpty()) {
+            Group[] gList = Group.parseList(res.getBody());
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(Group g : gList) {
+                    g.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_GROUPS_UPDATED));
+        }
+    }
 
     protected void handleActionRelationMessages(long relationId) {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/" + Const.WebServer.MESSAGES, getToken());

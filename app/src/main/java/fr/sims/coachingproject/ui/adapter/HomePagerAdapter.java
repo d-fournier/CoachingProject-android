@@ -3,6 +3,7 @@ package fr.sims.coachingproject.ui.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import fr.sims.coachingproject.ui.fragment.CoachingRelationsFragment;
 import fr.sims.coachingproject.ui.fragment.GroupFragment;
@@ -15,6 +16,7 @@ import fr.sims.coachingproject.ui.fragment.QuestionsAnswersFragment;
 
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
+
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
     }

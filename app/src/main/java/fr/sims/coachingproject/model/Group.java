@@ -52,8 +52,8 @@ public class Group extends Model{
     }
 
     public Group saveOrUpdate(){
-        for(UserProfile up : mMembers){
-            up.saveOrUpdate();
+        for(int i=0;i<mMembers.size();i++){
+            mMembers.set(i,mMembers.get(i).saveOrUpdate());
         }
         mSport = mSport.saveOrUpdate();
 
@@ -98,6 +98,12 @@ public class Group extends Model{
             e.printStackTrace();
         }
         return res;
+    }
+
+    public static List<Group> getAllGroups() {
+        return new Select()
+                .from(Group.class)
+                .execute();
     }
 
 }
