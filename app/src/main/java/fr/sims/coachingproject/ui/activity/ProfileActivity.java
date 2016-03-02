@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                             class SendRequest extends AsyncTask<String, Void, String> {
                                 @Override
                                 protected String doInBackground(String... params) {
-                                    NetworkUtil.NetworkResponse response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
+                                    NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
                                     return response.getBody();
                                 }
 

@@ -23,7 +23,7 @@ public class GroupLoader  extends AsyncTaskLoader<List<Group>> {
     @Override
     public List<Group> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS;
-        NetworkUtil.NetworkResponse response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
+        NetworkUtil.Response response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
         if(response.getBody().isEmpty()){
             return null;
         }

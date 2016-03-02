@@ -1,13 +1,10 @@
 package fr.sims.coachingproject.util;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -20,29 +17,29 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class NetworkUtil {
 
-    public static NetworkResponse get(String url, String token){
+    public static Response get(String url, String token){
         return request(url, "GET", token, null);
     }
 
-    public static NetworkResponse post(String url, String token, String body){
+    public static Response post(String url, String token, String body){
         return request(url, "POST", token, body);
     }
 
-    public static NetworkResponse put(String url, String token, String body){
+    public static Response put(String url, String token, String body){
         return request(url, "PUT", token, body);
     }
 
-    public static NetworkResponse patch(String url, String token, String body){
+    public static Response patch(String url, String token, String body){
         return request(url, "PATCH", token, body);
     }
 
-    private static NetworkResponse request(String urlString, String method, String token, String body) {
+    private static Response request(String urlString, String method, String token, String body) {
         StringBuilder res = new StringBuilder();
 
         HttpsURLConnection urlConnection;
         BufferedReader br;
 
-        int responseCode = NetworkResponse.UNKNOWN_ERROR;
+        int responseCode = Response.UNKNOWN_ERROR;
 
         try {
             URL url = new URL(urlString);
@@ -79,18 +76,18 @@ public class NetworkUtil {
 
             urlConnection.disconnect();
         } catch (UnknownHostException e1) {
-            responseCode = NetworkResponse.UNKNOWN_HOST_ERROR;
+            responseCode = Response.UNKNOWN_HOST_ERROR;
         } catch (ProtocolException e2) {
-            responseCode = NetworkResponse.PROTOCOL_ERROR;
+            responseCode = Response.PROTOCOL_ERROR;
         } catch (MalformedURLException e3) {
-            responseCode = NetworkResponse.MALFORMED_URL_ERROR;
+            responseCode = Response.MALFORMED_URL_ERROR;
         } catch (IOException e4) {
-            responseCode = NetworkResponse.STREAM_EXCEPTION_ERROR;
+            responseCode = Response.STREAM_EXCEPTION_ERROR;
         }
-        return new NetworkResponse(res.toString(), responseCode);
+        return new Response(res.toString(), responseCode);
     }
 
-    public static class NetworkResponse {
+    public static class Response {
 
         public final static int UNKNOWN_ERROR = -1;
         public final static int UNKNOWN_HOST_ERROR = -2;
@@ -101,7 +98,7 @@ public class NetworkUtil {
         private String mBody;
         private int mReturnCode;
 
-        public NetworkResponse(String mBody, int mReturnCode) {
+        public Response(String mBody, int mReturnCode) {
             this.mBody = mBody;
             this.mReturnCode = mReturnCode;
         }

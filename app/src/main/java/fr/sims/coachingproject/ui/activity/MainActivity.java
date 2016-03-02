@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +37,13 @@ public class MainActivity extends AppCompatActivity
     View mDrawerHeader;
 
 
+    public static void startActivity(Context ctx) {
+        Intent startIntent = new Intent(ctx, MainActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ctx.startActivity(startIntent);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         // Drawer Pattern
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if (slideOffset == 0) {
@@ -139,13 +147,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
-        ImageView profilePicture =(ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+        ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
         if (user != null) {
             header.setText(user.mDisplayName);
             Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
             mDrawerHeader.setOnClickListener(null);
-        }else{
+        } else {
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
         }

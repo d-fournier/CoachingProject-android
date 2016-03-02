@@ -53,11 +53,19 @@ public class CoachingRelation extends Model {
     @SerializedName("requestStatus")
     public Boolean mRequestStatus;
 
+    @Expose
+    @SerializedName("active")
+    public boolean mActive;
+
     @Column(name= "isPending")
     public boolean mIsPending;
 
     @Column(name = "isAccepted")
     public boolean mIsAccepted;
+
+
+
+
 
     public CoachingRelation saveOrUpdate(){
         mCoach = mCoach.saveOrUpdate();
@@ -84,6 +92,7 @@ public class CoachingRelation extends Model {
         this.mDate= cr.mDate;
         this.mIsPending = cr.mIsPending;
         this.mIsAccepted= cr.mIsAccepted;
+        this.mActive =cr.mActive;
     }
 
     /* Json Builder */
