@@ -138,15 +138,17 @@ public class UserProfile extends Model{
 
     public static UserProfile getUserProfileById(long id) {
         UserProfile up = new Select().from(UserProfile.class).where("idDb = ?", id).executeSingle();
-        try {
-            List<UserSportLevel> list = UserSportLevel.getAllSportLevelByUserId(id);
-            int size = list.size();
-            up.mSportsList = new SportLevel[size];
-            for (int i = 0; i < size; i++) {
-                up.mSportsList[i] = list.get(i).mSportLevel;
+        if(up != null) {
+            try {
+                List<UserSportLevel> list = UserSportLevel.getAllSportLevelByUserId(id);
+                int size = list.size();
+                up.mSportsList = new SportLevel[size];
+                for (int i = 0; i < size; i++) {
+                    up.mSportsList[i] = list.get(i).mSportLevel;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return up;
     }

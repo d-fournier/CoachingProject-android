@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by dfour on 10/02/2016.
@@ -45,6 +47,17 @@ public class UserLoader extends GenericLocalLoader<UserProfile> {
                 return null;
             }
         }
-        return UserProfile.getUserProfileById(mId);
+        // Try to load user in the database
+        UserProfile up = UserProfile.getUserProfileById(mId);
+        // If user not stored in the DB, load the user from the server
+        if(up == null) {
+            String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + mId + Const.WebServer.SEPARATOR;
+            NetworkUtil.Response response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
+            if(!response.getBody().isEmpty()){
+                up = UserProfile.parseItem(response.getBody());
+            }
+        }
+
+        return up;
     }
 }
