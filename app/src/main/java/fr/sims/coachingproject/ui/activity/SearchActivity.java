@@ -35,7 +35,7 @@ import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener{
 
     private final static String ID_SPORT = "idSport";
     private final static String ID_LEVEL = "idLevel";
@@ -77,6 +77,7 @@ public class SearchActivity extends AppCompatActivity {
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mSearchListAdapter = new SearchListAdapter();
+        mSearchListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchListAdapter);
 
         mSportsSpinner = (Spinner) findViewById(R.id.spinner_sports);
@@ -147,6 +148,14 @@ public class SearchActivity extends AppCompatActivity {
         getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb);
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+    }
 
     class CoachLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
@@ -199,18 +208,6 @@ public class SearchActivity extends AppCompatActivity {
             } else {
                 mRecycleView.setVisibility(View.VISIBLE);
                 mEmptyCoachListText.setVisibility(View.GONE);
-                mSearchListAdapter.setOnItemClickListener(new SearchListAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                        i.putExtra("id", mUserList.get(position).mIdDb);
-                        startActivity(i);
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                    }
-                });
             }
         }
 

@@ -27,12 +27,12 @@ public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
     @Override
     public List<SportLevel> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API;
-        request += Const.WebServer.SPORTS + mSport + "/" + Const.WebServer.LEVELS;
-        String response = NetworkUtil.get(request, null);
-        if (response.isEmpty()) {
+        if (mSport != -1) {
+            request += Const.WebServer.SPORTS + mSport + "/" + Const.WebServer.LEVELS;
+            NetworkUtil.Response response = NetworkUtil.get(request, null);
+            return Arrays.asList(SportLevel.parseList(response.getBody()));
+        }else{
             return null;
-        } else {
-            return Arrays.asList(SportLevel.parseList(response));
         }
     }
 

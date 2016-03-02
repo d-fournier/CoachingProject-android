@@ -22,10 +22,13 @@ public class Const {
         public final static String ME = "me/";
         public final static String USER_PROFILE = "users/";
         public final static String SPORTS = "sports/";
+        public final static String GROUPS = "groups/";
         public final static String LEVELS = "levels/";
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
-        public final static String RELATIONS = "relations/";
+        public final static String SEPARATOR = "/";
+
+
 
         public final static String COACH_PARAMETER = "coach";
         public final static String SPORT_PARAMETER = "sport";
@@ -41,7 +44,7 @@ public class Const {
         public final static String EVENT_USER_PROFILE_UPDATED = "fr.sims.coachingproject.event.USER_PROFILE_UPDATED";
         public final static String EVENT_COACHING_RELATION_UPDATED = "fr.sims.coachingproject.event.COACHING_RELATION_UPDATED";
         public final static String EVENT_MESSAGES_UPDATED = "fr.sims.coachingproject.event.MESSAGES_UPDATED";
-        public final static String EVENT_COACHING_RELATIONS_ITEM_UPDATED = "fr.sims.coachingproject.event.COACHING_RELATIONS_ITEM_UPDATED";
         public final static String EXTRA_ITEM_ID = "fr.sims.coachingproject.event.EXTRA_ITEM_ID";
+        public static final String EVENT_GROUPS_UPDATED = "fr.sims.coachingproject.event.GROUPS_UPDATED";
     }
 }

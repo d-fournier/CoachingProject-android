@@ -47,13 +47,8 @@ public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String response = NetworkUtil.get(request, null);
-        if(response.isEmpty()){
-            return null;
-        }else{
-            return Arrays.asList(UserProfile.parseList(response));
-        }
-
+        NetworkUtil.Response response = NetworkUtil.get(request, null);
+        return Arrays.asList(UserProfile.parseList(response.getBody()));
     }
 
 
