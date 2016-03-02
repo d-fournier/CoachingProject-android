@@ -127,4 +127,5 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onItemLongClick(View view, int position) {
     }
+
 }

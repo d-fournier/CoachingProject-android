@@ -37,7 +37,7 @@ import static fr.sims.coachingproject.util.NetworkUtil.post;
 import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedToken;
 import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedUserId;
 
-public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
+public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
 
@@ -67,100 +67,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         mMainLayout = findViewById(R.id.profile_layout);
 
-        btn_send_request.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View popupView = layoutInflater.inflate(R.layout.popup_send_request_coaching, null);
-                final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
-
-                // Send Button
-                Button btn_confirm_send_request = (Button) popupView.findViewById(R.id.confirm_send_request);
-                btn_confirm_send_request.setOnClickListener(new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        // Get the token of connected user
-                        mConnectedToken = getConnectedToken(ProfileActivity.this);
-                        // Get the trainee id
-                        mConnectedUserId = getConnectedUserId(ProfileActivity.this);
-                        // Get the coach id
-                        mCoachUserId = mData.mIdDb;
-                        // Get checked sport id
-                        ListView lv = (ListView) findViewById(R.id.listView1);
-                        int checked_sport = lv.getCheckedItemPosition();
-                        long check_sport_id = mData.mSportsList[checked_sport].mSport.mIdDb;
-                        // Get request comment
-                        EditText et = (EditText) popupView.findViewById(R.id.request_comment);
-                        String request_comment = et.getText().toString();
-                        // Only keep the first 200 characters
-                        if (request_comment.length() > 200) {
-                            request_comment = request_comment.substring(0,200);
-                        }
-                        // Create request to post
-                        try {
-                            JSONObject parent = new JSONObject();
-                            parent.put("coach", Long.toString(mCoachUserId));
-                            parent.put("trainee", Long.toString(mConnectedUserId));
-                            parent.put("sport", Long.toString(check_sport_id));
-                            parent.put("comment", request_comment);
-                            Log.d("output", parent.toString(2));
-                            mRequest_Body = parent.toString(2);
-                            class SendRequest extends AsyncTask<String, Void, String> {
-                                @Override
-                                protected String doInBackground(String... params) {
-                                    NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
-                                    return response.getBody();
-                                }
-
-                                @Override
-                                protected void onPostExecute(String response) {
-                                    if (response.length() != 0){
-                                        Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
-                                    } else {
-                                        Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                protected void onPreExecute() {
-                                }
-
-                                @Override
-                                protected void onProgressUpdate(Void... values) {
-                                }
-                            }
-                            new SendRequest().execute("");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            popupWindow.dismiss();
-                        }
-                    }
-                });
-
-                // Cancel Button
-                Button btn_cancel_send_request = (Button) popupView.findViewById(R.id.cancel_send_request);
-                btn_cancel_send_request.setOnClickListener(new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        popupWindow.dismiss();
-                    }
-                });
-
-                // No selected sport, no pop-up window
-                ListView lv = (ListView) findViewById(R.id.listView1);
-                if (lv.getCheckedItemPosition() != -1) {
-                    popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-                    // Set focus to popup window
-                    popupWindow.setFocusable(true);
-                    popupWindow.update();
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "You should choose a sport first !", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
+        btn_send_request.setOnClickListener(this);
 
 
         getSupportLoaderManager().initLoader(0, null, this);
@@ -183,7 +90,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
         mData = data;
         // Get components
-        //TextView tv_Id = (TextView) findViewById(R.id.textID);
         TextView tv_Name = (TextView) findViewById(R.id.textName);
         TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
         TextView tv_City = (TextView) findViewById(R.id.textCity);
@@ -217,4 +123,96 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     }
 
+    @Override
+    public void onClick(View v) {
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_send_request_coaching, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+
+        // Send Button
+        Button btn_confirm_send_request = (Button) popupView.findViewById(R.id.confirm_send_request);
+        btn_confirm_send_request.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                // Get the token of connected user
+                mConnectedToken = getConnectedToken(ProfileActivity.this);
+                // Get the trainee id
+                mConnectedUserId = getConnectedUserId(ProfileActivity.this);
+                // Get the coach id
+                mCoachUserId = mData.mIdDb;
+                // Get checked sport id
+                ListView lv = (ListView) findViewById(R.id.listView1);
+                int checked_sport = lv.getCheckedItemPosition();
+                long check_sport_id = mData.mSportsList[checked_sport].mSport.mIdDb;
+                // Get request comment
+                EditText et = (EditText) popupView.findViewById(R.id.request_comment);
+                String request_comment = et.getText().toString();
+                // Only keep the first 200 characters
+                if (request_comment.length() > 200) {
+                    request_comment = request_comment.substring(0,200);
+                }
+                // Create request to post
+                try {
+                    JSONObject parent = new JSONObject();
+                    parent.put("coach", Long.toString(mCoachUserId));
+                    parent.put("trainee", Long.toString(mConnectedUserId));
+                    parent.put("sport", Long.toString(check_sport_id));
+                    parent.put("comment", request_comment);
+                    Log.d("output", parent.toString(2));
+                    mRequest_Body = parent.toString(2);
+                    class SendRequest extends AsyncTask<String, Void, String> {
+                        @Override
+                        protected String doInBackground(String... params) {
+                            NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
+                            return response.getBody();
+                        }
+
+                        @Override
+                        protected void onPostExecute(String response) {
+                            if (response.length() != 0){
+                                Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        protected void onPreExecute() {
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Void... values) {
+                        }
+                    }
+                    new SendRequest().execute("");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    popupWindow.dismiss();
+                }
+            }
+        });
+
+        // Cancel Button
+        Button btn_cancel_send_request = (Button) popupView.findViewById(R.id.cancel_send_request);
+        btn_cancel_send_request.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        // No selected sport, no pop-up window
+        ListView lv = (ListView) findViewById(R.id.listView1);
+        if (lv.getCheckedItemPosition() != -1) {
+            popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+            // Set focus to popup window
+            popupWindow.setFocusable(true);
+            popupWindow.update();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "You should choose a sport first !", Toast.LENGTH_LONG).show();
+        }
+
+    }
 }

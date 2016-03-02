@@ -51,6 +51,7 @@
     <string name="accept">Accept</string>
 
     <string name="no_group">No group found</string>
+    <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
     <string name="send_coaching_request">Send coaching request</string>
