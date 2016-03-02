@@ -12,6 +12,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.model.UserProfile;
@@ -130,9 +132,9 @@ public class NetworkService extends IntentService {
 
 
     protected void handleActionRelationMessages(long relationId) {
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/"+Const.WebServer.MESSAGES, getToken());
-        if(!res.isEmpty()) {
-            Message[] messages = Message.parseList(res);
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/" + Const.WebServer.MESSAGES, getToken());
+        if(res.getReturnCode()== HttpsURLConnection.HTTP_OK) {
+            Message[] messages = Message.parseList(res.getBody());
 
             ActiveAndroid.beginTransaction();
 
@@ -160,9 +162,9 @@ public class NetworkService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String res=NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + messageId + "/", getToken(), json.toString());
+        NetworkUtil.Response res=NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + messageId + "/", getToken(), json.toString());
 
-        if(!res.isEmpty()){
+        if(res.getReturnCode()==HttpsURLConnection.HTTP_OK){
             Message message=Message.getMessageById(messageId);
             message.mIsPinned=toPin;
             message.save();

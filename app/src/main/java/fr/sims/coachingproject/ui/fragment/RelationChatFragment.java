@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -38,7 +39,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener{
+public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
 
     private MessageAdapter mMessageAdapter;
     private SwipeRefreshLayout mRefreshLayout;
@@ -49,14 +50,14 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     private TextView mNoMessageText;
 
-    private final String RELATION_ID="relationId";
+    private final String RELATION_ID = "relationId";
     public static final String MESSAGES_TITLE = "Messages";
     public static final String PINNED_TITLE = "Favoris";
 
     public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
         RelationChatFragment fragment = new RelationChatFragment();
-        fragment.mRelationId=relationId;
-        fragment.mPinned=pinnedMessages;
+        fragment.mRelationId = relationId;
+        fragment.mPinned = pinnedMessages;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -64,11 +65,10 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState!=null){
-            mRelationId=savedInstanceState.getLong(RELATION_ID);
+        if (savedInstanceState != null) {
+            mRelationId = savedInstanceState.getLong(RELATION_ID);
         }
 
         getLoaderManager().initLoader(0, null, this);
@@ -78,23 +78,17 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_relation_chat, container, false);
-        mNoMessageText=(TextView)view.findViewById(R.id.emptyList);
+        mNoMessageText = (TextView) view.findViewById(R.id.emptyList);
         bindView(view);
         return view;
     }
 
 
     protected void bindView(View view) {
-        mMessageAdapter=new MessageAdapter(getContext());
+        mMessageAdapter = new MessageAdapter(getContext());
         setListAdapter(mMessageAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
@@ -116,7 +110,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
-        if(mNoMessageText!=null){
+        if (mNoMessageText != null) {
             mNoMessageText.setVisibility(View.GONE);
         }
         return new MessageLoader(getContext(), mRelationId);
@@ -124,21 +118,21 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
-        List<Message> filteredData= new ArrayList<>();
-        if(mPinned){
-            for(Message mess : data){
-                if (mess.mIsPinned){
+        List<Message> filteredData = new ArrayList<>();
+        if (mPinned) {
+            for (Message mess : data) {
+                if (mess.mIsPinned) {
                     filteredData.add(mess);
                 }
             }
-        }else{
+        } else {
             filteredData.addAll(data);
         }
 
         mMessageAdapter.setData(filteredData);
-        if (mMessageAdapter.isEmpty()){
+        if (mMessageAdapter.isEmpty()) {
             mNoMessageText.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mNoMessageText.setVisibility(View.GONE);
         }
     }
@@ -160,6 +154,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         super.onSaveInstanceState(outState);
         outState.putLong(RELATION_ID, mRelationId);
     }
+
     @Override
     public void onActivityCreated(Bundle savedState) {
         super.onActivityCreated(savedState);
@@ -170,27 +165,30 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public void onCreateContextMenu(final ContextMenu menu,
                                     final View v, final ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Message");
-        if(mPinned){
+        if (mPinned) {
             menu.add(R.string.unpin_message);
-        }else{
+        } else {
             menu.add(R.string.pin_message);
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        boolean requestPinnedValue=item.getTitle().equals(getString(R.string.pin_message));
+        boolean requestPinnedValue = item.getTitle().equals(getString(R.string.pin_message));
 
-        if(mPinned == requestPinnedValue){
+        if (mPinned == requestPinnedValue) {
             // onContextItemSelected is called for every fragment loaded until it returns true
             // therefore we check if the fragment is the one we want
             return false;
         }
 
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Message message=mMessageAdapter.getItem(menuInfo.position);
+        Message message = mMessageAdapter.getItem(menuInfo.position);
 
         NetworkService.startActionTogglePinMessages(getContext(), message.mIdDb, requestPinnedValue);
+
+        String display = requestPinnedValue ? "Message pinned" : "Message unpinned";
+        Snackbar.make(mRefreshLayout, display, Snackbar.LENGTH_LONG).show();
         return true;
     }
 }
