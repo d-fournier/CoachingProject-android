@@ -154,6 +154,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
 
+
         switch (viewType) {
             case HEADER_REQUEST_LEARNER:
             case HEADER_REQUEST_COACH:
@@ -198,6 +199,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
         int itemViewType = vh.getItemViewType();
+
         if (itemViewType == LIST_COACH || itemViewType == LIST_LEARNER
                 || itemViewType == LIST_PENDING_COACH || itemViewType == LIST_PENDING_LEARNER) {
 

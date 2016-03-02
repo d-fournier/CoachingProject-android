@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     public static GroupFragment newInstance() {
         GroupFragment fragment = new GroupFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +52,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
 
@@ -73,7 +74,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
                 mRefreshLayout.setRefreshing(true);
             }
         });
-        getLoaderManager().initLoader(0, null, this);
+
         NetworkService.startActionGroups(getContext());
     }
 
