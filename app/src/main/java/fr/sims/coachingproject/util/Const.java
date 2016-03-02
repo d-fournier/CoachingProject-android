@@ -45,5 +45,6 @@ public class Const {
         public final static String EVENT_MESSAGES_UPDATED = "fr.sims.coachingproject.event.MESSAGES_UPDATED";
         public final static String EVENT_COACHING_RELATIONS_ITEM_UPDATED = "fr.sims.coachingproject.event.COACHING_RELATIONS_ITEM_UPDATED";
         public final static String EXTRA_ITEM_ID = "fr.sims.coachingproject.event.EXTRA_ITEM_ID";
+        public static final String EVENT_GROUPS_UPDATED = "fr.sims.coachingproject.event.GROUPS_UPDATED";
     }
 }

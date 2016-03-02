@@ -14,20 +14,20 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Benjamin on 01/03/2016.
  */
-public class GroupLoader  extends AsyncTaskLoader<List<Group>> {
+public class GroupLoader  extends GenericLocalLoader<List<Group>> {
 
     public GroupLoader(Context context) {
         super(context);
     }
 
     @Override
+    protected String getBroadcastEvent() {
+        return Const.BroadcastEvent.EVENT_GROUPS_UPDATED;
+    }
+
+    @Override
     public List<Group> loadInBackground() {
-        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS;
-        String response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
-        if(response.isEmpty()){
-            return null;
-        }
-        return Arrays.asList(Group.parseList(response));
+        return Group.getAllGroups();
     }
 
     @Override

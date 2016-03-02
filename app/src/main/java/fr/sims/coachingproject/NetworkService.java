@@ -11,6 +11,7 @@ import com.activeandroid.ActiveAndroid;
 import java.util.List;
 
 import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.UserProfile;
@@ -23,6 +24,7 @@ public class NetworkService extends IntentService {
     public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
     public static final String ACTION_COACHING_RELATION_ITEM = "fr.sims.coachingproject.action.COACHING_RELATION_ITEM";
+    public static final String ACTION_GROUPS = "fr.sims.coachingproject.action.GROUPS";
 
     private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
 
@@ -38,6 +40,12 @@ public class NetworkService extends IntentService {
     public static void startActionCoachingRelations(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_COACHING_RELATIONS);
+        context.startService(intent);
+    }
+
+    public static void startActionGroups(Context context) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_GROUPS);
         context.startService(intent);
     }
 
@@ -61,6 +69,9 @@ public class NetworkService extends IntentService {
                     break;
                 case ACTION_COACHING_RELATION_ITEM:
                     handleActionCoachingRelationItem(intent.getLongExtra(EXTRA_ITEM_ID, -1));
+                    break;
+                case ACTION_GROUPS:
+                    handleActionGroups();
                     break;
             }
 
@@ -109,6 +120,27 @@ public class NetworkService extends IntentService {
             }
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_COACHING_RELATIONS_UPDATED));
+        }
+    }
+
+    protected void handleActionGroups() {
+        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());
+        if(!res.isEmpty()) {
+            Group[] gList = Group.parseList(res);
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(Group g : gList) {
+                    g.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_GROUPS_UPDATED));
         }
     }
 
