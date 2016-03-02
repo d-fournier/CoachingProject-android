@@ -40,4 +40,5 @@
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
     <string name="pin_message">Pin message</string>
+    <string name="unpin_message">Unpin message</string>
 </resources>

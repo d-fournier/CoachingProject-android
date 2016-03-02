@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,6 +75,12 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -142,7 +150,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onBroadcastReceive(Intent intent) {
-        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_COACHING_RELATION_ITEM) && mRefreshLayout != null) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_RELATION_MESSAGES) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
     }
@@ -162,22 +170,27 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public void onCreateContextMenu(final ContextMenu menu,
                                     final View v, final ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Message");
-        menu.add(R.string.pin_message);
+        if(mPinned){
+            menu.add(R.string.unpin_message);
+        }else{
+            menu.add(R.string.pin_message);
+        }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        boolean requestPinnedValue=item.getTitle().equals(getString(R.string.pin_message));
+
+        if(mPinned == requestPinnedValue){
+            // onContextItemSelected is called for every fragment loaded until it returns true
+            // therefore we check if the fragment is the one we want
+            return false;
+        }
+
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Message message=mMessageAdapter.getItem(menuInfo.position);
 
-        AsyncTask task=new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                return NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + params[0]  + "/", SharedPrefUtil.getConnectedToken(getContext()), "{\"is_pinned\":\"True\"}" );
-            }
-        };
-        task.execute(message.mIdDb);
-
+        NetworkService.startActionTogglePinMessages(getContext(), message.mIdDb, requestPinnedValue);
         return true;
     }
 }
