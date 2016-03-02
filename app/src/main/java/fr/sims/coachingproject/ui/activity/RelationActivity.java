@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -22,11 +21,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -223,9 +217,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new EndRelation(false).toJson();
 
-                String res = NetworkUtil.patch(url, token, body);
+                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
 
-                if (!res.isEmpty()) {
+                if (!res.getBody().isEmpty()) {
                     mRelation.mActive = false;
                     mRelation.save();
                     return true;
@@ -272,9 +266,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
-                String res = NetworkUtil.patch(url, token, body);
+                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
 
-                if (!res.isEmpty()) {
+                if(!res.getBody().isEmpty()) {
                     mRelation.mIsPending = false;
                     mRelation.mIsAccepted = isAccepted;
                     mRelation.save();
