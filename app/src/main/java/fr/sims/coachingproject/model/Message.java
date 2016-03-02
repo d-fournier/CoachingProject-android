@@ -103,6 +103,9 @@ public class Message extends Model {
         }
 
         return res;
+    }
 
+    public static Message getMessageById(long id){
+        return new Select().from(Message.class).where("idDb == ?", id).executeSingle();
     }
 }

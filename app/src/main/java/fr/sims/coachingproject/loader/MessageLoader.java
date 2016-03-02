@@ -21,7 +21,7 @@ public class MessageLoader extends GenericLocalLoader<List<Message>> {
 
     @Override
     protected String getBroadcastEvent() {
-        return Const.BroadcastEvent.EVENT_COACHING_RELATIONS_ITEM_UPDATED;
+        return Const.BroadcastEvent.EVENT_MESSAGES_UPDATED;
     }
 
     @Override
