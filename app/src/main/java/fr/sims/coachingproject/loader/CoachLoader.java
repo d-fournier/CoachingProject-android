@@ -48,7 +48,12 @@ public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
             e.printStackTrace();
         }
         NetworkUtil.Response response = NetworkUtil.get(request, null);
-        return Arrays.asList(UserProfile.parseList(response.getBody()));
+        if(response.getReturnCode()==NetworkUtil.Response.UNKNOWN_HOST_ERROR){
+            return null;
+        }else {
+            return Arrays.asList(UserProfile.parseList(response.getBody()));
+        }
+
     }
 
 

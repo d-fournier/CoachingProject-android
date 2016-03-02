@@ -2,7 +2,6 @@ package fr.sims.coachingproject.ui.activity;
 
 
 import android.app.LoaderManager;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -35,7 +34,7 @@ import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener{
+public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener {
 
     private final static String ID_SPORT = "idSport";
     private final static String ID_LEVEL = "idLevel";
@@ -104,15 +103,13 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
                 //If it's not "All sports", we put the levels in the level spinner, and we displays it
                 mLevelsAdapter.clear();
+                mLevelsSpinner.setVisibility(View.GONE);
                 if (sportID != -1) {
                     mSearchArgs.putLong(ID_SPORT, sportID);
                     getLoaderManager().restartLoader(2, mSearchArgs, mLevelLoader);
-                    mLevelsSpinner.setVisibility(View.VISIBLE);
                 } else {
                     mSearchArgs.remove(ID_LEVEL);
-                    mLevelsSpinner.setVisibility(View.GONE);
                 }
-
             }
 
             @Override
@@ -136,9 +133,11 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                     mSearchArgs.putLong(ID_LEVEL, -1);
                 }
                 getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
+                if(mSportList.isEmpty()){
+                    getLoaderManager().restartLoader(0, mSearchArgs, mSportLoader);
+                }
             }
         });
-
 
         mSportLoader = new SportLoaderCallbacks();
         mCoachLoader = new CoachLoaderCallbacks();
@@ -188,14 +187,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 mSnackbar.show();
                 mUserList.clear();
             } else {
-                if(mSportList.size() == 1) {
-                    //We only have "all sports" in the spinner, so we need to get sports from the server
-                    getLoaderManager().restartLoader(0, mSearchArgs, mSportLoader);
-                }
                 //We clear and add the new data
                 mUserList.clear();
                 mUserList.addAll(data);
-                mSportsSpinner.setVisibility(View.VISIBLE);
             }
 
             mSearchListAdapter.setData(mUserList);
@@ -229,14 +223,16 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
             mSportsAdapter.clear();
             if (data != null) {
                 mSportsAdapter.addAll(data);
+
+                //Create fake sport for "All sports" with ID -1
+                Sport allSports = new Sport();
+                allSports.mName = getString(R.string.all_sports);
+                allSports.mIdDb = -1;
+
+                mSportsAdapter.insert(allSports, 0);
+
+                mSportsSpinner.setVisibility(View.VISIBLE);
             }
-
-            //Create fake sport for "All sports" with ID -1
-            Sport allSports = new Sport();
-            allSports.mName = getString(R.string.all_sports);
-            allSports.mIdDb = -1;
-
-            mSportsAdapter.insert(allSports,0);
         }
 
         @Override
@@ -257,17 +253,19 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         @Override
         public void onLoadFinished(Loader<List<SportLevel>> loader, List<SportLevel> data) {
             mLevelsAdapter.clear();
-            if (data != null) {
+            if (data != null && !data.isEmpty()) {
                 mLevelsAdapter.addAll(data);
+
+                //Create fake sport for "All levels" with ID -1
+                SportLevel allLevel = new SportLevel();
+                allLevel.mTitle = getString(R.string.all_levels);
+                allLevel.mIdDb = -1;
+
+                mLevelsAdapter.insert(allLevel, 0);
+
+                mLevelsSpinner.setVisibility(View.VISIBLE);
+                mLevelsSpinner.setSelection(0);
             }
-
-            //Create fake sport for "All levels" with ID -1
-            SportLevel allLevel = new SportLevel();
-            allLevel.mTitle = getString(R.string.all_levels);
-            allLevel.mIdDb = -1;
-
-            mLevelsAdapter.insert(allLevel, 0);
-
         }
 
         @Override
