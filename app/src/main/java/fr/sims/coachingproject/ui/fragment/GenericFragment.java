@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListAdapter;
 
 
 /**
@@ -36,4 +37,6 @@ public abstract class GenericFragment extends Fragment {
     protected void bindArguments(Bundle args) {}
 
     protected void bindView(View view) {}
+
+
 }

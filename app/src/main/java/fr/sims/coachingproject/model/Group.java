@@ -52,9 +52,8 @@ public class Group extends Model{
     }
 
     public Group saveOrUpdate(){
-        for(UserProfile up : mMembers){
-            up.saveOrUpdate();
-        }
+        for(int i=0; i<mMembers.size();i++)
+            mMembers.set(i,mMembers.get(i).saveOrUpdate());
         mSport = mSport.saveOrUpdate();
 
         Group res = new Select().from(Group.class).where("idDb = ?", mIdDb).executeSingle();
@@ -100,4 +99,7 @@ public class Group extends Model{
         return res;
     }
 
+    public static List<Group> getAllGroup(){
+        return new Select().from(Group.class).execute();
+    }
 }

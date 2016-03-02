@@ -1,10 +1,10 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,54 +16,70 @@ import fr.sims.coachingproject.model.Group;
 /**
  * Created by Benjamin on 01/03/2016.
  */
-public class GroupAdapter extends ArrayAdapter {
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
 
-    private ViewHolder vh;
+    private static final int LIST_GROUP = 0;
     private List<Group> mGroupList;
 
-    public GroupAdapter(Context context, int resource) {
-        super(context, resource);
-        vh = new ViewHolder();
+    public GroupAdapter() {
         mGroupList = new ArrayList<>();
     }
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_group, parent, false);
-            vh.name = (TextView) convertView.findViewById(R.id.group_item_name);
-            vh.description = (TextView) convertView.findViewById(R.id.group_item_description);
-            vh.sport = (TextView) convertView.findViewById(R.id.group_item_sport);
-            convertView.setTag(vh);
-        } else {
-            vh = (ViewHolder) convertView.getTag();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder vh;
+        switch (viewType) {
+            case LIST_GROUP:
+            default:
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_group, parent, false);
+                vh = new ViewHolder(v);
+                break;
         }
-
-        Group g = mGroupList.get(position);
-        vh.name.setText(g.mName);
-        vh.description.setText(g.mDescription);
-        vh.sport.setText(g.mSport.mName);
-        return convertView;
+        return vh;
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Group g = mGroupList.get(position);
+        holder.name.setText(g.mName);
+        holder.description.setText(g.mDescription);
+        holder.sport.setText(g.mSport.mName);
+    }
+
+    @Override
+    public int getItemCount() {
         return mGroupList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return LIST_GROUP;
     }
 
     public void setData(List<Group> gList) {
         mGroupList.addAll(gList);
+        notifyDataSetChanged();
     }
 
     public void clearData() {
         mGroupList.clear();
+        notifyDataSetChanged();
     }
 
-    static class ViewHolder {
+    static class ViewHolder extends  RecyclerView.ViewHolder {
         TextView name;
         TextView description;
         TextView sport;
+
+        public ViewHolder(View itemView){
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.group_item_name);
+            description = (TextView) itemView.findViewById(R.id.group_item_description);
+            sport = (TextView) itemView.findViewById(R.id.group_item_sport);
+        }
+
     }
 }
