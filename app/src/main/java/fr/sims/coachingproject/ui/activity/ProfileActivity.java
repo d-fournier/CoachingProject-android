@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -59,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        final Button btn_send_request = (Button) findViewById(R.id.send_request);
+        ImageButton btn_send_request = (ImageButton) findViewById(R.id.send_request);
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);

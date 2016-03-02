@@ -31,11 +31,6 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="60dp">
 
-            <!--<TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textID"
-                />-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,12 +66,15 @@
         android:id="@+id/listView1"
         android:layout_marginTop="10dp"
         />
-    <Button
+    <ImageButton
         android:id="@+id/send_request"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/coaching"
+        android:contentDescription="@string/send_coaching_request"
+        android:src="@drawable/ic_person_add_black_48dp"
+        android:tint="@color/colorAccent"
+        android:background="@null"
         android:layout_marginTop="10dp"
         />
 </LinearLayout>
