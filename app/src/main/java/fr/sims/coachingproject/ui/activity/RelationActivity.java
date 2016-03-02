@@ -11,8 +11,8 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -21,11 +21,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -35,7 +30,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
-public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener{
+public class RelationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<CoachingRelation>, View.OnClickListener {
 
     private static final String EXTRA_COACHING_RELATION_ID = "fr.sims.coachingproject.extra.COACHING_RELATION_ID";
 
@@ -44,6 +39,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     TabLayout mTabLayout;
     ScrollView mInvitationLayout;
     TextView mRefusedInvitationTV;
+    ImageButton mEndRelationButton;
 
 
     CoachingRelation mRelation;
@@ -52,15 +48,15 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private long mId;
 
 
-    public static void startActivity(Context ctx, long id){
-        Intent intent = new Intent(ctx,RelationActivity.class);
+    public static void startActivity(Context ctx, long id) {
+        Intent intent = new Intent(ctx, RelationActivity.class);
         intent.putExtra(EXTRA_COACHING_RELATION_ID, id);
         ctx.startActivity(intent);
     }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_relation);
@@ -75,7 +71,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-        
+        mEndRelationButton = (ImageButton) findViewById(R.id.End_Relation_Button);
+
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
 
@@ -83,6 +80,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         findViewById(R.id.profile_layout).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
+        findViewById(R.id.End_Relation_Button).setOnClickListener(this);
+
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -94,20 +93,20 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<CoachingRelation> loader, CoachingRelation data) {
-        mRelation=data;
+        mRelation = data;
 
         mIsCurrentUserCoach = (mRelation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
-        if(mIsCurrentUserCoach ){
-            mPartner=mRelation.mTrainee;
+        if (mIsCurrentUserCoach) {
+            mPartner = mRelation.mTrainee;
         } else {
-            mPartner=mRelation.mCoach;
+            mPartner = mRelation.mCoach;
         }
 
         bindRelationDetails();
         bindRelationContent();
     }
 
-    private void bindRelationDetails(){
+    private void bindRelationDetails() {
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
@@ -116,12 +115,14 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         int userAge = mPartner.getAge();
 
+
         city.setText(mPartner.mCity);
         name.setText(mPartner.mDisplayName);
         age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
     }
+
 
     private void bindRelationContent() {
         // TODO Use Fragments ?
@@ -130,13 +131,14 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setVisibility(View.GONE);
         mInvitationLayout.setVisibility(View.GONE);
         mRefusedInvitationTV.setVisibility(View.GONE);
+        mEndRelationButton.setVisibility(View.GONE);
 
-        if(mRelation.mIsPending) {
+
+        if (mRelation.mIsPending) {
             mInvitationLayout.setVisibility(View.VISIBLE);
-
             ((TextView) findViewById(R.id.coaching_invitation_description)).setText(mRelation.mComment);
 
-            if(mIsCurrentUserCoach ) {
+            if (mIsCurrentUserCoach) {
                 ((TextView) findViewById(R.id.coaching_invitation_title)).setText(getString(R.string.coaching_invitation_coach_title, mPartner.mDisplayName));
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.VISIBLE);
             } else {
@@ -144,7 +146,17 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 findViewById(R.id.coaching_invitation_buttons).setVisibility(View.GONE);
             }
         } else {
-            if(mRelation.mIsAccepted) {
+
+            mTabLayout.setVisibility(View.VISIBLE);
+            mViewPager.setVisibility(View.VISIBLE);
+            mInvitationLayout.setVisibility(View.GONE);
+            if (!mIsCurrentUserCoach)
+                findViewById(R.id.End_Relation_Button).setVisibility(View.VISIBLE);
+            else
+                findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
+
+
+            if (mRelation.mIsAccepted) {
                 mTabLayout.setVisibility(View.VISIBLE);
                 mViewPager.setVisibility(View.VISIBLE);
             } else {
@@ -169,11 +181,54 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);
                 break;
+            case R.id.End_Relation_Button:
+                new PutEndRelationTask().execute(false);
+                MainActivity.startActivity(getBaseContext());
+                break;
             case R.id.coaching_invitation_refuse:
                 new AnswerInvitationTask().execute(false);
                 break;
             default:
 
+        }
+    }
+
+    private class PutEndRelationTask extends AsyncTask<Boolean, Void, Boolean> {
+
+        private class EndRelation {
+            @Expose
+            @SerializedName("active")
+            public Boolean mActive;
+
+            public EndRelation(boolean active) {
+                mActive = active;
+            }
+
+            public String toJson() {
+                return new Gson().toJson(this);
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            if (params.length > 0) {
+
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + "/";
+                String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
+                String body = new EndRelation(false).toJson();
+
+                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
+
+                if (!res.getBody().isEmpty()) {
+                    mRelation.mActive = false;
+                    mRelation.save();
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
     }
 
@@ -202,16 +257,18 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         protected Boolean doInBackground(Boolean... params) {
-            if(params.length > 0) {
+            if (params.length > 0) {
                 boolean isAccepted = params[0];
 
+
                 String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + Const.WebServer.SEPARATOR;
+
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
                 String body = new Answer(isAccepted).toJson();
 
-                String res = NetworkUtil.patch(url, token, body);
+                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
 
-                if(!res.isEmpty()) {
+                if(!res.getBody().isEmpty()) {
                     mRelation.mIsPending = false;
                     mRelation.mIsAccepted = isAccepted;
                     mRelation.save();
@@ -226,7 +283,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         protected void onPostExecute(Boolean isRequestSuccessful) {
-            if(!isRequestSuccessful) {
+            if (!isRequestSuccessful) {
                 Snackbar.make(mInvitationLayout, "Network error", Snackbar.LENGTH_LONG).show();
             }
             findViewById(R.id.coaching_invitation_progress).setVisibility(View.GONE);
@@ -234,6 +291,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
             super.onPostExecute(isRequestSuccessful);
         }
-        
+
     }
 }
