@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
@@ -9,11 +10,15 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -41,9 +46,10 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
     private EditText mMessageET;
-
+    private Button btn;
     private long mRelationId;
     private boolean mPinned;
+    private LinearLayout layoutView;
 
     private TextView mNoMessageText;
 
@@ -73,6 +79,8 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+
+
     }
 
     @Override
@@ -100,9 +108,8 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
 
-        Button btn = (Button) view.findViewById(R.id.send_button);
+        btn = (Button) view.findViewById(R.id.send_button);
         btn.setOnClickListener(this);
-
         mMessageET = (EditText) view.findViewById(R.id.message_editText);
     }
 
@@ -155,6 +162,11 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onClick(View v) {
+
+
+        InputMethodManager in = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow( mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
         String message = mMessageET.getText().toString();
 
         String body = "";
@@ -181,6 +193,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
                 String body = params[0];
                 String connectedToken = SharedPrefUtil.getConnectedToken(getContext());
                 String response = NetworkUtil.post("https://coachingproject.herokuapp.com/api/messages/", connectedToken, body);
+
             }
 
             return null;
@@ -188,10 +201,21 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         @Override
         protected void onPostExecute(String result) {
+            mMessageET.setText("");
+            btn.setEnabled(true);
+            mRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshLayout.setRefreshing(true);
+                }
+            });
+            NetworkService.startActionMessages(getContext(), mRelationId);
         }
 
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute()
+        {
+            btn.setEnabled(false);
         }
 
     }
