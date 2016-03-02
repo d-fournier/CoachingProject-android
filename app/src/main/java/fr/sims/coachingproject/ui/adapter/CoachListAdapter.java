@@ -114,7 +114,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
 
         for (CoachingRelation relation : dataset) {
-            if (relation.mIsAccepted) {
+           if(relation.mActive) {
                 if (!relation.mIsPending) {
                     if (relation.mCoach.mIdDb != mCurrentUserId) {
                         mDatasetCr.add(relation.mCoach);
@@ -132,7 +132,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                         relationsPendingLr.add(relation);
                     }
                 }
-            }
+           }
         }
 
         mDatasetRelations.addAll(relationsCr);

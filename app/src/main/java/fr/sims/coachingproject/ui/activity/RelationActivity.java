@@ -114,14 +114,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(partner.mPicture).into(picture);
 
+        mTabLayout.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.GONE);
+        findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
+
 
         if (mRelation.mIsPending) {
-            mTabLayout.setVisibility(View.GONE);
-            mViewPager.setVisibility(View.GONE);
-            findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
             mInvitationLayout.setVisibility(View.VISIBLE);
-
-
             ((TextView) findViewById(R.id.coaching_invitation_description)).setText(mRelation.mComment);
 
             if (isCurrentUserCoach) {
@@ -161,8 +160,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 new AnswerInvitationTask().execute(true);
                 break;
             case R.id.End_Relation_Button:
-                new AnswerInvitationTask().execute(false);
+                new PutEndRelationTask().execute(false);
                 MainActivity.startActivity(getBaseContext());
+                break;
             case R.id.coaching_invitation_refuse:
                 new AnswerInvitationTask().execute(false);
                 break;
@@ -171,7 +171,44 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
+    private class PutEndRelationTask extends AsyncTask<Boolean, Void, Boolean> {
 
+        private class EndRelation {
+            @Expose
+            @SerializedName("active")
+            public Boolean mActive;
+
+            public EndRelation(boolean active) {
+                mActive = active;
+            }
+
+            public String toJson() {
+                return new Gson().toJson(this);
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            if (params.length > 0) {
+
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mId + "/";
+                String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
+                String body = new EndRelation(false).toJson();
+
+                String res = NetworkUtil.patch(url, token, body);
+
+                if (!res.isEmpty()) {
+                    mRelation.mActive =false;
+                    mRelation.save();
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
 
     private class AnswerInvitationTask extends AsyncTask<Boolean, Void, Boolean> {
 
