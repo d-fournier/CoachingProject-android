@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.RelationActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/group_layout"
+            android:layout_margin="@dimen/fab_margin">
+
+
+
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/fab_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_name"
+                    android:text="INSA sport group"
+                    style="@style/TextAppearance.AppCompat.Title"/>
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/group_description"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nulla purus, lacinia ac aliquet nec, sagittis ac libero. Suspendisse potenti. Interdum et malesuada fames ac ante ipsum primis in posuere. "
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_toRightOf="@id/group_name"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/abc_action_bar_content_inset_material" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_creation_date"
+                    android:text="le 1 mars 2016"
+                    android:layout_below="@+id/group_name"
+                    android:layout_alignParentLeft="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_creator"
+                    android:text="INSA de Lyon"
+                    android:layout_below="@+id/group_creation_date"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_sport"
+                    android:text="Course a pied"
+                    android:layout_below="@+id/group_creator"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/messagePager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>
