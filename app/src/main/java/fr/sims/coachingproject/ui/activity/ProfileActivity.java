@@ -3,6 +3,7 @@ package fr.sims.coachingproject.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.util.NetworkUtil;
 
 import static fr.sims.coachingproject.util.NetworkUtil.post;
 import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedToken;
@@ -45,6 +47,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private UserProfile mData;
     private String mRequest_Body;
 
+    private View mMainLayout;
+
     public static void startActivity(Context ctx, long id){
         Intent intent = new Intent(ctx,ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
@@ -59,6 +63,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
+
+        mMainLayout = findViewById(R.id.profile_layout);
 
         btn_send_request.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,19 +106,18 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                             Log.d("output", parent.toString(2));
                             mRequest_Body = parent.toString(2);
                             class SendRequest extends AsyncTask<String, Void, String> {
-                                String response;
                                 @Override
                                 protected String doInBackground(String... params) {
-                                    response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
-                                    return null;
+                                    NetworkUtil.NetworkResponse response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
+                                    return response.getBody();
                                 }
 
                                 @Override
-                                protected void onPostExecute(String result) {
+                                protected void onPostExecute(String response) {
                                     if (response.length() != 0){
-                                        Toast.makeText(getApplicationContext(), "Your request has been sent successfully!", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "An error occurred while processing your request!", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
                                     }
                                 }
 
