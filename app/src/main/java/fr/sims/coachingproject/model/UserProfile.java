@@ -13,7 +13,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -40,6 +43,24 @@ public class UserProfile extends Model{
     @Expose
     @SerializedName("birthdate")
     public String mBirthdate;
+
+    public int getAge(){
+        Calendar birthdate = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        int userAge=0;
+        try {
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            birthdate.setTime(sdf.parse(mBirthdate));
+            userAge = today.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR);
+            if (today.get(Calendar.DAY_OF_YEAR) < birthdate.get(Calendar.DAY_OF_YEAR)){
+                userAge--;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return userAge;
+    }
 
     @Column(name = "city")
     @Expose
@@ -117,15 +138,17 @@ public class UserProfile extends Model{
 
     public static UserProfile getUserProfileById(long id) {
         UserProfile up = new Select().from(UserProfile.class).where("idDb = ?", id).executeSingle();
-        try {
-            List<UserSportLevel> list = UserSportLevel.getAllSportLevelByUserId(id);
-            int size = list.size();
-            up.mSportsList = new SportLevel[size];
-            for (int i = 0; i < size; i++) {
-                up.mSportsList[i] = list.get(i).mSportLevel;
+        if(up != null) {
+            try {
+                List<UserSportLevel> list = UserSportLevel.getAllSportLevelByUserId(id);
+                int size = list.size();
+                up.mSportsList = new SportLevel[size];
+                for (int i = 0; i < size; i++) {
+                    up.mSportsList[i] = list.get(i).mSportLevel;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return up;
     }

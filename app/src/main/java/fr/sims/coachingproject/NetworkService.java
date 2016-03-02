@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 
@@ -15,7 +14,6 @@ import java.util.List;
 
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.Message;
-import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -90,9 +88,9 @@ public class NetworkService extends IntentService {
 
     protected void handleActionConnectedUserInfo() {
         long id = SharedPrefUtil.getConnectedUserId(this);
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
-        if(!res.isEmpty()) {
-            UserProfile up = UserProfile.parseItem(res);
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
+        if(!res.getBody().isEmpty()) {
+            UserProfile up = UserProfile.parseItem(res.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -110,9 +108,9 @@ public class NetworkService extends IntentService {
 
 
     protected void handleActionCoachingRelation() {
-        String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
-        if(!res.isEmpty()) {
-            CoachingRelation[] crList = CoachingRelation.parseList(res);
+        NetworkUtil.Response ress = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
+        if(!ress.getBody().isEmpty()) {
+            CoachingRelation[] crList = CoachingRelation.parseList(ress.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -129,6 +127,7 @@ public class NetworkService extends IntentService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_COACHING_RELATIONS_UPDATED));
         }
     }
+
 
     protected void handleActionRelationMessages(long relationId) {
         String res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/"+Const.WebServer.MESSAGES, getToken());

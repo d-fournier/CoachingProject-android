@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -30,8 +29,8 @@ public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API;
         if (mSport != -1) {
             request += Const.WebServer.SPORTS + mSport + "/" + Const.WebServer.LEVELS;
-            String response = NetworkUtil.get(request, null);
-            return Arrays.asList(SportLevel.parseList(response));
+            NetworkUtil.Response response = NetworkUtil.get(request, null);
+            return Arrays.asList(SportLevel.parseList(response.getBody()));
         }else{
             return null;
         }
