@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -116,11 +117,16 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
         List<Message> filteredData= new ArrayList<>();
-        for(Message mess : data){
-            if (mess.mIsPinned==mPinned){
-                filteredData.add(mess);
+        if(mPinned){
+            for(Message mess : data){
+                if (mess.mIsPinned){
+                    filteredData.add(mess);
+                }
             }
+        }else{
+            filteredData.addAll(data);
         }
+
         mMessageAdapter.setData(filteredData);
         if (mMessageAdapter.isEmpty()){
             mNoMessageText.setVisibility(View.VISIBLE);
@@ -164,16 +170,14 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Message message=mMessageAdapter.getItem(menuInfo.position);
 
-        String body="";
-        JSONObject json = new JSONObject();
-        try {
-            json.put("is_pinned", Boolean.toString(true));
-            body=json.toString(2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        AsyncTask task=new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                return NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + params[0]  + "/", SharedPrefUtil.getConnectedToken(getContext()), "{\"is_pinned\":\"True\"}" );
+            }
+        };
+        task.execute(message.mIdDb);
 
-        NetworkUtil.patch(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES + message.mIdDb, SharedPrefUtil.getConnectedToken(getContext()), body );
         return true;
     }
 }

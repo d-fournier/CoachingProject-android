@@ -44,7 +44,7 @@ public class NetworkUtil {
                 urlConnection.setRequestProperty("Authorization", "Token "+token);
             }
 
-            if(method.equals("PUT") || method.equals("POST")) {
+            if(method.equals("PATCH") || method.equals("POST")) {
                 urlConnection.setDoOutput(true);
                 DataOutputStream os = new DataOutputStream(urlConnection.getOutputStream());
                 os.write(body.getBytes());
