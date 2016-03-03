@@ -5,6 +5,8 @@
     <color name="colorPrimaryLight">#67C9AE</color>
     <color name="colorAccent">#1F4788</color>
 
+    <color name="white">@android:color/white</color>
+
     <color name="firstLaunchBkgTint">#be8ce4cb</color>
     <color name="firstLaunchBtnTint">@color/colorPrimary</color>
 
