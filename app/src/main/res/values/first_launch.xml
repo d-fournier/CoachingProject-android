@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="first_launch_title">
+        <item>CoachMe</item>
+        <item>Find a Coach</item>
+    </string-array>
+
+    <string-array name="first_launch_description">
+        <item>You want to increase your skills but you don\'t know how ? Get some help from other people !</item>
+        <item>Blabla</item>
+    </string-array>
+
+    <string-array name="first_launch_image">
+        <item>@drawable/first_launch_1</item>
+        <item>@drawable/coaching</item>
+    </string-array>
+</resources>
