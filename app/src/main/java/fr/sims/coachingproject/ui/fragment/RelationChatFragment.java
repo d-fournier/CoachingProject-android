@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -48,7 +49,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
     private EditText mMessageET;
-    private Button btn;
+    private FloatingActionButton btn;
     private long mRelationId;
     private boolean mPinned;
     private LinearLayout layoutView;
@@ -109,7 +110,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
 
-        btn = (Button) view.findViewById(R.id.send_button);
+        btn = (FloatingActionButton) view.findViewById(R.id.send_button);
         btn.setOnClickListener(this);
         mMessageET = (EditText) view.findViewById(R.id.message_editText);
     }
@@ -192,30 +193,30 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     }
 
 
-    private class SendRequestTask extends AsyncTask<String, Void, String> {
+    private class SendRequestTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
-        protected String doInBackground(String... params) {
+        protected NetworkUtil.Response doInBackground(String... params) {
             if (params.length > 0) {
                 String body = params[0];
                 String connectedToken = SharedPrefUtil.getConnectedToken(getContext());
                 NetworkUtil.Response response = NetworkUtil.post("https://coachingproject.herokuapp.com/api/messages/", connectedToken, body);
-
-            }
-
-            return null;
+                return response;
+            } else
+                return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            mMessageET.setText("");
-            btn.setEnabled(true);
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
+        protected void onPostExecute(NetworkUtil.Response response) {
+            if(response != null) {
+                if(response.isSuccessful()) {
+                    mMessageET.setText("");
+                    btn.setEnabled(true);
                     mRefreshLayout.setRefreshing(true);
+                    NetworkService.startActionMessages(getContext(), mRelationId);
+                } else {
+                    Snackbar.make(getListView(), R.string.no_connectivity, Snackbar.LENGTH_SHORT);
                 }
-            });
-            NetworkService.startActionMessages(getContext(), mRelationId);
+            }
         }
 
         @Override

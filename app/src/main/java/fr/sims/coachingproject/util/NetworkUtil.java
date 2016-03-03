@@ -111,6 +111,10 @@ public class NetworkUtil {
         public int getReturnCode() {
             return mReturnCode;
         }
+
+        public boolean isSuccessful(){
+            return mReturnCode >= 200 && mReturnCode < 300;
+        }
     }
 
 }
