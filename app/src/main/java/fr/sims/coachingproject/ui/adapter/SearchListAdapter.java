@@ -30,7 +30,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     private Context mCtx;
 
     public SearchListAdapter(Context context) {
-
+        mCtx=context;
         this.userList = new ArrayList<>();
     }
 
@@ -47,11 +47,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
             this.mNameTV = (TextView) v.findViewById(R.id.user_name);
             this.mDescTV = (TextView) v.findViewById(R.id.user_description);
         }
-    }
-
-
-    public SearchListAdapter() {
-        this.userList = new ArrayList<>();
     }
 
     @Override

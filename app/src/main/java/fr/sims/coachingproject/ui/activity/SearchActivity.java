@@ -75,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchListAdapter = new SearchListAdapter();
+        mSearchListAdapter = new SearchListAdapter(getApplicationContext());
         mSearchListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchListAdapter);
 
