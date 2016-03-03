@@ -1,5 +1,5 @@
 ﻿<resources>
-    <string name="app_name">CoachingProject</string>
+    <string name="app_name">CoachMe</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -33,6 +33,8 @@
     <string name="all_levels">All levels </string>
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
+    <string name="no_connectivity">No connection available</string>
+    <string name="retry">Retry</string>
     <string name="pin_message">Pin message</string>
     <string name="unpin_message">Unpin message</string>
 
@@ -52,4 +54,10 @@
     <string name="request_error">An error occurred while processing your request!</string>
     <string name="send_request">Send request</string>
     <string name="ask_for_coaching_in">Ask for coaching in</string>
+    <string name="title_activity_first_launch">FirstLaunchActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="activity_relation_name">Relation</string>
+    <string name="first_launch_bkg_cd">First launch tutorial background</string>
+    <string name="first_launch_next_cd">Next tutorial</string>
+    <string name="first_launch_previous_cd">Previous tutorial</string>
 </resources>

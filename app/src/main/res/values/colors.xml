@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    
+    <color name="colorPrimary">#03A678</color>
+    <color name="colorPrimaryDark">#027454</color>
+    <color name="colorPrimaryLight">#67C9AE</color>
+    <color name="colorAccent">#1F4788</color>
+
+    <color name="white">@android:color/white</color>
+
+    <color name="firstLaunchBkgTint">#be8ce4cb</color>
+    <color name="firstLaunchBtnTint">@color/colorPrimary</color>
+
     <color name="colorBackgroundDark">#EFEFEF</color>
 
     <color name="ok">#5cb85c</color>

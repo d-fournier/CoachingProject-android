@@ -8,6 +8,8 @@ public class Const {
     public static class SharedPref {
         public final static String SHARED_PREF_NAME = "CoachingProjectSharedPref";
 
+        public final static String IS_FIRST_LAUNCH = "IS_FIRST_LAUNCH";
+
         public final static String CURRENT_USER_ID = "CURRENT_USER_ID";
         // TODO Move out from SharedPref
         public final static String CURRENT_TOKEN = "CURRENT_TOKEN";

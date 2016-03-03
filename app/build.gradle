@@ -29,4 +29,6 @@ dependencies {
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.google.code.gson:gson:2.6.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+
+    compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
 }
