@@ -18,16 +18,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.ui.adapter.FirstLaunchPagerAdapter;
 
-public class FirstLaunchActivity extends AppCompatActivity {
+public class FirstLaunchActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
 
     private FirstLaunchPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+    private ImageButton mNextBtn;
+    private ImageButton mPreviousBtn;
 
     public static void startActivity(Context ctx){
         Intent intent = new Intent(ctx,FirstLaunchActivity.class);
@@ -46,6 +49,56 @@ public class FirstLaunchActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(this);
+
+        mNextBtn = (ImageButton) findViewById(R.id.first_launch_next);
+        mPreviousBtn = (ImageButton) findViewById(R.id.first_launch_previous);
+
+        updateBtn(0);
+
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+    @Override
+    public void onPageSelected(int position) {
+        updateBtn(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {  }
+
+    private void updateBtn(int position){
+        int itemNumber = mSectionsPagerAdapter.getCount();
+
+        if(position > 0) {
+            mPreviousBtn.setVisibility(View.VISIBLE);
+            mPreviousBtn.setOnClickListener(this);
+        } else {
+            mPreviousBtn.setVisibility(View.GONE);
+            mPreviousBtn.setOnClickListener(null);
+        }
+        if(position < itemNumber-1) {
+            mNextBtn.setVisibility(View.VISIBLE);
+            mNextBtn.setOnClickListener(this);
+        } else {
+            mNextBtn.setVisibility(View.GONE);
+            mNextBtn.setOnClickListener(null);
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        switch (viewId){
+            case R.id.first_launch_next:
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1, true);
+                break;
+            case R.id.first_launch_previous:
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem()-1, true);
+                break;
+        }
+    }
 }

@@ -1,10 +1,12 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,8 +46,6 @@ public class FirstLaunchFragment extends GenericFragment {
     protected void bindView(View view) {
         super.bindView(view);
 
-        int firstLaunchItemNumber = getResources().getStringArray(R.array.first_launch_title).length;
-
 
         Resources res = getResources();
 
@@ -55,8 +55,10 @@ public class FirstLaunchFragment extends GenericFragment {
         TypedArray imgs = getResources().obtainTypedArray(R.array.first_launch_image);
         int pictureId = imgs.getResourceId(mSectionNumber, -1);
 
-        ((TextView) view.findViewById(R.id.title)).setText(title);
-        ((TextView) view.findViewById(R.id.description)).setText(description);
-        ((ImageView) view.findViewById(R.id.picture)).setImageResource(pictureId);
+        ((TextView) view.findViewById(R.id.first_launch_title)).setText(title);
+        ((TextView) view.findViewById(R.id.first_launch_desc)).setText(description);
+        ((ImageView) view.findViewById(R.id.first_launch_bkg)).setImageResource(pictureId);
     }
+
+
 }

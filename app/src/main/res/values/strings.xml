@@ -62,5 +62,8 @@
     <string name="title_activity_first_launch">FirstLaunchActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="activity_relation_name">Relation</string>
+    <string name="first_launch_bkg_cd">First launch tutorial background</string>
+    <string name="first_launch_next_cd">Next tutorial</string>
+    <string name="first_launch_previous_cd">Previous tutorial</string>
     >>>>>>> sprint_1
 </resources>
