@@ -27,4 +27,11 @@ public class SharedPrefUtil {
     public static void putConnectedToken(Context ctx, String token){
         getSharedPreferences(ctx).edit().putString(Const.SharedPref.CURRENT_TOKEN, token).apply();
     }
-}
+
+    public static boolean isFirstLaunch(Context ctx){
+        return getSharedPreferences(ctx).getBoolean(Const.SharedPref.IS_FIRST_LAUNCH, true);
+    }
+
+    public static void putIsFirstLaunch(Context ctx, boolean firstLaunch){
+        getSharedPreferences(ctx).edit().putBoolean(Const.SharedPref.IS_FIRST_LAUNCH, firstLaunch).apply();
+    }}

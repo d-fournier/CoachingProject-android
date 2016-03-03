@@ -1,5 +1,5 @@
 ﻿<resources>
-    <string name="app_name">CoachingProject</string>
+    <string name="app_name">CoachMe</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -59,5 +59,10 @@
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
     <string name="send_coaching_request">Send coaching request</string>
->>>>>>> sprint_1
+    <string name="title_activity_first_launch">FirstLaunchActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="activity_relation_name">Relation</string>
+    <string name="first_launch_bkg_cd">First launch tutorial background</string>
+    <string name="first_launch_next_cd">Next tutorial</string>
+    <string name="first_launch_previous_cd">Previous tutorial</string>
 </resources>
