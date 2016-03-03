@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context="fr.sims.coachingproject.ui.activity.FirstLaunchActivity">
 
+    <ImageView
+        android:id="@+id/first_launch_bkg1"
+        android:tint="@color/firstLaunchBkgTint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/first_launch_bkg_cd" />
+
+    <ImageView
+        android:id="@+id/first_launch_bkg2"
+        android:tint="@color/firstLaunchBkgTint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/first_launch_bkg_cd" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"

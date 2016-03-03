@@ -2,14 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/first_launch_bkg"
-        android:tint="@color/firstLaunchBkgTint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/first_launch_bkg_cd" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

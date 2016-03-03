@@ -52,12 +52,9 @@ public class FirstLaunchFragment extends GenericFragment {
         String title = res.getStringArray(R.array.first_launch_title)[mSectionNumber];
         String description = res.getStringArray(R.array.first_launch_description)[mSectionNumber];
 
-        TypedArray imgs = getResources().obtainTypedArray(R.array.first_launch_image);
-        int pictureId = imgs.getResourceId(mSectionNumber, -1);
 
         ((TextView) view.findViewById(R.id.first_launch_title)).setText(title);
         ((TextView) view.findViewById(R.id.first_launch_desc)).setText(description);
-        ((ImageView) view.findViewById(R.id.first_launch_bkg)).setImageResource(pictureId);
     }
 
 
