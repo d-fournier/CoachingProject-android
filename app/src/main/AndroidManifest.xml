@@ -56,7 +56,8 @@
         <activity
             android:name=".ui.activity.RelationActivity"
             android:label="@string/activity_relation_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
 
         <service
             android:name=".NetworkService"

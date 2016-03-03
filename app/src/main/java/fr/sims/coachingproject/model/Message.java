@@ -99,6 +99,7 @@ public class Message extends Model {
             res = new Select()
                     .from(Message.class)
                     .where("relation == ?", rel.getId())
+                    .orderBy("time DESC")
                     .execute();
         }
 
