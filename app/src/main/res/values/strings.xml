@@ -1,5 +1,5 @@
 ﻿<resources>
-    <string name="app_name">CoachingProject</string>
+    <string name="app_name">CoachMe</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,8 +12,8 @@
                                         Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux.
     </string>
 
-    <string name="my_coach">My trainer</string>
-    <string name="my_trainee">My Learner</string>
+    <string name="my_coach">My trainers</string>
+    <string name="my_trainee">My trainees</string>
     <string name="pending_coach_request">"Pending trainer request "</string>
     <string name="pending_trainee_request">My requests</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -39,4 +39,30 @@
     <string name="all_levels">All levels </string>
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
+    <string name="no_connectivity">No connection available</string>
+    <string name="retry">Retry</string>
+    <string name="pin_message">Pin message</string>
+    <string name="unpin_message">Unpin message</string>
+
+    <plurals name="user_age">
+        <item quantity="one">%1$d year old</item>
+        <item quantity="other">%1$d years old</item>
+    </plurals>
+
+    <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
+    <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
+    <string name="refuse">Refuse</string>
+    <string name="accept">Accept</string>
+
+    <string name="no_group">No group found</string>
+    <string name="create_group">Create group</string>
+    <string name="request_sent">Your request has been sent successfully!</string>
+    <string name="request_error">An error occurred while processing your request!</string>
+    <string name="send_coaching_request">Send coaching request</string>
+    <string name="title_activity_first_launch">FirstLaunchActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="activity_relation_name">Relation</string>
+    <string name="first_launch_bkg_cd">First launch tutorial background</string>
+    <string name="first_launch_next_cd">Next tutorial</string>
+    <string name="first_launch_previous_cd">Previous tutorial</string>
 </resources>
