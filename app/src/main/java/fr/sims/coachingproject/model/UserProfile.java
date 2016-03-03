@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.sims.coachingproject.util.SharedPrefUtil;
+
 /**
  * Created by dfour on 10/02/2016.
  */
@@ -159,5 +161,13 @@ public class UserProfile extends Model{
             }
         }
         return up;
+    }
+
+    public boolean isCoachingUser(long userId, long sportId){
+        CoachingRelation relation=new Select().from(CoachingRelation.class).where("coach == ?", mIdDb).and("trainee == ?", userId).and("sport == ?", sportId).executeSingle();
+        if(relation!=null){
+            return (relation.mRequestStatus !=null && relation.mRequestStatus);
+        }
+        return false;
     }
 }
