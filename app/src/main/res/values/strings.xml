@@ -5,12 +5,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="name_age">Nom : Lena \n Age : 23   \n Ville : Lyon \n Civilite : Femme</string>
-    <string name="coach_experience">Saisons 2012 à 2014 : Sporting Club de Bastia : CFA 2 ( Convention payée ).\n
-                                        Saisons 2010 à 2012 : Sporting Club de Bastia : U 19 National ( Convention payée ).\n
-                                        Saisons 2007 à 2010 : Sporting Club de Bastia : U 17 National ( Contrat aspirant ). \n
-                                        Saisons 2005 à 2007 : Antony sport football : U 13 DH et U 14 fédéraux.
-    </string>
 
     <string name="my_coach">My trainers</string>
     <string name="my_trainee">My trainees</string>
@@ -58,7 +52,8 @@
     <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
-    <string name="send_coaching_request">Send coaching request</string>
+    <string name="send_request">Send request</string>
+    <string name="ask_for_coaching_in">Ask for coaching in</string>
     <string name="title_activity_first_launch">FirstLaunchActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="activity_relation_name">Relation</string>

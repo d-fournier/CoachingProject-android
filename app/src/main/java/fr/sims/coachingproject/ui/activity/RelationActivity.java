@@ -176,7 +176,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         switch (viewId) {
             case R.id.profile_layout:
-                ProfileActivity.startActivity(this, mPartner.mIdDb);
+                ProfileActivity.startActivity(this, mPartner.mIdDb, -1);
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);

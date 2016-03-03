@@ -65,4 +65,8 @@ public class Sport extends Model {
         return mIdDb;
     }
 
+    public static Sport getSportById(long id){
+        return new Select().from(Sport.class).where("idDb = ?", id).executeSingle();
+    }
+
 }
