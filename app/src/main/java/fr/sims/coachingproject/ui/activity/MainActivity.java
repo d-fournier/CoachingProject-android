@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         });
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(0, null, this);
+
     }
 
     @Override

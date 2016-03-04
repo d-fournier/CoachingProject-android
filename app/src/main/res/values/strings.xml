@@ -60,4 +60,5 @@
     <string name="first_launch_bkg_cd">First launch tutorial background</string>
     <string name="first_launch_next_cd">Next tutorial</string>
     <string name="first_launch_previous_cd">Previous tutorial</string>
+    <string name="send_message">Send</string>
 </resources>
