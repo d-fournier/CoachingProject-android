@@ -75,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchListAdapter = new SearchListAdapter();
+        mSearchListAdapter = new SearchListAdapter(getApplicationContext());
         mSearchListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchListAdapter);
 
@@ -149,7 +149,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
     @Override
     public void onItemClick(View view, int position) {
-        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb);
+        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb,mSportsSpinner.getSelectedItemId());
     }
 
     @Override

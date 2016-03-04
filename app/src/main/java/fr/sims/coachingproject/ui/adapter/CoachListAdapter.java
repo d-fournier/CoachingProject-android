@@ -216,10 +216,10 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             int resId;
             switch (itemViewType) {
                 case HEADER_COACH:
-                    resId = R.string.my_coach;
+                    resId = R.string.my_coachs;
                     break;
                 case HEADER_LEARNER:
-                    resId = R.string.my_trainee;
+                    resId = R.string.my_trainees;
                     break;
                 case HEADER_REQUEST_COACH:
                     resId = R.string.pending_coach_request;
