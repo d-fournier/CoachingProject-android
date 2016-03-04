@@ -40,6 +40,25 @@ public class Const {
         public final static String KEYWORDS_PARAMETER = "keywords";
     }
 
+    public static class Notification {
+        public static class Type {
+            public static final String MESSAGE_NEW = "message_new";
+            public static final int MESSAGE_NEW_ID = 0;
+            public static final String COACHING_RESPONSE = "coaching_response";
+            public static final int COACHING_RESPONSE_ID = 1;
+            public static final String COACHING_NEW = "coaching_new";
+            public static final int COACHING_NEW_ID = 2;
+            public static final String COACHING_END = "coaching_end";
+            public static final int COACHING_END_ID = 3;
+        }
+
+        public static class Data {
+            public static final String CONTENT = "content";
+            public static final String TYPE = "type";
+
+        }
+    }
+
     public static class BroadcastEvent {
         public final static String EVENT_END_SERVICE_ACTION = "fr.sims.coachingproject.event.END_SERVICE_ACTION";
         public final static String EXTRA_ACTION_NAME = "fr.sims.coachingproject.extra.ACTION_NAME";

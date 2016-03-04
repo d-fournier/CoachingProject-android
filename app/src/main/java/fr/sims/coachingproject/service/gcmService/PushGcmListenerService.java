@@ -4,17 +4,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-// TODO v7 ???
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+// TODO v7 ???
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.ui.activity.MainActivity;
+import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.ui.activity.RelationActivity;
+import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Donovan on 04/03/2016.
@@ -32,53 +31,81 @@ public class PushGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("body");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        String messageType = data.getString(Const.Notification.Data.TYPE, "");
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
+//        if (from.startsWith("/topics/")) {
+//            // message received from some topic.
+//        } else {
+//            // normal downstream message.
+//        }
+
+        switch (messageType) {
+            case Const.Notification.Type.COACHING_RESPONSE:
+                handleCoachingResponse(data);
+                break;
+            case Const.Notification.Type.COACHING_END:
+                handleCoachingEnd(data);
+                break;
+            case Const.Notification.Type.COACHING_NEW:
+                handleCoachingNew(data);
+                break;
+            case Const.Notification.Type.MESSAGE_NEW:
+                handleMessageNew(data);
+                break;
+
         }
-
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification(data);
-        // [END_EXCLUDE]
     }
 
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param data GCM message received.
-     */
-    private void sendNotification(Bundle data) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void handleMessageNew(Bundle data) {
+        String messageString = data.getString(Const.Notification.Data.CONTENT, "");
+        Message message = Message.parseItem(messageString);
+
+        if (message == null)
+            return;
+
+        // Retrieve Previous Notification
+
+        Intent intent = RelationActivity.getIntent(this, message.mRelation.mIdDb);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_send_24dp)
+                .setContentTitle("You received new messages from " + message.mSender.mDisplayName)
+                .setContentText(message.mContent)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(""+message.mRelation.mIdDb, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
+    private void handleCoachingNew(Bundle data) {
+
+    }
+
+    private void handleCoachingEnd(Bundle data) {
+
+    }
+
+    private void handleCoachingResponse(Bundle data) {
+
+    }
+
+//    /**
+//     * Create and show a simple notification containing the received GCM message.
+//     *
+//     * @param data GCM message received.
+//     */
+//    private void sendNotification(Bundle data) {
+//
+//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//
+//        NotificationManager notificationManager =
+//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//    }
 }
