@@ -6,10 +6,10 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="my_coach">My trainers</string>
-    <string name="my_trainee">My trainees</string>
-    <string name="pending_coach_request">"Pending trainer request "</string>
-    <string name="pending_trainee_request">My requests</string>
+    <string name="my_coachs">My coaches</string>
+    <string name="my_trainees">My trainees</string>
+    <string name="pending_coach_request">Pending requests to new coaches</string>
+    <string name="pending_trainee_request">Pending requests from new trainees</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Login</string>

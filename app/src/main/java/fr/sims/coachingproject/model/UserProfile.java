@@ -39,6 +39,8 @@ public class UserProfile extends Model{
     public String mDisplayName;
 
     @Column(name = "picture")
+    @Expose
+    @SerializedName("picture")
     public String mPicture = "http://p7.storage.canalblog.com/77/74/402370/21923602.jpg";
 
     @Column(name = "birthdate")
