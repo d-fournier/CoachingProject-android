@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -49,7 +48,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
     private EditText mMessageET;
-    private FloatingActionButton btn;
+    private Button mSendBtn;
     private long mRelationId;
     private boolean mPinned;
     private LinearLayout layoutView;
@@ -110,8 +109,8 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
 
-        btn = (FloatingActionButton) view.findViewById(R.id.send_button);
-        btn.setOnClickListener(this);
+        mSendBtn = (Button) view.findViewById(R.id.send_button);
+        mSendBtn.setOnClickListener(this);
         mMessageET = (EditText) view.findViewById(R.id.message_editText);
     }
 
@@ -208,9 +207,9 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
             if(response != null) {
+                mSendBtn.setEnabled(true);
                 if(response.isSuccessful()) {
                     mMessageET.setText("");
-                    btn.setEnabled(true);
                     mRefreshLayout.setRefreshing(true);
                     NetworkService.startActionMessages(getContext(), mRelationId);
                 } else {
@@ -221,7 +220,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
         @Override
         protected void onPreExecute() {
-            btn.setEnabled(false);
+            mSendBtn.setEnabled(false);
         }
 
     }
