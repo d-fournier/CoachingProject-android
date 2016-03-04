@@ -21,13 +21,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import fr.sims.coachingproject.NetworkService;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 
-import static fr.sims.coachingproject.NetworkService.startActionCoachingRelations;
+import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {

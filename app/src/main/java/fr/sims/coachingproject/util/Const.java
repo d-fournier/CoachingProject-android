@@ -9,6 +9,7 @@ public class Const {
         public final static String SHARED_PREF_NAME = "CoachingProjectSharedPref";
 
         public final static String IS_FIRST_LAUNCH = "IS_FIRST_LAUNCH";
+        public final static String IS_GCM_TOKEN_SENT_TO_SERVER = "IS_GCM_TOKEN_SENT_TO_SERVER";
 
         public final static String CURRENT_USER_ID = "CURRENT_USER_ID";
         // TODO Move out from SharedPref
@@ -28,6 +29,7 @@ public class Const {
         public final static String LEVELS = "levels/";
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
+        public static final String DEVICES = "devices/";
         public final static String SEPARATOR = "/";
 
 

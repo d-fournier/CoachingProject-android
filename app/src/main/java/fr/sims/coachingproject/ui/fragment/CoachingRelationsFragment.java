@@ -9,19 +9,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.sims.coachingproject.NetworkService;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
-import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
-import fr.sims.coachingproject.ui.activity.ProfileActivity;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
 import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
 import fr.sims.coachingproject.util.Const;
