@@ -67,16 +67,12 @@ public class PushGcmListenerService extends GcmListenerService {
 
         Intent intent = RelationActivity.getIntent(this, message.mRelation.mIdDb);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_send_24dp)
-                .setContentTitle("You received new messages from " + message.mSender.mDisplayName)
-                .setContentText(message.mContent)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
+        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
+        notifBuilder.setContentTitle("You received new messages from " + message.mSender.mDisplayName)
+                .setContentText(message.mContent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(""+message.mRelation.mIdDb, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
@@ -108,4 +104,11 @@ public class PushGcmListenerService extends GcmListenerService {
 //                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 //
 //    }
+
+    private NotificationCompat.Builder getBasicNotification(PendingIntent pendingIntent){
+        return new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_send_24dp)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+    }
 }
