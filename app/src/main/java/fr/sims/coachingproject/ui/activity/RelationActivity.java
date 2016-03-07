@@ -39,7 +39,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     TabLayout mTabLayout;
     ScrollView mInvitationLayout;
     TextView mRefusedInvitationTV;
-    ImageButton mEndRelationButton;
 
 
     CoachingRelation mRelation;
@@ -71,7 +70,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-        mEndRelationButton = (ImageButton) findViewById(R.id.End_Relation_Button);
 
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
@@ -131,7 +129,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setVisibility(View.GONE);
         mInvitationLayout.setVisibility(View.GONE);
         mRefusedInvitationTV.setVisibility(View.GONE);
-        mEndRelationButton.setVisibility(View.GONE);
 
 
         if (mRelation.mIsPending) {
@@ -150,10 +147,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             mTabLayout.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
             mInvitationLayout.setVisibility(View.GONE);
-            if (!mIsCurrentUserCoach)
-                findViewById(R.id.End_Relation_Button).setVisibility(View.VISIBLE);
-            else
-                findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
 
 
             if (mRelation.mIsAccepted) {
