@@ -1,51 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <!-- Editext for Search -->
-    <EditText android:id="@+id/inputSearch"
+    <EditText
+        android:id="@+id/inputSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_group_hint"
-        android:inputType="textVisiblePassword"/>
+        android:inputType="textVisiblePassword" />
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+
+
+    <!-- AutoCompleteTextView for Search -->
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:ems="10"
+            android:hint="Search place..">
+
+            <requestFocus />
+        </AutoCompleteTextView>
+
+
+    <!-- Combobox for sports -->
+    <Spinner
+        android:id="@+id/spinner_sports"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Please enter your place" >
+        android:layout_height="wrap_content" />
 
-        <requestFocus />
-    </AutoCompleteTextView>
+
 
     <Button
+        android:id="@+id/search_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/search_button"
-        android:text="@string/search_text"/>
+        android:text="@string/search_text" />
 
     <ProgressBar
         android:id="@+id/loading_progress_bar"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
 
 
-    <android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/Search_List"
-    android:scrollbars="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/Search_List"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
     <TextView
         android:id="@+id/no_coach_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_coach_found"/>
+        android:text="@string/no_coach_found" />
 
 </LinearLayout>

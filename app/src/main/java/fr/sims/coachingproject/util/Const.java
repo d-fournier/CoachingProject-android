@@ -34,6 +34,7 @@ public class Const {
         public final static String SPORT_PARAMETER = "sport";
         public final static String LEVEL_PARAMETER = "level";
         public final static String KEYWORDS_PARAMETER = "keywords";
+        public final static String CITY_PARAMETER = "city";
 
         public static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
         public static final String TYPE_AUTOCOMPLETE = "/autocomplete";

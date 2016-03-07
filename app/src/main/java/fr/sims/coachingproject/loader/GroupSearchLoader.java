@@ -19,12 +19,14 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
 
     private String mKeywords;
+    private String mCity;
     private long mSport;
 
-    public GroupSearchLoader(Context context, String keywords, long sport) {
+    public GroupSearchLoader(Context context, String keywords, long sport,String city) {
         super(context);
         mKeywords = keywords;
         mSport = sport;
+        mCity = city;
     }
 
     @Override
@@ -33,12 +35,13 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
         try {
             request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS;
             if (!mKeywords.isEmpty()) {
-
                 request += "&" + Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
             }
             if (mSport != -1) {
                 request += "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
             }
+            if(!mCity.isEmpty())
+                request += "&" + Const.WebServer.CITY_PARAMETER + "=" + mCity;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
