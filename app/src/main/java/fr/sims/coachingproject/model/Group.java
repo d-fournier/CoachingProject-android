@@ -106,4 +106,11 @@ public class Group extends Model{
                 .execute();
     }
 
+    public static Group getGroupById(long id){
+        return new Select()
+                .from(Group.class)
+                .where("idDb = ?", id)
+                .executeSingle();
+    }
+
 }

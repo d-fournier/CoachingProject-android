@@ -136,31 +136,31 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
     class CoachLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
-        @Override
-        public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            mLoadingBar.setVisibility(View.VISIBLE);
-            mRecycleView.setVisibility(View.GONE);
-            mEmptyCoachListText.setVisibility(View.GONE);
-            return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""), mSearchArgs.getLong("idSport", -1), mSearchArgs.getLong("idLevel", -1));
-        }
-
-        @Override
-        public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
-            mUserList = data;
-            mSearchListAdapter.setData(mUserList);
-            mLoadingBar.setVisibility(View.GONE);
-
-            if(mUserList.isEmpty()){
+            @Override
+            public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+                mLoadingBar.setVisibility(View.VISIBLE);
                 mRecycleView.setVisibility(View.GONE);
-                mEmptyCoachListText.setVisibility(View.VISIBLE);
-            }else {
-                mRecycleView.setVisibility(View.VISIBLE);
                 mEmptyCoachListText.setVisibility(View.GONE);
+                return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""), mSearchArgs.getLong("idSport", -1), mSearchArgs.getLong("idLevel", -1));
             }
 
-        }
+            @Override
+            public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
+                mUserList = data;
+                mSearchListAdapter.setData(mUserList);
+                mLoadingBar.setVisibility(View.GONE);
 
-        @Override
+                if(mUserList.isEmpty()){
+                    mRecycleView.setVisibility(View.GONE);
+                    mEmptyCoachListText.setVisibility(View.VISIBLE);
+                }else {
+                    mRecycleView.setVisibility(View.VISIBLE);
+                    mEmptyCoachListText.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
         public void onLoaderReset(Loader<List<UserProfile>> loader) {
 
         }

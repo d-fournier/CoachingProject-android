@@ -1,7 +1,5 @@
 package fr.sims.coachingproject.model;
 
-import android.database.sqlite.SQLiteConstraintException;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -10,8 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by dfour on 15/02/2016.

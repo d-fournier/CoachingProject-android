@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.RelationActivity">
+    tools:context=".ui.activity.GroupActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,13 +19,10 @@
             android:id="@+id/group_layout"
             android:layout_margin="@dimen/fab_margin">
 
-
-
             <RelativeLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/fab_margin">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -36,7 +33,7 @@
 
                 <TextView
                     android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/group_description"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nulla purus, lacinia ac aliquet nec, sagittis ac libero. Suspendisse potenti. Interdum et malesuada fames ac ante ipsum primis in posuere. "
                     style="@style/TextAppearance.AppCompat.Body1"
@@ -66,20 +63,23 @@
                     android:id="@+id/group_sport"
                     android:text="Course a pied"
                     android:layout_below="@+id/group_creator"/>
-
             </RelativeLayout>
         </LinearLayout>
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-    </android.support.design.widget.AppBarLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/view_group_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/groupMessagePager"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/groupMembersPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

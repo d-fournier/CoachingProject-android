@@ -99,7 +99,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
 
     @Override
     public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-        return new GroupLoader(getContext());
+        return new GroupLoader(getContext(),-1);
     }
 
     @Override
