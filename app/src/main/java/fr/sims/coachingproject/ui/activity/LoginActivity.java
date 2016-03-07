@@ -22,6 +22,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
+import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -209,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
+                RegistrationGCMIntentService.startActionRegistrationGCM(getApplicationContext());
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect));

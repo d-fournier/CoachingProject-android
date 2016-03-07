@@ -38,12 +38,6 @@ public class PushGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         String messageType = data.getString(Const.Notification.Data.TYPE, "");
 
-//        if (from.startsWith("/topics/")) {
-//            // message received from some topic.
-//        } else {
-//            // normal downstream message.
-//        }
-
         switch (messageType) {
             case Const.Notification.Type.COACHING_RESPONSE:
             case Const.Notification.Type.COACHING_END:
