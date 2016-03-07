@@ -83,7 +83,7 @@ public class NetworkService extends IntentService {
                     handleActionRelationMessages(intent.getLongExtra(EXTRA_ITEM_ID, -1));
                     break;
                 case ACTION_TOGGLE_PIN_MESSAGES:
-                    handleActionTogglePinMesages(intent.getLongExtra(EXTRA_MESSAGE_ID, -1),intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
+                    handleActionTogglePinMesage(intent.getLongExtra(EXTRA_MESSAGE_ID, -1), intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
                     break;
                 case ACTION_GROUPS:
                     handleActionGroups();
@@ -184,7 +184,7 @@ public class NetworkService extends IntentService {
         }
     }
 
-    protected void handleActionTogglePinMesages(long messageId, boolean toPin) {
+    protected void handleActionTogglePinMesage(long messageId, boolean toPin) {
         JSONObject json=new JSONObject();
         try {
             json.put("is_pinned", Boolean.toString(toPin));
