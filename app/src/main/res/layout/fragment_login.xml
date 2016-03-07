@@ -33,9 +33,9 @@
                 android:id="@+id/log_in_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log in"
+                android:text="@string/log_in"
                 style="@style/TextAppearance.AppCompat.Display1"
-                android:textAlignment="center"/>
+                android:textAlignment="center" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
