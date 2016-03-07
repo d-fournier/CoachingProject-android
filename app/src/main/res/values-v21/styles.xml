@@ -1,6 +1,10 @@
 <resources>
 
     <style name="AppTheme.NoActionBar.StatusBar" parent="AppTheme.NoActionBar">
+        <!-- Enable Transition between activities -->
+        <item name="android:windowContentTransitions">true</item>
+
+
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>

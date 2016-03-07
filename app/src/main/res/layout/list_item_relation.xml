@@ -9,7 +9,7 @@
         android:id="@+id/user_picture"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@android:drawable/ic_menu_view"/>
+        android:transitionName="@string/transition_relation_picture"/>
 
     <TextView
         android:id="@+id/user_name"
@@ -17,7 +17,7 @@
         android:layout_toEndOf="@id/user_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="John Doe"/>
+        android:transitionName="@string/transition_relation_name"/>
 
     <TextView
         android:id="@+id/user_description"
@@ -25,6 +25,6 @@
         android:layout_toRightOf="@id/user_picture"
         android:layout_toEndOf="@id/user_picture"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Football"/>
+        android:layout_height="wrap_content"/>
+
 </RelativeLayout>

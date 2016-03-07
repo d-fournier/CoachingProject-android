@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="transition_relation_picture">transition_relation_picture</string>
+    <string name="transition_relation_name">transition_relation_name</string>
+</resources>

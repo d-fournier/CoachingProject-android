@@ -7,18 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.activity.MainActivity;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 // TODO Header ???
@@ -171,7 +168,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             case LIST_LEARNER:
             case LIST_COACH: // normal list - Coach
                 v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_coach, parent, false);
+                        .inflate(R.layout.list_item_relation, parent, false);
                 final CoachViewHolder cvh = new CoachViewHolder(v);
                 cvh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

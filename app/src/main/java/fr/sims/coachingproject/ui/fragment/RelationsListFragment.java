@@ -1,14 +1,18 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 
 import java.util.List;
@@ -26,7 +30,7 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class CoachingRelationsFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, CoachListAdapter.OnItemClickListener {
+public class RelationsListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, CoachListAdapter.OnItemClickListener {
 
     public static final String TABS_TITLE = "Coaching";
 
@@ -37,8 +41,8 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
 
     GenericBroadcastReceiver mBroadcastReceiver;
 
-    public static CoachingRelationsFragment newInstance() {
-        CoachingRelationsFragment fragment = new CoachingRelationsFragment();
+    public static RelationsListFragment newInstance() {
+        RelationsListFragment fragment = new RelationsListFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -117,7 +121,19 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onItemClick(View view, int position) {
         long id = mRecyclerAdapter.getRelationId(position);
-        RelationActivity.startActivity(getContext(), id);
+        Intent intent = RelationActivity.getIntent(getContext(), id);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(view, getString(R.string.transition_relation_picture)),
+                            Pair.create(view, getString(R.string.transition_relation_name))
+                    );
+            getActivity().startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+
+
     }
 
     @Override

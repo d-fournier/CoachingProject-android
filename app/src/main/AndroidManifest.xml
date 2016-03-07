@@ -66,7 +66,8 @@
             android:name=".ui.activity.RelationActivity"
             android:label="@string/activity_relation_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".ui.activity.MainActivity"/>
 
         <service
             android:name=".service.NetworkService"
