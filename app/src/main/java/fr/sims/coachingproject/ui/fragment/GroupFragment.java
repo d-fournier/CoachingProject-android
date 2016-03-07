@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -49,9 +50,16 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLoaderManager().initLoader(0, null, this);
+        mGroupAdapter = new GroupAdapter();
+        NetworkService.startActionGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
 
@@ -62,7 +70,6 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         super.bindView(view);
         mGroupList = (RecyclerView) view.findViewById(R.id.group_list);
         mGroupList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mGroupAdapter = new GroupAdapter();
         mGroupList.setAdapter(mGroupAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh_group);
@@ -74,7 +81,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
             }
         });
 
-        NetworkService.startActionGroups(getContext());
+
     }
 
     @Override

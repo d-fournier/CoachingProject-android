@@ -29,6 +29,7 @@ import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
+import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Anthony Barbosa on 16/02/2016.
@@ -106,7 +107,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 mLevelsSpinner.setVisibility(View.GONE);
                 if (sportID != -1) {
                     mSearchArgs.putLong(ID_SPORT, sportID);
-                    getLoaderManager().restartLoader(2, mSearchArgs, mLevelLoader);
+                    getLoaderManager().restartLoader(Const.Loaders.LEVEL_LOADER_ID, mSearchArgs, mLevelLoader);
                 } else {
                     mSearchArgs.remove(ID_LEVEL);
                 }
@@ -132,9 +133,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 } catch (NullPointerException e) {
                     mSearchArgs.putLong(ID_LEVEL, -1);
                 }
-                getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
+                getLoaderManager().restartLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
                 if(mSportList.isEmpty()){
-                    getLoaderManager().restartLoader(0, mSearchArgs, mSportLoader);
+                    getLoaderManager().restartLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
                 }
             }
         });
@@ -142,9 +143,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         mSportLoader = new SportLoaderCallbacks();
         mCoachLoader = new CoachLoaderCallbacks();
         mLevelLoader = new LevelsLoaderCallbacks();
-        getLoaderManager().initLoader(0, mSearchArgs, mSportLoader);
-        getLoaderManager().initLoader(2, mSearchArgs, mLevelLoader);
-        getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
+        getLoaderManager().initLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
+        getLoaderManager().initLoader(Const.Loaders.LEVEL_LOADER_ID, mSearchArgs, mLevelLoader);
+        getLoaderManager().initLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
     }
 
     @Override

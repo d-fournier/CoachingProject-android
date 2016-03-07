@@ -26,6 +26,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
+import fr.sims.coachingproject.util.Const;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -94,14 +95,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
         NetworkService.startActionConnectedUserInfo(this);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override

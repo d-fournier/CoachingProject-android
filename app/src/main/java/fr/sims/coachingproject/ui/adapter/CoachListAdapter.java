@@ -259,16 +259,16 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         UserProfile up;
         switch (type) {
             case LIST_COACH:
-                up = mDatasetCr.get(position - 1);
+                up = mDatasetCr.get(position - 1);//Un header
                 break;
             case LIST_LEARNER:
-                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));
+                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));//Première liste + 2 headers
                 break;
             case LIST_PENDING_COACH:
-                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
+                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3)); //2 premières listes + 3 headers
                 break;
             case LIST_PENDING_LEARNER:
-                up = mDatasetPendingLr.get(position - (getItemCount() - 1));
+                up = mDatasetPendingLr.get(position - (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 4)); //3 premières listes + 4 headers
                 break;
             default:
                 up = null;

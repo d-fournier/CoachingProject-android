@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class Group extends Model{
     @Column(name = "members")
     @Expose
     @SerializedName("members")
-    public List<UserProfile> mMembers;
+    public UserProfile[] mMembers;
 
     @Column(name = "sport")
     @Expose
@@ -52,9 +53,6 @@ public class Group extends Model{
     }
 
     public Group saveOrUpdate(){
-        for(int i=0;i<mMembers.size();i++){
-            mMembers.set(i,mMembers.get(i).saveOrUpdate());
-        }
         mSport = mSport.saveOrUpdate();
 
         Group res = new Select().from(Group.class).where("idDb = ?", mIdDb).executeSingle();
@@ -65,7 +63,21 @@ public class Group extends Model{
             this.save();
             res = this;
         }
+        saveMembers();
         return res;
+    }
+
+    private void saveMembers(){
+        List<GroupMembers> groupMembers = new ArrayList<>();
+        for(UserProfile member : mMembers) {
+            GroupMembers gm = new GroupMembers();
+            gm.mGroupId = mIdDb;
+            gm.mUser = member;
+            groupMembers.add(gm);
+        }
+        for(GroupMembers gm : groupMembers) {
+            gm.saveOrUpdate();
+        }
     }
 
     private void bindProperties(Group g) {
@@ -101,9 +113,20 @@ public class Group extends Model{
     }
 
     public static List<Group> getAllGroups() {
-        return new Select()
-                .from(Group.class)
-                .execute();
+        List<Group> groupList =  new Select().from(Group.class).execute();
+        for(Group g : groupList){
+            try {
+                List<GroupMembers> list = GroupMembers.getAllUsersByGroupId(g.mIdDb);
+                int size = list.size();
+                g.mMembers = new UserProfile[size];
+                for (int i = 0; i < size; i++) {
+                    g.mMembers[i] = list.get(i).mUser;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return groupList;
     }
 
 }
