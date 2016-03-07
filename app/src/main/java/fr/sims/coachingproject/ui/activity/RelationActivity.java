@@ -13,6 +13,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -71,10 +74,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         if(actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("TEST");
-
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
@@ -93,11 +92,21 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         findViewById(R.id.profile_layout).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_accept).setOnClickListener(this);
         findViewById(R.id.coaching_invitation_refuse).setOnClickListener(this);
-        findViewById(R.id.End_Relation_Button).setOnClickListener(this);
 
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        if(mRelation != null && mRelation.mIsAccepted && mRelation.mActive) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_relation, menu);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public Loader<CoachingRelation> onCreateLoader(int id, Bundle args) {
@@ -119,6 +128,19 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         bindRelationContent();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.relation_cancel:
+                new PutEndRelationTask().execute(false);
+                MainActivity.startActivity(getBaseContext());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void bindRelationDetails() {
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
@@ -134,6 +156,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
+
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mPartner.mDisplayName);
     }
 
 
@@ -144,7 +168,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setVisibility(View.GONE);
         mInvitationLayout.setVisibility(View.GONE);
         mRefusedInvitationTV.setVisibility(View.GONE);
-
+        invalidateOptionsMenu();
 
         if (mRelation.mIsPending) {
             mInvitationLayout.setVisibility(View.VISIBLE);
@@ -188,10 +212,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);
-                break;
-            case R.id.End_Relation_Button:
-                new PutEndRelationTask().execute(false);
-                MainActivity.startActivity(getBaseContext());
                 break;
             case R.id.coaching_invitation_refuse:
                 new AnswerInvitationTask().execute(false);

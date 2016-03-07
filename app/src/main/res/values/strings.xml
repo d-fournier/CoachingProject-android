@@ -47,7 +47,7 @@
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
     <string name="accept">Accept</string>
-    <string name="end_relation">End relation, button</string>
+    <string name="end_relation">End relation</string>
 
     <string name="no_group">No group found</string>
     <string name="create_group">Create group</string>
