@@ -34,6 +34,12 @@ public class Const {
         public final static String SPORT_PARAMETER = "sport";
         public final static String LEVEL_PARAMETER = "level";
         public final static String KEYWORDS_PARAMETER = "keywords";
+
+        public static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
+        public static final String TYPE_AUTOCOMPLETE = "/autocomplete";
+        public static final String OUT_JSON = "/json";
+
+        public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
     }
 
     public static class BroadcastEvent {
