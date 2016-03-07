@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+import fr.sims.coachingproject.ui.activity.GroupActivity;
+import fr.sims.coachingproject.ui.activity.LoginActivity;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 
@@ -55,7 +58,6 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         getLoaderManager().initLoader(0, null, this);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
-
     }
 
     @Override
@@ -72,6 +74,17 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
+            }
+        });
+
+        // set onItemClick event
+        mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, String data) {
+                //Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
+                Intent myIntent = new Intent(getActivity(), GroupActivity.class);
+                myIntent.putExtra("groupIdDb", data);
+                getActivity().startActivity(myIntent);
             }
         });
 
@@ -116,4 +129,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
             mRefreshLayout.setRefreshing(false);
         }
     }
+
+
+
 }
