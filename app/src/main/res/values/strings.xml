@@ -52,6 +52,7 @@
     <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
+    <string name="request_refused">You request has been refused by the coach.</string>
     <string name="send_request">Send request</string>
     <string name="ask_for_coaching_in">Ask for coaching in</string>
     <string name="title_activity_first_launch">FirstLaunchActivity</string>
