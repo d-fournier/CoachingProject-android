@@ -68,4 +68,6 @@
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
     <string name="user_profile_picture">User profile picture</string>
+    <string name="message_pinned">Message pinned</string>
+    <string name="message_unpinned">Message unpinned</string>
 </resources>

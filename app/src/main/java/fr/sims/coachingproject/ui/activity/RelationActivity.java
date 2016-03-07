@@ -71,6 +71,10 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         if(actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle("TEST");
+
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
@@ -121,10 +125,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         TextView name = (TextView) findViewById(R.id.name);
         TextView age = (TextView) findViewById(R.id.age);
         TextView sport = (TextView) findViewById(R.id.sport);
-
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(mPartner.mDisplayName);
 
         int userAge = mPartner.getAge();
 

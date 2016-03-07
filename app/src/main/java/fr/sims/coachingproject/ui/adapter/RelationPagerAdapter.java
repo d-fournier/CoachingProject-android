@@ -28,8 +28,7 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 0:
             default:
-//                fragment = RelationChatFragment.newInstance(mRelationId, false);
-                fragment = RelationsListFragment.newInstance();
+                fragment = RelationChatFragment.newInstance(mRelationId, false);
                 break;
         }
         return fragment;

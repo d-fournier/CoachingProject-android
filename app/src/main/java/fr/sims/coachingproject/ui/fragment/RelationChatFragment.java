@@ -6,21 +6,19 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -35,6 +33,7 @@ import fr.sims.coachingproject.loader.MessageLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
+import fr.sims.coachingproject.ui.view.ContextMenuRecyclerView;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -42,18 +41,19 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
+public class RelationChatFragment extends GenericFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
 
-    private MessageAdapter mMessageAdapter;
     private SwipeRefreshLayout mRefreshLayout;
-    private GenericBroadcastReceiver mBroadcastReceiver;
     private EditText mMessageET;
     private Button mSendBtn;
-    private long mRelationId;
-    private boolean mPinned;
-    private LinearLayout layoutView;
-
     private TextView mNoMessageText;
+    private RecyclerView mMessagesRV;
+
+    private MessageAdapter mMessageAdapter;
+    private GenericBroadcastReceiver mBroadcastReceiver;
+
+    private long mRelationId;
+    private boolean mIsPinned;
 
     private final String RELATION_ID = "relationId";
     public static final String MESSAGES_TITLE = "Messages";
@@ -62,7 +62,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
         RelationChatFragment fragment = new RelationChatFragment();
         fragment.mRelationId = relationId;
-        fragment.mPinned = pinnedMessages;
+        fragment.mIsPinned = pinnedMessages;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -85,18 +85,18 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_relation_chat, container, false);
-        mNoMessageText = (TextView) view.findViewById(R.id.emptyList);
-        bindView(view);
-        return view;
+    protected int getLayoutId() {
+        return R.layout.fragment_relation_chat;
     }
 
 
     protected void bindView(View view) {
-        mMessageAdapter = new MessageAdapter(getContext());
-        setListAdapter(mMessageAdapter);
+        mNoMessageText = (TextView) view.findViewById(R.id.emptyList);
+
+        mMessagesRV = (RecyclerView) view.findViewById(R.id.message_list);
+        mMessagesRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mMessageAdapter = new MessageAdapter(getContext(), mIsPinned);
+        mMessagesRV.setAdapter(mMessageAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
         mRefreshLayout.setOnRefreshListener(this);
@@ -130,7 +130,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
         List<Message> filteredData = new ArrayList<>();
-        if (mPinned) {
+        if (mIsPinned) {
             for (Message mess : data) {
                 if (mess.mIsPinned) {
                     filteredData.add(mess);
@@ -141,7 +141,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
         }
 
         mMessageAdapter.setData(filteredData);
-        if (mMessageAdapter.isEmpty()) {
+        if (mMessageAdapter.getItemCount() == 0) {
             mNoMessageText.setVisibility(View.VISIBLE);
         } else {
             mNoMessageText.setVisibility(View.GONE);
@@ -168,8 +168,6 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     @Override
     public void onClick(View v) {
-
-
         InputMethodManager in = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         in.hideSoftInputFromWindow( mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -213,7 +211,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
                     mRefreshLayout.setRefreshing(true);
                     NetworkService.startActionMessages(getContext(), mRelationId);
                 } else {
-                    Snackbar.make(getListView(), R.string.no_connectivity, Snackbar.LENGTH_SHORT);
+                    Snackbar.make(mMessagesRV, R.string.no_connectivity, Snackbar.LENGTH_SHORT);
                 }
             }
         }
@@ -225,19 +223,20 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
 
     }
 
-    public void onActivityCreated(Bundle savedState) {
-        super.onActivityCreated(savedState);
-        registerForContextMenu(getListView());
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        registerForContextMenu(mMessagesRV);
     }
 
     @Override
     public void onCreateContextMenu(final ContextMenu menu,
                                     final View v, final ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Message");
-        if (mPinned) {
-            menu.add(R.string.unpin_message);
+        if (mIsPinned) {
+            menu.add(0, v.getId(), 0, R.string.unpin_message);
         } else {
-            menu.add(R.string.pin_message);
+            menu.add(0, v.getId(), 0, R.string.pin_message);
         }
     }
 
@@ -245,18 +244,21 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     public boolean onContextItemSelected(MenuItem item) {
         boolean requestPinnedValue = item.getTitle().equals(getString(R.string.pin_message));
 
-        if (mPinned == requestPinnedValue) {
+        if (mIsPinned == requestPinnedValue) {
             // onContextItemSelected is called for every fragment loaded until it returns true
             // therefore we check if the fragment is the one we want
             return false;
         }
 
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+
+        ContextMenuRecyclerView.RecyclerContextMenuInfo menuInfo = (ContextMenuRecyclerView.RecyclerContextMenuInfo) item.getMenuInfo();
         Message message = mMessageAdapter.getItem(menuInfo.position);
 
+        
         NetworkService.startActionTogglePinMessages(getContext(), message.mIdDb, requestPinnedValue);
 
-        String display = requestPinnedValue ? "Message pinned" : "Message unpinned";
+        String display = requestPinnedValue ? getResources().getString(R.string.message_pinned) : getResources().getString(R.string.message_unpinned);
         Snackbar.make(mRefreshLayout, display, Snackbar.LENGTH_LONG).show();
         return true;
     }

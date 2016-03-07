@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/fab_margin"
     android:orientation="vertical">
 
     <TextView
@@ -22,13 +21,13 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ListView
-            android:id="@id/android:list"
+        <fr.sims.coachingproject.ui.view.ContextMenuRecyclerView
+            android:id="@+id/message_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"/>
+            android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
     <LinearLayout
         android:id="@+id/message_layout"
         android:layout_width="match_parent"
@@ -45,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send_message"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_margin="8dp"/>
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
     </LinearLayout>
+
 </LinearLayout>
