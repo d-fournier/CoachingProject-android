@@ -5,15 +5,20 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
-// TODO v7 ???
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.SharedPrefUtil;
+
+// TODO v7 ???
 
 /**
  * Created by Donovan on 04/03/2016.
@@ -41,18 +46,13 @@ public class PushGcmListenerService extends GcmListenerService {
 
         switch (messageType) {
             case Const.Notification.Type.COACHING_RESPONSE:
-                handleCoachingResponse(data);
-                break;
             case Const.Notification.Type.COACHING_END:
-                handleCoachingEnd(data);
-                break;
             case Const.Notification.Type.COACHING_NEW:
-                handleCoachingNew(data);
+                handleCoachingEvent(messageType, data);
                 break;
             case Const.Notification.Type.MESSAGE_NEW:
                 handleMessageNew(data);
                 break;
-
         }
     }
 
@@ -63,7 +63,10 @@ public class PushGcmListenerService extends GcmListenerService {
         if (message == null)
             return;
 
-        // Retrieve Previous Notification
+        message.saveOrUpdate();
+
+        String tag = "" + message.mRelation.mIdDb;
+        // TODO Retrieve unread messages from the relation to update notif
 
         Intent intent = RelationActivity.getIntent(this, message.mRelation.mIdDb);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -71,39 +74,69 @@ public class PushGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
-        notifBuilder.setContentTitle("You received new messages from " + message.mSender.mDisplayName)
+        notifBuilder
+                .setContentTitle("You received new messages from " + message.mSender.mDisplayName)
                 .setContentText(message.mContent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(""+message.mRelation.mIdDb, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
+        notificationManager.notify(tag, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
 
     }
 
-    private void handleCoachingNew(Bundle data) {
+    private void handleCoachingEvent(String messageType, Bundle data) {
+        String coachString = data.getString(Const.Notification.Data.CONTENT, "");
+        CoachingRelation relation = CoachingRelation.parseItem(coachString);
 
+        if (relation == null)
+            return;
+
+        relation.saveOrUpdate();
+
+        // Retrieve partner
+        UserProfile partner;
+        boolean isCurrentUserCoach = (relation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
+        if (isCurrentUserCoach) {
+            partner = relation.mTrainee;
+        } else {
+            partner = relation.mCoach;
+        }
+
+        int notifId = 0;
+        int titleId = -1;
+        String tag = "" + relation.mIdDb;
+        switch (messageType) {
+            case Const.Notification.Type.COACHING_RESPONSE:
+                notifId = Const.Notification.Type.COACHING_RESPONSE_ID;
+                if(relation.mIsAccepted){
+                    titleId = R.string.notif_coaching_accept;
+                } else {
+                    titleId = R.string.notif_coaching_refuse;
+                }
+                break;
+            case Const.Notification.Type.COACHING_END:
+                notifId = Const.Notification.Type.COACHING_END_ID;
+                titleId = R.string.notif_coaching_end;
+                break;
+            case Const.Notification.Type.COACHING_NEW:
+                notifId = Const.Notification.Type.COACHING_NEW_ID;
+                titleId = R.string.notif_coaching_new;
+                break;
+        }
+        String title = getString(titleId, partner.mDisplayName);
+
+        Intent intent = RelationActivity.getIntent(this, relation.mIdDb);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
+        notifBuilder
+                .setContentTitle(title);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(tag, notifId, notifBuilder.build());
     }
 
-    private void handleCoachingEnd(Bundle data) {
-
-    }
-
-    private void handleCoachingResponse(Bundle data) {
-
-    }
-
-//    /**
-//     * Create and show a simple notification containing the received GCM message.
-//     *
-//     * @param data GCM message received.
-//     */
-//    private void sendNotification(Bundle data) {
-//
-//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//    }
 
     private NotificationCompat.Builder getBasicNotification(PendingIntent pendingIntent){
         return new NotificationCompat.Builder(this)
