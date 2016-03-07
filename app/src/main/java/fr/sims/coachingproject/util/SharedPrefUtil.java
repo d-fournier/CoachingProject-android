@@ -34,4 +34,14 @@ public class SharedPrefUtil {
 
     public static void putIsFirstLaunch(Context ctx, boolean firstLaunch){
         getSharedPreferences(ctx).edit().putBoolean(Const.SharedPref.IS_FIRST_LAUNCH, firstLaunch).apply();
-    }}
+    }
+
+    public static boolean isGCMTokenSentToServer(Context ctx){
+        return getSharedPreferences(ctx).getBoolean(Const.SharedPref.IS_GCM_TOKEN_SENT_TO_SERVER, false);
+    }
+
+    public static void putIsGCMTokenSentToServer(Context ctx, boolean isRegister){
+        getSharedPreferences(ctx).edit().putBoolean(Const.SharedPref.IS_GCM_TOKEN_SENT_TO_SERVER, isRegister).apply();
+    }
+
+}

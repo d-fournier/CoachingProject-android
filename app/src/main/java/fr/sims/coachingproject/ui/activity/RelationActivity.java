@@ -48,9 +48,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
 
     public static void startActivity(Context ctx, long id) {
+        ctx.startActivity(getIntent(ctx, id));
+    }
+
+    public static Intent getIntent(Context ctx, long id) {
         Intent intent = new Intent(ctx, RelationActivity.class);
         intent.putExtra(EXTRA_COACHING_RELATION_ID, id);
-        ctx.startActivity(intent);
+        return intent;
     }
 
 

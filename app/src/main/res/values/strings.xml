@@ -63,4 +63,8 @@
     <string name="first_launch_next_cd">Next tutorial</string>
     <string name="first_launch_previous_cd">Previous tutorial</string>
     <string name="send_message">Send</string>
+    <string name="notif_coaching_accept">%1$s has accepted your coaching request</string>
+    <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
+    <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
+    <string name="notif_coaching_new">%1$s sent you a coaching request</string>
 </resources>

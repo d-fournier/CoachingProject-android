@@ -1,4 +1,4 @@
-package fr.sims.coachingproject;
+package fr.sims.coachingproject.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -9,8 +9,6 @@ import com.activeandroid.ActiveAndroid;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -119,7 +117,7 @@ public class NetworkService extends IntentService {
         }
     }
 
-
+    // TODO handle wrong request
     protected void handleActionCoachingRelation() {
         NetworkUtil.Response ress = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
         if(!ress.getBody().isEmpty()) {
