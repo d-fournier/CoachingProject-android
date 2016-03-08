@@ -83,7 +83,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         super.onCreate(savedInstanceState);
 
         mGroupAdapter = new GroupAdapter();
-        NetworkService.startActionGroups(getContext());
+        NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
 
@@ -145,7 +145,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
 
     @Override
     public void onBroadcastReceive(Intent intent) {
-        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_GROUPS) && mRefreshLayout != null) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_USER_GROUPS) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
     }
