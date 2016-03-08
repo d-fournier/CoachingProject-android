@@ -9,15 +9,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.sims.coachingproject.NetworkService;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.CoachingLoader;
+import fr.sims.coachingproject.loader.RelationListLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
@@ -74,10 +72,14 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(Const.Loaders.RELATION_LIST_LOADER_ID, null, this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLoaderManager().initLoader(0, null, this);
-
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
@@ -85,13 +87,13 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onStart() {
         super.onStart();
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.RELATION_LIST_LOADER_ID, null, this);
     }
 
 
     @Override
     public Loader<List<CoachingRelation>> onCreateLoader(int id, Bundle args) {
-        return new CoachingLoader(getContext());
+        return new RelationListLoader(getContext());
     }
 
     @Override
@@ -125,4 +127,5 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onItemLongClick(View view, int position) {
     }
+
 }

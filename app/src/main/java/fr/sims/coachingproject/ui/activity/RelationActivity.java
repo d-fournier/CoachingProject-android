@@ -39,7 +39,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     TabLayout mTabLayout;
     ScrollView mInvitationLayout;
     TextView mRefusedInvitationTV;
-    ImageButton mEndRelationButton;
 
 
     CoachingRelation mRelation;
@@ -49,9 +48,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
 
     public static void startActivity(Context ctx, long id) {
+        ctx.startActivity(getIntent(ctx, id));
+    }
+
+    public static Intent getIntent(Context ctx, long id) {
         Intent intent = new Intent(ctx, RelationActivity.class);
         intent.putExtra(EXTRA_COACHING_RELATION_ID, id);
-        ctx.startActivity(intent);
+        return intent;
     }
 
 
@@ -71,7 +74,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-        mEndRelationButton = (ImageButton) findViewById(R.id.End_Relation_Button);
 
         // Invitation Layout
         mInvitationLayout = ((ScrollView) findViewById(R.id.invitationLayout));
@@ -83,7 +85,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         findViewById(R.id.End_Relation_Button).setOnClickListener(this);
 
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
     }
 
     @Override
@@ -131,7 +133,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setVisibility(View.GONE);
         mInvitationLayout.setVisibility(View.GONE);
         mRefusedInvitationTV.setVisibility(View.GONE);
-        mEndRelationButton.setVisibility(View.GONE);
 
 
         if (mRelation.mIsPending) {
@@ -150,10 +151,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             mTabLayout.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
             mInvitationLayout.setVisibility(View.GONE);
-            if (!mIsCurrentUserCoach)
-                findViewById(R.id.End_Relation_Button).setVisibility(View.VISIBLE);
-            else
-                findViewById(R.id.End_Relation_Button).setVisibility(View.GONE);
 
 
             if (mRelation.mIsAccepted) {
@@ -176,7 +173,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         switch (viewId) {
             case R.id.profile_layout:
-                ProfileActivity.startActivity(this, mPartner.mIdDb);
+                ProfileActivity.startActivity(this, mPartner.mIdDb, -1);
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);

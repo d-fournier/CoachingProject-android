@@ -156,6 +156,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
 
+
         switch (viewType) {
             case HEADER_REQUEST_LEARNER:
             case HEADER_REQUEST_COACH:
@@ -200,6 +201,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
         int itemViewType = vh.getItemViewType();
+
         if (itemViewType == LIST_COACH || itemViewType == LIST_LEARNER
                 || itemViewType == LIST_PENDING_COACH || itemViewType == LIST_PENDING_LEARNER) {
 
@@ -214,10 +216,10 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             int resId;
             switch (itemViewType) {
                 case HEADER_COACH:
-                    resId = R.string.my_coach;
+                    resId = R.string.my_coachs;
                     break;
                 case HEADER_LEARNER:
-                    resId = R.string.my_trainee;
+                    resId = R.string.my_trainees;
                     break;
                 case HEADER_REQUEST_COACH:
                     resId = R.string.pending_coach_request;
@@ -257,16 +259,16 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         UserProfile up;
         switch (type) {
             case LIST_COACH:
-                up = mDatasetCr.get(position - 1);
+                up = mDatasetCr.get(position - 1);//Un header
                 break;
             case LIST_LEARNER:
-                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));
+                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));//Première liste + 2 headers
                 break;
             case LIST_PENDING_COACH:
-                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
+                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3)); //2 premières listes + 3 headers
                 break;
             case LIST_PENDING_LEARNER:
-                up = mDatasetPendingLr.get(position - (getItemCount() - 1));
+                up = mDatasetPendingLr.get(position - (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 4)); //3 premières listes + 4 headers
                 break;
             default:
                 up = null;

@@ -2,9 +2,9 @@ package fr.sims.coachingproject.ui.activity;
 
 
 import android.app.LoaderManager;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,13 +31,19 @@ import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
+import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener{
+public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener {
 
+    private final static String ID_SPORT = "idSport";
+    private final static String ID_LEVEL = "idLevel";
+    private final static String SEARCH_TEXT = "searchText";
+
+    Snackbar mSnackbar;
     EditText mSearchInput;
     RecyclerView mRecycleView;
     Button mSearchButton;
@@ -62,7 +68,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        mLoadingBar = (ProgressBar)findViewById(R.id.loading_progress_bar);
+        mLoadingBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
 
         mSearchArgs = new Bundle();
 
@@ -72,7 +78,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchListAdapter = new SearchListAdapter();
+        mSearchListAdapter = new SearchListAdapter(getApplicationContext());
         mSearchListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchListAdapter);
 
@@ -95,8 +101,18 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         mSportsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
-                getLoaderManager().restartLoader(2, mSearchArgs, mLevelLoader);
+                //We get the Sport selected
+                long sportID = ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb();
+
+                //If it's not "All sports", we put the levels in the level spinner, and we displays it
+                mLevelsAdapter.clear();
+                mLevelsSpinner.setVisibility(View.GONE);
+                if (sportID != -1) {
+                    mSearchArgs.putLong(ID_SPORT, sportID);
+                    getLoaderManager().restartLoader(Const.Loaders.LEVEL_LOADER_ID, mSearchArgs, mLevelLoader);
+                } else {
+                    mSearchArgs.remove(ID_LEVEL);
+                }
             }
 
             @Override
@@ -108,28 +124,35 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSearchArgs.putCharSequence("searchText", mSearchInput.getText().toString());
-                mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
+                mSearchArgs.putCharSequence(SEARCH_TEXT, mSearchInput.getText().toString());
                 try {
-                    mSearchArgs.putLong("idLevel", ((SportLevel) mLevelsSpinner.getSelectedItem()).getmIdDb());
-                }catch(NullPointerException e){
-                    mSearchArgs.putLong("idLevel", -1);
+                    mSearchArgs.putLong(ID_SPORT, ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
+                } catch (NullPointerException e) {
+                    mSearchArgs.putLong(ID_SPORT, -1);
                 }
-                getLoaderManager().restartLoader(1, mSearchArgs, mCoachLoader);
+                try {
+                    mSearchArgs.putLong(ID_LEVEL, ((SportLevel) mLevelsSpinner.getSelectedItem()).getmIdDb());
+                } catch (NullPointerException e) {
+                    mSearchArgs.putLong(ID_LEVEL, -1);
+                }
+                getLoaderManager().restartLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
+                if(mSportList.isEmpty()){
+                    getLoaderManager().restartLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
+                }
             }
         });
 
         mSportLoader = new SportLoaderCallbacks();
         mCoachLoader = new CoachLoaderCallbacks();
         mLevelLoader = new LevelsLoaderCallbacks();
-        getLoaderManager().initLoader(0, mSearchArgs, mSportLoader);
-        getLoaderManager().initLoader(1, mSearchArgs, mCoachLoader);
-        getLoaderManager().initLoader(2, mSearchArgs, mLevelLoader);
+        getLoaderManager().initLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
+        getLoaderManager().initLoader(Const.Loaders.LEVEL_LOADER_ID, mSearchArgs, mLevelLoader);
+        getLoaderManager().initLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb);
+        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb,mSportsSpinner.getSelectedItemId());
     }
 
     @Override
@@ -140,35 +163,56 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+            /*
+            When we load data from the server
+            We display the progressbar, we hide the list and the text for empty list
+             */
             mLoadingBar.setVisibility(View.VISIBLE);
             mRecycleView.setVisibility(View.GONE);
             mEmptyCoachListText.setVisibility(View.GONE);
-            return new CoachLoader(getApplicationContext(), mSearchArgs.getString("searchText", ""), mSearchArgs.getLong("idSport", -1), mSearchArgs.getLong("idLevel", -1));
+            return new CoachLoader(getApplicationContext(), mSearchArgs.getString(SEARCH_TEXT, ""), mSearchArgs.getLong(ID_SPORT, -1), mSearchArgs.getLong(ID_LEVEL, -1));
         }
 
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
-            mUserList = data;
+            /*
+            If data is Null, it's because we got no response => We have no network connection
+             */
+            if (data == null) {
+                /*
+                We display the snackbar with "No network" message
+                We hide the spinners for sports and levels
+                We clear the list of users so that it shows nothing
+                 */
+                mSnackbar = Snackbar.make(mRecycleView, R.string.no_connectivity, Snackbar.LENGTH_LONG);
+                mSportsSpinner.setVisibility(View.GONE);
+                mLevelsSpinner.setVisibility(View.GONE);
+                mSnackbar.show();
+                mUserList.clear();
+            } else {
+                //We clear and add the new data
+                mUserList.clear();
+                mUserList.addAll(data);
+            }
+
             mSearchListAdapter.setData(mUserList);
             mLoadingBar.setVisibility(View.GONE);
 
-            if(mUserList.isEmpty()){
+            if (mUserList.isEmpty()) {
+                //If the userList is empty, we display the message "No Coach found"
                 mRecycleView.setVisibility(View.GONE);
                 mEmptyCoachListText.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 mRecycleView.setVisibility(View.VISIBLE);
                 mEmptyCoachListText.setVisibility(View.GONE);
             }
-
         }
 
         @Override
         public void onLoaderReset(Loader<List<UserProfile>> loader) {
-
         }
 
     }
-
 
     class SportLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sport>> {
 
@@ -179,19 +223,19 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         @Override
         public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
-            mSportList = data;
             mSportsAdapter.clear();
+            if (data != null) {
+                mSportsAdapter.addAll(data);
 
-            //Create fake sport for "All sports" with ID -1
-            Sport allSports = new Sport();
-            allSports.mName = getString(R.string.all_sports);
-            allSports.mIdDb = -1;
-            mSportsAdapter.add(allSports);
+                //Create fake sport for "All sports" with ID -1
+                Sport allSports = new Sport();
+                allSports.mName = getString(R.string.all_sports);
+                allSports.mIdDb = -1;
 
-            //Add all sports got from server
-            mSportsAdapter.addAll(mSportList);
+                mSportsAdapter.insert(allSports, 0);
 
-
+                mSportsSpinner.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -206,42 +250,31 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         @Override
         public Loader<List<SportLevel>> onCreateLoader(int id, Bundle args) {
-            mLevelsSpinner.setVisibility(View.GONE);
-            return new LevelLoader(getApplicationContext(), mSearchArgs.getLong("idSport", -1));
-
+            return new LevelLoader(getApplicationContext(), mSearchArgs.getLong(ID_SPORT, -1));
         }
 
         @Override
         public void onLoadFinished(Loader<List<SportLevel>> loader, List<SportLevel> data) {
-            mLevelList = data;
-
-            if(mLevelList == null){
-                mLevelsSpinner.setVisibility(View.GONE);
-            }else {
-                mLevelsAdapter.clear();
+            mLevelsAdapter.clear();
+            if (data != null && !data.isEmpty()) {
+                mLevelsAdapter.addAll(data);
 
                 //Create fake sport for "All levels" with ID -1
                 SportLevel allLevel = new SportLevel();
                 allLevel.mTitle = getString(R.string.all_levels);
                 allLevel.mIdDb = -1;
-                mLevelsAdapter.add(allLevel);
 
-                //Add all sports got from server
-                mLevelsAdapter.addAll(mLevelList);
+                mLevelsAdapter.insert(allLevel, 0);
+
                 mLevelsSpinner.setVisibility(View.VISIBLE);
+                mLevelsSpinner.setSelection(0);
             }
-
         }
 
         @Override
         public void onLoaderReset(Loader<List<SportLevel>> loader) {
 
         }
-
-
     }
-
-
-
 
 }

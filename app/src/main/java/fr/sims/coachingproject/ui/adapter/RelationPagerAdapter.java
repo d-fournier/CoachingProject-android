@@ -52,4 +52,5 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
         }
         return title;
     }
+
 }

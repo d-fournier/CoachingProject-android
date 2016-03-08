@@ -2,6 +2,9 @@ package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+
+import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +21,9 @@ import fr.sims.coachingproject.model.Group;
  */
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
 
-    private static final int LIST_GROUP = 0;
+
+    private static final int LIST_GROUP_TYPE = 0;
+
     private List<Group> mGroupList;
 
     public GroupAdapter() {
@@ -30,7 +35,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder vh;
         switch (viewType) {
-            case LIST_GROUP:
+
+            case LIST_GROUP_TYPE:
             default:
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_group, parent, false);
@@ -46,6 +52,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.name.setText(g.mName);
         holder.description.setText(g.mDescription);
         holder.sport.setText(g.mSport.mName);
+
+        holder.members.setText(String.valueOf(g.mMembers.length));
+
     }
 
     @Override
@@ -53,11 +62,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         return mGroupList.size();
     }
 
-    @Override
-    public int getItemViewType(int position)
-    {
-        return LIST_GROUP;
-    }
 
     public void setData(List<Group> gList) {
         mGroupList.addAll(gList);
@@ -69,17 +73,28 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends  RecyclerView.ViewHolder {
+
+    public int getItemViewType(int position) {
+        return LIST_GROUP_TYPE;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         TextView description;
         TextView sport;
+        TextView members;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
+
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
             sport = (TextView) itemView.findViewById(R.id.group_item_sport);
+
         }
 
+
     }
+
+
 }

@@ -29,7 +29,9 @@ public class GroupLoader  extends GenericLocalLoader<List<Group>> {
 
     @Override
     public List<Group> loadInBackground() {
-         return Group.getAllGroup();
+
+        return Group.getAllGroups();
+
     }
 
     @Override
