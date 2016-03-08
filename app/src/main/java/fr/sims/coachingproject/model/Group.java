@@ -47,9 +47,17 @@ public class Group extends Model {
     @SerializedName("sport")
     public Sport mSport;
 
+    @Column(name = "city")
+    @Expose
+    @SerializedName("city")
+    public String mCity;
+
+
+
     public Group() {
 
     }
+
 
     /* Json Builder */
     public static Group parseItem(String json) {
@@ -74,6 +82,7 @@ public class Group extends Model {
         return res;
     }
 
+
     public static List<Group> getAllGroups() {
         return new Select().from(Group.class).execute();
     }
@@ -92,11 +101,13 @@ public class Group extends Model {
         return res;
     }
 
+
     private void bindProperties(Group g) {
         this.mCreationDate = g.mCreationDate;
         this.mSport = g.mSport;
         this.mMembers = g.mMembers;
         this.mName = g.mName;
         this.mDescription = g.mDescription;
+        this.mCity = g.mCity;
     }
 }

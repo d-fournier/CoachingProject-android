@@ -29,15 +29,20 @@
     <string name="display_name">Display Name</string>
     <string name="connect">Connect</string>
     <string name="search_hint">Search trainer..</string>
+    <string name="search_group_hint">Search group..</string>
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
+
+    <string name="no_group_found">No group found</string>
+
     <string name="no_connectivity">No connection available</string>
     <string name="retry">Retry</string>
     <string name="pin_message">Pin message</string>
     <string name="unpin_message">Unpin message</string>
+
 
     <plurals name="user_age">
         <item quantity="one">%1$d year old</item>

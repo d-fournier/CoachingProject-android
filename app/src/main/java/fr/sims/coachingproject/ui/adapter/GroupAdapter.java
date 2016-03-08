@@ -2,7 +2,9 @@ package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import fr.sims.coachingproject.model.Group;
  */
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
 
+
     private static final int LIST_GROUP_TYPE = 0;
 
     private List<Group> mGroupList;
@@ -28,20 +31,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     }
 
 
-    public void setData(List<Group> gList) {
-        mGroupList.addAll(gList);
-        notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        mGroupList.clear();
-        notifyDataSetChanged();
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder vh;
         switch (viewType) {
+
             case LIST_GROUP_TYPE:
             default:
                 View v = LayoutInflater.from(parent.getContext())
@@ -66,7 +60,18 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         return mGroupList.size();
     }
 
-    @Override
+
+    public void setData(List<Group> gList) {
+        mGroupList.addAll(gList);
+        notifyDataSetChanged();
+    }
+
+    public void clearData() {
+        mGroupList.clear();
+        notifyDataSetChanged();
+    }
+
+
     public int getItemViewType(int position) {
         return LIST_GROUP_TYPE;
     }
@@ -78,6 +83,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView members;
 
         public ViewHolder(View itemView) {
+
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
@@ -85,5 +91,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             members = (TextView) itemView.findViewById(R.id.group_item_members);
 
         }
+
+
     }
+
+
 }
