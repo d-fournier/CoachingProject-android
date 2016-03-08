@@ -32,6 +32,8 @@ public class Const {
         public static final String DEVICES = "devices/";
         public final static String SEPARATOR = "/";
 
+        public final static String USER_GROUPS = "my_groups";
+
 
 
         public final static String COACH_PARAMETER = "coach";

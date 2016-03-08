@@ -58,7 +58,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.name.setText(g.mName);
         holder.description.setText(g.mDescription);
         holder.sport.setText(g.mSport.mName);
-        holder.members.setText(String.valueOf(g.mMembers.length));
+        holder.members.setText(String.valueOf(g.mMembers));
     }
 
     @Override
