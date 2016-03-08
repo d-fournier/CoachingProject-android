@@ -1,9 +1,7 @@
 package fr.sims.coachingproject.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
@@ -15,33 +13,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.MessageLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
 import fr.sims.coachingproject.ui.view.ContextMenuRecyclerView;
 import fr.sims.coachingproject.util.Const;
-import fr.sims.coachingproject.util.NetworkUtil;
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends GenericFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
+public class RelationChatFragment extends GenericFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
 
     private SwipeRefreshLayout mRefreshLayout;
     private EditText mMessageET;
@@ -108,10 +99,6 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
             }
         });
         NetworkService.startActionMessages(getContext(), mRelationId);
-
-        mSendBtn = (Button) view.findViewById(R.id.send_button);
-        mSendBtn.setOnClickListener(this);
-        mMessageET = (EditText) view.findViewById(R.id.message_editText);
     }
 
     @Override
@@ -164,63 +151,6 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(RELATION_ID, mRelationId);
-    }
-
-    @Override
-    public void onClick(View v) {
-        InputMethodManager in = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        in.hideSoftInputFromWindow( mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-        String message = mMessageET.getText().toString();
-
-        String body = "";
-
-        try {
-            JSONObject parent = new JSONObject();
-            parent.put("content",message);
-            parent.put("to_relation", ""+mRelationId);
-            parent.put("is_pinned", false);
-
-            body = parent.toString(2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        new SendRequestTask().execute(body);
-    }
-
-
-    private class SendRequestTask extends AsyncTask<String, Void, NetworkUtil.Response> {
-        @Override
-        protected NetworkUtil.Response doInBackground(String... params) {
-            if (params.length > 0) {
-                String body = params[0];
-                String connectedToken = SharedPrefUtil.getConnectedToken(getContext());
-                NetworkUtil.Response response = NetworkUtil.post("https://coachingproject.herokuapp.com/api/messages/", connectedToken, body);
-                return response;
-            } else
-                return null;
-        }
-
-        @Override
-        protected void onPostExecute(NetworkUtil.Response response) {
-            if(response != null) {
-                mSendBtn.setEnabled(true);
-                if(response.isSuccessful()) {
-                    mMessageET.setText("");
-                    mRefreshLayout.setRefreshing(true);
-                    NetworkService.startActionMessages(getContext(), mRelationId);
-                } else {
-                    Snackbar.make(mMessagesRV, R.string.no_connectivity, Snackbar.LENGTH_SHORT);
-                }
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mSendBtn.setEnabled(false);
-        }
-
     }
 
     @Override
