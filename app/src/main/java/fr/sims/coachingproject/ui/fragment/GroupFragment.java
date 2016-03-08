@@ -126,7 +126,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionGroups(getContext());
+        NetworkService.startActionUserGroups(getContext());
     }
 
     @Override
