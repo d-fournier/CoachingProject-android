@@ -43,6 +43,8 @@
         <item quantity="other">%1$d years old</item>
     </plurals>
 
+
+    <string name="relation_list_description">%1$s - %2$s</string>
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
