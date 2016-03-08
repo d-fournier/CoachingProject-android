@@ -11,9 +11,9 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by dfour on 11/02/2016.
  */
-public class CoachingLoader extends GenericLocalLoader<List<CoachingRelation>> {
+public class RelationListLoader extends GenericLocalLoader<List<CoachingRelation>> {
 
-    public CoachingLoader(Context context) {
+    public RelationListLoader(Context context) {
         super(context);
     }
 

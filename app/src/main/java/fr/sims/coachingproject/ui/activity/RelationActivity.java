@@ -85,7 +85,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         findViewById(R.id.End_Relation_Button).setOnClickListener(this);
 
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
     }
 
     @Override

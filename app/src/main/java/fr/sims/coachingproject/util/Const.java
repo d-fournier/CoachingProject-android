@@ -33,12 +33,25 @@ public class Const {
         public static final String DEVICES = "devices/";
         public final static String SEPARATOR = "/";
 
+        public final static String USER_GROUPS = "my_groups";
+
 
 
         public final static String COACH_PARAMETER = "coach";
         public final static String SPORT_PARAMETER = "sport";
         public final static String LEVEL_PARAMETER = "level";
         public final static String KEYWORDS_PARAMETER = "keywords";
+    }
+
+    public static class Loaders{
+        public final static int RELATION_LIST_LOADER_ID = 0;
+        public final static int GROUP_LOADER_ID = 1;
+        public final static int SPORT_LOADER_ID = 2;
+        public final static int LEVEL_LOADER_ID = 3;
+        public final static int MESSAGE_LOADER_ID = 4;
+        public final static int USER_LOADER_ID = 5;
+        public final static int RELATION_LOADER_ID = 6;
+        public final static int COACH_LOADER_ID = 7;
     }
 
     public static class Notification {

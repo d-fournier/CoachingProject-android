@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.name.setText(g.mName);
         holder.description.setText(g.mDescription);
         holder.sport.setText(g.mSport.mName);
+        holder.members.setText(String.valueOf(g.mMembers));
     }
 
     @Override
@@ -73,12 +75,14 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView name;
         TextView description;
         TextView sport;
+        TextView members;
 
         public ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
             sport = (TextView) itemView.findViewById(R.id.group_item_sport);
+            members = (TextView) itemView.findViewById(R.id.group_item_members);
 
         }
     }
