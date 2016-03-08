@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -75,6 +76,9 @@ public class PushGcmListenerService extends GcmListenerService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(tag, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
 
+        Intent broadcast = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
+        intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
     }
 
     private void handleCoachingEvent(String messageType, Bundle data) {

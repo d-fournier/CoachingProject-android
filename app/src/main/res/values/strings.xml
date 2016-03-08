@@ -49,11 +49,13 @@
         <item quantity="other">%1$d years old</item>
     </plurals>
 
+
+    <string name="relation_list_description">%1$s - %2$s</string>
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
     <string name="accept">Accept</string>
-    <string name="end_relation">End relation, button</string>
+    <string name="end_relation">End relation</string>
 
     <string name="no_group">No group found</string>
     <string name="create_group">Create group</string>
@@ -73,6 +75,11 @@
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
+
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="message_pinned">Message pinned</string>
+    <string name="message_unpinned">Message unpinned</string>
+
     <string name="log_in">Log in</string>
     <string name="email">Email</string>
     <string name="pick_date">Birthdate</string>
@@ -86,4 +93,5 @@
     <string name="passwords_dont_match">Passwords don\'t match</string>
     <string name="sign_up">Sign up</string>
     <string name="not_registered_question">Not registered yet ?</string>
+
 </resources>

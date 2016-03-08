@@ -5,4 +5,9 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+
+    <style name="AppTheme" parent="BaseAppTheme">
+        <!-- Enable Transition between activities -->
+        <item name="android:windowContentTransitions">true</item>
+    </style>
 </resources>

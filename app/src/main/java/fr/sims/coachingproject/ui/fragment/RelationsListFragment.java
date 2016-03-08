@@ -3,6 +3,7 @@ package fr.sims.coachingproject.ui.fragment;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
@@ -13,32 +14,32 @@ import android.view.View;
 
 import java.util.List;
 
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.RelationListLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
-import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
+import fr.sims.coachingproject.ui.adapter.RelationsListAdapter;
 import fr.sims.coachingproject.util.Const;
 
 
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class CoachingRelationsFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, CoachListAdapter.OnItemClickListener {
+public class RelationsListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, RelationsListAdapter.OnItemClickListener {
 
     public static final String TABS_TITLE = "Coaching";
 
     private RecyclerView mCoachList;
     private SwipeRefreshLayout mRefreshLayout;
 
-    private CoachListAdapter mRecyclerAdapter;
+    private RelationsListAdapter mRecyclerAdapter;
 
     GenericBroadcastReceiver mBroadcastReceiver;
 
-    public static CoachingRelationsFragment newInstance() {
-        CoachingRelationsFragment fragment = new CoachingRelationsFragment();
+    public static RelationsListFragment newInstance() {
+        RelationsListFragment fragment = new RelationsListFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -56,7 +57,7 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
         super.bindView(view);
         mCoachList = (RecyclerView) view.findViewById(R.id.coach_list);
         mCoachList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerAdapter = new CoachListAdapter(getContext());
+        mRecyclerAdapter = new RelationsListAdapter(getContext());
         mRecyclerAdapter.setOnItemClickListener(this);
         mCoachList.setAdapter(mRecyclerAdapter);
 
@@ -121,7 +122,17 @@ public class CoachingRelationsFragment extends GenericFragment implements Loader
     @Override
     public void onItemClick(View view, int position) {
         long id = mRecyclerAdapter.getRelationId(position);
-        RelationActivity.startActivity(getContext(), id);
+        Intent intent = RelationActivity.getIntent(getContext(), id);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
+                            getString(R.string.transition_user_picture));
+            getActivity().startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+
+
     }
 
     @Override

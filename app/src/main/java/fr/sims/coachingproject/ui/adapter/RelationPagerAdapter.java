@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import fr.sims.coachingproject.ui.fragment.RelationChatFragment;
+import fr.sims.coachingproject.ui.fragment.RelationsListFragment;
 
 /**
  * Created by Segolene on 18/02/2016.

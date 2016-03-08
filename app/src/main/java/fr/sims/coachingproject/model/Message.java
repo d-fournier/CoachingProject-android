@@ -80,6 +80,9 @@ public class Message extends Model {
         Message res = null;
         try {
             res = gson.fromJson(json, Message.class);
+            JSONObject messageObject=new JSONObject(json);
+            JSONObject relationObject=messageObject.getJSONObject("to_relation");
+            res.mRelation=CoachingRelation.parseItem(relationObject.toString());
         } catch (Exception e){
             e.printStackTrace();
         }
