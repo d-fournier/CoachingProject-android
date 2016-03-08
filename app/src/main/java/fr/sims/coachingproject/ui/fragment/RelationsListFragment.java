@@ -4,24 +4,23 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.View;
 
 import java.util.List;
 
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.CoachingLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
 import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
 import fr.sims.coachingproject.util.Const;
@@ -123,11 +122,9 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
         long id = mRecyclerAdapter.getRelationId(position);
         Intent intent = RelationActivity.getIntent(getContext(), id);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(view, getString(R.string.transition_relation_picture)),
-                            Pair.create(view, getString(R.string.transition_relation_name))
-                    );
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
+                            getString(R.string.transition_relation_picture));
             getActivity().startActivity(intent, options.toBundle());
         } else {
             startActivity(intent);
