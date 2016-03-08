@@ -126,7 +126,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
-                            getString(R.string.transition_relation_picture));
+                            getString(R.string.transition_user_picture));
             getActivity().startActivity(intent, options.toBundle());
         } else {
             startActivity(intent);

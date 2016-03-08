@@ -2,22 +2,6 @@ package fr.sims.coachingproject.ui.fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-
-import android.os.Bundle;
-
-
-import android.support.v4.app.ListFragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.ListAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-
-
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -26,21 +10,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-import fr.sims.coachingproject.service.NetworkService;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
-
-import fr.sims.coachingproject.ui.adapter.CoachListAdapter;
-
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 

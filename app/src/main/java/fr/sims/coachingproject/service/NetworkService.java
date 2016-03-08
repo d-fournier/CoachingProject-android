@@ -109,7 +109,7 @@ public class NetworkService extends IntentService {
     protected void handleActionConnectedUserInfo() {
         long id = SharedPrefUtil.getConnectedUserId(this);
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
-        if(!res.getBody().isEmpty()) {
+        if(res.isSuccessful()) {
             UserProfile up = UserProfile.parseItem(res.getBody());
 
             ActiveAndroid.beginTransaction();
@@ -129,7 +129,7 @@ public class NetworkService extends IntentService {
     // TODO handle wrong request
     protected void handleActionCoachingRelation() {
         NetworkUtil.Response ress = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION, getToken());
-        if(!ress.getBody().isEmpty()) {
+        if(ress.isSuccessful()) {
             CoachingRelation[] crList = CoachingRelation.parseList(ress.getBody());
 
             ActiveAndroid.beginTransaction();
@@ -150,7 +150,7 @@ public class NetworkService extends IntentService {
 
     protected void handleActionGroups() {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());
-        if(!res.getBody().isEmpty()) {
+        if(res.isSuccessful()) {
             Group[] gList = Group.parseList(res.getBody());
 
             ActiveAndroid.beginTransaction();
@@ -171,7 +171,7 @@ public class NetworkService extends IntentService {
 
     protected void handleActionUserGroups() {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+ Const.WebServer.USER_GROUPS, getToken());
-        if(!res.getBody().isEmpty()) {
+        if(res.isSuccessful()) {
             Group[] gList = Group.parseList(res.getBody());
 
             ActiveAndroid.beginTransaction();
@@ -192,7 +192,7 @@ public class NetworkService extends IntentService {
 
     protected void handleActionRelationMessages(long relationId) {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + relationId + "/" + Const.WebServer.MESSAGES, getToken());
-        if(res.getReturnCode()== HttpsURLConnection.HTTP_OK) {
+        if(res.isSuccessful()) {
             Message[] messages = Message.parseList(res.getBody());
 
             ActiveAndroid.beginTransaction();
