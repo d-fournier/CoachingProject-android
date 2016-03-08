@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:layout_alignParentBottom="true"
-            app:fillColor="@android:color/black"
-            app:strokeColor="@android:color/black"/>
+            app:fillColor="@android:color/secondary_text_light"
+            app:strokeColor="@android:color/secondary_text_light"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/container"
@@ -51,7 +51,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:text="Continue"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/secondary_text_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"/>

@@ -79,4 +79,6 @@
     <string name="repeat_password">Repeat password</string>
     <string name="register_failed">Register request failed</string>
     <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="sign_up">Sign up</string>
+    <string name="not_registered_question">Not registered yet ?</string>
 </resources>

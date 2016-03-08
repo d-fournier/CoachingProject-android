@@ -76,25 +76,26 @@
 
             <Button
                 android:id="@+id/username_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                style="@style/Widget.AppCompat.Button.Colored" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Not registered yet ?"/>
+                    android:text="@string/not_registered_question"/>
                 <Button
                     android:id="@+id/sign_up_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sign up"
+                    android:text="@string/sign_up"
                     style="@style/Widget.AppCompat.Button.Borderless"/>
             </LinearLayout>
 
