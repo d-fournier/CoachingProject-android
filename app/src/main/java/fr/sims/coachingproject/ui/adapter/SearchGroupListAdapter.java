@@ -66,7 +66,6 @@ public class SearchGroupListAdapter extends RecyclerView.Adapter<SearchGroupList
     public void onBindViewHolder(final ViewHolder vh, int position) {
         Group group;
         group = groupList.get(position);
-
         vh.mSportTv.setText(group.mSport.mName);
         vh.mNameTV.setText(group.mName);
         vh.mDescTV.setText(group.mDescription);
