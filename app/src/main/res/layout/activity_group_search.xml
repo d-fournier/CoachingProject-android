@@ -14,19 +14,19 @@
         android:inputType="textVisiblePassword" />
 
 
-
     <!-- AutoCompleteTextView for Search -->
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:ems="10"
-            android:hint="Search place..">
-
-            <requestFocus />
-        </AutoCompleteTextView>
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:completionThreshold="1"
+        android:ems="10"
+        android:hint="Search place.."
+       >
+        <requestFocus />
+    </AutoCompleteTextView>
 
 
     <!-- Combobox for sports -->
@@ -34,7 +34,6 @@
         android:id="@+id/spinner_sports"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 
 
     <Button
@@ -58,9 +57,9 @@
         android:scrollbars="vertical" />
 
     <TextView
-        android:id="@+id/no_coach_text"
+        android:id="@+id/no_group_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_coach_found" />
+        android:text="@string/no_group_found" />
 
 </LinearLayout>

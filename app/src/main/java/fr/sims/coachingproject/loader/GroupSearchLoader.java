@@ -22,7 +22,7 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
     private String mCity;
     private long mSport;
 
-    public GroupSearchLoader(Context context, String keywords, long sport,String city) {
+    public GroupSearchLoader(Context context, String keywords, long sport, String city) {
         super(context);
         mKeywords = keywords;
         mSport = sport;
@@ -37,17 +37,15 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
             if (!mKeywords.isEmpty()) {
                 request += "&" + Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
             }
+            if (!mCity.isEmpty())
+                request += "&" + Const.WebServer.CITY_PARAMETER + "=" + URLEncoder.encode(mCity, "UTF-8");
             if (mSport != -1) {
                 request += "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
             }
-            if(!mCity.isEmpty())
-                request += "&" + Const.WebServer.CITY_PARAMETER + "=" + mCity;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        NetworkUtil.Response response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
-        if (response.getBody().isEmpty())
-            return null;
+        NetworkUtil.Response response = NetworkUtil.get(request, null);
 
         return Arrays.asList(Group.parseList(response.getBody()));
     }

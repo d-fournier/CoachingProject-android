@@ -47,12 +47,17 @@ public class Group extends Model{
     @SerializedName("sport")
     public Sport mSport;
 
+    @Column(name = "city")
+    @Expose
+    @SerializedName("city")
+    public String mCity;
+
     public Group(){
 
     }
 
     public Group saveOrUpdate(){
-        for(int i=0; i<mMembers.size();i++)
+      for(int i=0; i<mMembers.size();i++)
             mMembers.set(i,mMembers.get(i).saveOrUpdate());
         mSport = mSport.saveOrUpdate();
 
@@ -73,6 +78,7 @@ public class Group extends Model{
         this.mMembers = g.mMembers;
         this.mName= g.mName;
         this.mDescription = g.mDescription;
+        this.mCity = g.mCity;
     }
 
     /* Json Builder */
