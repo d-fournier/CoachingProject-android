@@ -47,8 +47,8 @@ public class NetworkUtil {
             urlConnection.setRequestMethod(method);
 
             urlConnection.setRequestProperty("Content-Type", "application/json");
-            if(token != null) {
-                urlConnection.setRequestProperty("Authorization", "Token "+token);
+            if (token != null) {
+                urlConnection.setRequestProperty("Authorization", "Token " + token);
             }
 
             if(method.equals("PUT") || method.equals("POST") || method.equals("PATCH")) {
@@ -58,6 +58,7 @@ public class NetworkUtil {
                 os.flush();
                 os.close();
             }
+
 
             responseCode = urlConnection.getResponseCode();
             InputStream is;
@@ -109,6 +110,10 @@ public class NetworkUtil {
 
         public int getReturnCode() {
             return mReturnCode;
+        }
+
+        public boolean isSuccessful(){
+            return mReturnCode >= 200 && mReturnCode < 300;
         }
     }
 

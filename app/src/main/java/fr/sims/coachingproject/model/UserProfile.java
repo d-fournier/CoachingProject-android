@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.sims.coachingproject.util.SharedPrefUtil;
+
 /**
  * Created by dfour on 10/02/2016.
  */
@@ -37,12 +39,34 @@ public class UserProfile extends Model{
     public String mDisplayName;
 
     @Column(name = "picture")
-    public String mPicture = "http://p7.storage.canalblog.com/77/74/402370/21923602.jpg";
+    @Expose
+    @SerializedName("picture")
+    public String mPicture;
 
     @Column(name = "birthdate")
     @Expose
     @SerializedName("birthdate")
     public String mBirthdate;
+
+    @Column(name = "description")
+    @Expose
+    @SerializedName("description")
+    public String mDescription;
+
+    @Column(name = "city")
+    @Expose
+    @SerializedName("city")
+    public String mCity;
+
+    @Column(name = "isCoach")
+    @Expose
+    @SerializedName("isCoach")
+    public boolean mIsCoach;
+
+    @Expose
+    @SerializedName("levels")
+    public SportLevel[] mSportsList = null;
+
 
     public int getAge(){
         Calendar birthdate = Calendar.getInstance();
@@ -62,19 +86,6 @@ public class UserProfile extends Model{
         return userAge;
     }
 
-    @Column(name = "city")
-    @Expose
-    @SerializedName("city")
-    public String mCity;
-
-    @Column(name = "isCoach")
-    @Expose
-    @SerializedName("isCoach")
-    public boolean mIsCoach;
-
-    @Expose
-    @SerializedName("levels")
-    public SportLevel[] mSportsList = null;
 
     /* Json Builder */
     public static UserProfile parseItem(String json){
@@ -121,6 +132,7 @@ public class UserProfile extends Model{
         this.mBirthdate = up.mBirthdate;
         this.mCity = up.mCity;
         this.mIsCoach = up.mIsCoach;
+        this.mDescription = up.mDescription;
     }
 
     private void saveSportLevel(){
@@ -151,5 +163,13 @@ public class UserProfile extends Model{
             }
         }
         return up;
+    }
+
+    public boolean isCoachingUser(long userId, long sportId){
+        CoachingRelation relation=new Select().from(CoachingRelation.class).where("coach == ?", mIdDb).and("trainee == ?", userId).and("sport == ?", sportId).executeSingle();
+        if(relation!=null){
+            return (relation.mRequestStatus !=null && relation.mRequestStatus);
+        }
+        return false;
     }
 }

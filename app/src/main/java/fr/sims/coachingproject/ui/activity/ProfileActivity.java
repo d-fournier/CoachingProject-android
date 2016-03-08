@@ -16,22 +16,33 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
+import fr.sims.coachingproject.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fr.sims.coachingproject.R;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+
+
 import fr.sims.coachingproject.loader.UserLoader;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.ui.adapter.ProfileSportListAdapter;
+import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 import static fr.sims.coachingproject.util.NetworkUtil.post;
 import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedToken;
@@ -40,8 +51,10 @@ import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedUserId;
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
+    private static final String EXTRA_SPORT_ID="fr.sims.coachingproject.extra.SPORT_ID";
 
     private long mId;
+    private long mSportId;
     private String mConnectedToken;
     private long mConnectedUserId;
     private long mCoachUserId;
@@ -50,33 +63,45 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     private View mMainLayout;
 
-    public static void startActivity(Context ctx, long id){
+    private ProfileSportListAdapter mProfileAdapter;
+
+    /**
+     * Start activity
+     * @param ctx
+     * @param id
+     * @param idSport id of sport to be selected, -1 if no preference
+     */
+    public static void startActivity(Context ctx, long id, long idSport){
         Intent intent = new Intent(ctx,ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
+        intent.putExtra(EXTRA_SPORT_ID, idSport);
         ctx.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mConnectedUserId= SharedPrefUtil.getConnectedUserId(this);
         setContentView(R.layout.activity_profile);
-        ImageButton btn_send_request = (ImageButton) findViewById(R.id.send_request);
+        Button btn_send_request = (Button) findViewById(R.id.send_request);
+
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
+        mSportId = mIntent.getLongExtra(EXTRA_SPORT_ID, -1);
 
         mMainLayout = findViewById(R.id.profile_layout);
 
         btn_send_request.setOnClickListener(this);
+        mProfileAdapter=new ProfileSportListAdapter(this);
 
-
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
@@ -87,35 +112,61 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     // TODO Crash sometimes Data == null
     @Override
-    public void onLoadFinished(Loader<UserProfile> loader, UserProfile data) {
+    public void onLoadFinished(Loader<UserProfile> loader, final UserProfile data) {
         mData = data;
         // Get components
         TextView tv_Name = (TextView) findViewById(R.id.textName);
         TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
         TextView tv_City = (TextView) findViewById(R.id.textCity);
         TextView tv_IsCoach = (TextView) findViewById(R.id.textIsCoach);
-        TextView tv_Mail = (TextView) findViewById(R.id.textMail);
+        TextView tv_Description = (TextView) findViewById(R.id.textDescription);
         ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
         ListView lv_sport = (ListView) findViewById(R.id.listView1);
+        Spinner spinner=(Spinner) findViewById(R.id.spinner_profile_sports);
 
         // Set values
         //tv_Id.setText("UserID: " + Long.toString(data.mId));
-        tv_Name.setText("Name: " + data.mDisplayName);
-        tv_Birthday.setText("Birthday: " + data.mBirthdate);
-        tv_City.setText("City:" + data.mCity);
-        tv_IsCoach.setText("Is Coach:" + Boolean.toString(data.mIsCoach));
-        tv_Mail.setText("Email: " + data.mDisplayName);
+        tv_Name.setText(data.mDisplayName);
+        tv_Birthday.setText(getResources().getQuantityString(R.plurals.user_age,data.getAge(), data.getAge()));
+        tv_City.setText(data.mCity);
+        tv_IsCoach.setText(data.mIsCoach ? "Can coach" : "Cannot coach");
+        tv_Description.setText(data.mDescription);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
 
         // fill sport list
-        String[] SportsNameList = new String[data.mSportsList.length];
-        for (int i = 0; i < data.mSportsList.length; i++)
+        List<Sport> sportList = new ArrayList<>();
+        for (SportLevel level :  data.mSportsList)
         {
-            SportsNameList[i] = data.mSportsList[i].mSport.mName + "\t\tRank: " + data.mSportsList[i].mRank;
+            if(!mData.isCoachingUser(mConnectedUserId, level.mSport.mIdDb )){
+                sportList.add(level.mSport);
+            }
         }
-        lv_sport.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice, SportsNameList));
-        lv_sport.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+
+        if(sportList.isEmpty()){
+            Button btn_send_request = (Button) findViewById(R.id.send_request);
+            LinearLayout sentence_send_request= (LinearLayout) findViewById(R.id.send_coaching_request_sentence);
+            btn_send_request.setVisibility(View.GONE);
+            sentence_send_request.setVisibility(View.GONE);
+        }else{
+            spinner.setAdapter(new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, sportList));
+            if(mSportId!=-1){
+                spinner.setSelection(sportList.indexOf(Sport.getSportById(mSportId)));
+            }
+        }
+
+
+
+
+
+
+
+
+        mProfileAdapter.setData(data.mSportsList);
+
+        lv_sport.setAdapter(mProfileAdapter);
+
     }
 
     @Override
@@ -142,9 +193,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                 // Get the coach id
                 mCoachUserId = mData.mIdDb;
                 // Get checked sport id
-                ListView lv = (ListView) findViewById(R.id.listView1);
-                int checked_sport = lv.getCheckedItemPosition();
-                long check_sport_id = mData.mSportsList[checked_sport].mSport.mIdDb;
+                Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
+                Sport checked_sport = (Sport)lv.getSelectedItem();
+                long check_sport_id = checked_sport.mIdDb;
                 // Get request comment
                 EditText et = (EditText) popupView.findViewById(R.id.request_comment);
                 String request_comment = et.getText().toString();
@@ -165,12 +216,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                         @Override
                         protected String doInBackground(String... params) {
                             NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
-                            return response.getBody();
+                            return String.valueOf(response.getReturnCode());
                         }
 
                         @Override
                         protected void onPostExecute(String response) {
-                            if (response.length() != 0){
+                            if (Integer.parseInt(response)== HttpsURLConnection.HTTP_CREATED){
                                 Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
                             } else {
                                 Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
@@ -203,8 +254,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         });
 
         // No selected sport, no pop-up window
-        ListView lv = (ListView) findViewById(R.id.listView1);
-        if (lv.getCheckedItemPosition() != -1) {
+        Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
+        if (lv.getSelectedItem() != null) {
             popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             // Set focus to popup window
             popupWindow.setFocusable(true);
