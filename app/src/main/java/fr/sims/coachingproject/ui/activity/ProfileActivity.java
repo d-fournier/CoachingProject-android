@@ -40,6 +40,7 @@ import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.ProfileSportListAdapter;
+import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -94,13 +95,13 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         btn_send_request.setOnClickListener(this);
         mProfileAdapter=new ProfileSportListAdapter(this);
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
