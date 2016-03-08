@@ -23,6 +23,7 @@ import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.ui.activity.MainActivity;
+import fr.sims.coachingproject.ui.activity.RegisterActivity;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -92,6 +93,14 @@ public class LoginFragment extends GenericFragment {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button signUpButton = (Button) view.findViewById(R.id.sign_up_button);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RegisterActivity.startActivity(getContext());
             }
         });
 
