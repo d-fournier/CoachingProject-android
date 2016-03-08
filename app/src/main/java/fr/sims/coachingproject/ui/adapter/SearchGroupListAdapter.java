@@ -40,12 +40,14 @@ public class SearchGroupListAdapter extends RecyclerView.Adapter<SearchGroupList
         protected TextView mSportTv;
         protected TextView mNameTV;
         protected TextView mDescTV;
+        protected TextView mMembersTV;
 
         public ViewHolder(View v) {
             super(v);
             this.mSportTv = (TextView) v.findViewById(R.id.group_item_sport);
             this.mNameTV = (TextView) v.findViewById(R.id.group_item_name);
             this.mDescTV = (TextView) v.findViewById(R.id.group_item_description);
+            this.mMembersTV = (TextView) v.findViewById(R.id.group_item_members);
         }
     }
 
@@ -69,6 +71,7 @@ public class SearchGroupListAdapter extends RecyclerView.Adapter<SearchGroupList
         vh.mSportTv.setText(group.mSport.mName);
         vh.mNameTV.setText(group.mName);
         vh.mDescTV.setText(group.mDescription);
+        vh.mMembersTV.setText(String.valueOf(group.mMembers));
     }
 
     public void setData(List<Group> dataset) {

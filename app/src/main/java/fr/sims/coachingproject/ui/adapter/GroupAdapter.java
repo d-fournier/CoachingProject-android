@@ -52,7 +52,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.name.setText(g.mName);
         holder.description.setText(g.mDescription);
         holder.sport.setText(g.mSport.mName);
-
         holder.members.setText(String.valueOf(g.mMembers));
     }
 
@@ -89,6 +88,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
             sport = (TextView) itemView.findViewById(R.id.group_item_sport);
+            members = (TextView) itemView.findViewById(R.id.group_item_members);
 
         }
 

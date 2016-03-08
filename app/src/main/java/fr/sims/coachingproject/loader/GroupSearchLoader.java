@@ -33,14 +33,22 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
     public List<Group> loadInBackground() {
         String request = null;
         try {
-            request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS;
+            request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + "?";
+            boolean queryStarted = false;
             if (!mKeywords.isEmpty()) {
-                request += "&" + Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
+                request += queryStarted ? "&" : "";
+                request += Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
+                queryStarted=true;
             }
-            if (!mCity.isEmpty())
+            if (!mCity.isEmpty()) {
+                request += queryStarted ? "&" : "";
                 request += "&" + Const.WebServer.CITY_PARAMETER + "=" + URLEncoder.encode(mCity, "UTF-8");
+                queryStarted=true;
+            }
             if (mSport != -1) {
+                request += queryStarted ? "&" : "";
                 request += "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
+                queryStarted=true;
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
