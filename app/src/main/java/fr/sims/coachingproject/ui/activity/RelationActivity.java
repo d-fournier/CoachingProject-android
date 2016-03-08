@@ -110,7 +110,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mSendBtn.setOnClickListener(this);
         mMessageET = (EditText) findViewById(R.id.message_content);
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
     }
 
     @Override

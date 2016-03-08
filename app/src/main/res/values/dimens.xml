@@ -23,4 +23,6 @@
     <dimen name="list_picture_size">40dp</dimen>
 
     <dimen name="relation_list_profile_picture_size">64dp</dimen>
+
+    <dimen name="standard_drawable_height">24dp</dimen>
 </resources>

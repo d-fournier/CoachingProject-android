@@ -27,6 +27,7 @@ public class NetworkService extends IntentService {
     public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.COACHING_RELATION_ITEM";
     public static final String ACTION_TOGGLE_PIN_MESSAGES="fr.sims.coachingproject.action.TOGGLE_PIN_MESSAGES";
     public static final String ACTION_GROUPS = "fr.sims.coachingproject.action.GROUPS";
+    public static final String ACTION_USER_GROUPS = "fr.sims.coachingproject.action.USER_GROUPS";
 
     private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
     private static final String EXTRA_PINNED_VALUE = "fr.sims.coachingproject.extra.PINNED_VALUE";
@@ -50,6 +51,12 @@ public class NetworkService extends IntentService {
     public static void startActionGroups(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_GROUPS);
+        context.startService(intent);
+    }
+
+    public static void startActionUserGroups(Context context) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_USER_GROUPS);
         context.startService(intent);
     }
 
@@ -88,6 +95,8 @@ public class NetworkService extends IntentService {
                 case ACTION_GROUPS:
                     handleActionGroups();
                     break;
+                case ACTION_USER_GROUPS:
+                    handleActionUserGroups();
             }
 
             Intent endIntent = new Intent(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION);
@@ -141,6 +150,27 @@ public class NetworkService extends IntentService {
 
     protected void handleActionGroups() {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());
+        if(!res.getBody().isEmpty()) {
+            Group[] gList = Group.parseList(res.getBody());
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(Group g : gList) {
+                    g.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_GROUPS_UPDATED));
+        }
+    }
+
+    protected void handleActionUserGroups() {
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+ Const.WebServer.USER_GROUPS, getToken());
         if(!res.getBody().isEmpty()) {
             Group[] gList = Group.parseList(res.getBody());
 

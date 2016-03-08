@@ -256,7 +256,7 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
                 cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
                 break;
             case LIST_PENDING_LEARNER:
-                cr = mDatasetPendingLr.get(position - (getItemCount() - 1));
+                cr = mDatasetPendingLr.get(position - (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 4));
                 break;
             default:
                 cr = null;

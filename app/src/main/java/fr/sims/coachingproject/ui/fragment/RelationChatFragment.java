@@ -34,9 +34,14 @@ import fr.sims.coachingproject.util.Const;
  */
 public class RelationChatFragment extends GenericFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
 
+    public static final String MESSAGES_TITLE = "Messages";
+    public static final String PINNED_TITLE = "Favoris";
+    private final String RELATION_ID = "relationId";
+
     private SwipeRefreshLayout mRefreshLayout;
     private EditText mMessageET;
     private Button mSendBtn;
+
     private TextView mNoMessageText;
     private RecyclerView mMessagesRV;
 
@@ -45,10 +50,6 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
 
     private long mRelationId;
     private boolean mIsPinned;
-
-    private final String RELATION_ID = "relationId";
-    public static final String MESSAGES_TITLE = "Messages";
-    public static final String PINNED_TITLE = "Favoris";
 
     public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
         RelationChatFragment fragment = new RelationChatFragment();
@@ -60,19 +61,21 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
     }
 
     @Override
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
+        registerForContextMenu(mMessagesRV);
+        getLoaderManager().initLoader(Const.Loaders.MESSAGE_LOADER_ID, null, this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
             mRelationId = savedInstanceState.getLong(RELATION_ID);
         }
-
-        getLoaderManager().initLoader(0, null, this);
-
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
-
-
     }
 
     @Override
@@ -154,12 +157,6 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        registerForContextMenu(mMessagesRV);
-    }
-
-    @Override
     public void onCreateContextMenu(final ContextMenu menu,
                                     final View v, final ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Message");
@@ -192,5 +189,6 @@ public class RelationChatFragment extends GenericFragment implements SwipeRefres
         Snackbar.make(mRefreshLayout, display, Snackbar.LENGTH_LONG).show();
         return true;
     }
+
 }
 

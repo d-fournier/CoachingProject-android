@@ -26,6 +26,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
+import fr.sims.coachingproject.util.Const;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
     View mDrawerHeader;
+    Intent mIntent;
 
 
     public static void startActivity(Context ctx) {
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mHomePagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         //startActivity(new Intent(this, ProfileActivity.class));
@@ -89,19 +91,32 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
+                switch (tabLayout.getSelectedTabPosition()) {
+                    case 0: mIntent = new Intent(MainActivity.this, SearchActivity.class);
+                        startActivity(mIntent);
+                        break;
+                    case 1:
+                        break;
+                    case 2: mIntent = new Intent(MainActivity.this, SearchGroupActivity.class);
+                        startActivity(mIntent);
+                        break;
+
+
+                }
             }
-        });
+
+
+
+    });
         NetworkService.startActionConnectedUserInfo(this);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
