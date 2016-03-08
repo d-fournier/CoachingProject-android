@@ -145,15 +145,10 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
-        TextView age = (TextView) findViewById(R.id.age);
         TextView sport = (TextView) findViewById(R.id.sport);
-
-        int userAge = mPartner.getAge();
-
 
         city.setText(mPartner.mCity);
         name.setText(mPartner.mDisplayName);
-        age.setText(getResources().getQuantityString(R.plurals.user_age, userAge, userAge));
         sport.setText(mRelation.mSport.mName);
         Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
 
