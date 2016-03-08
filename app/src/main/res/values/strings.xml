@@ -16,8 +16,8 @@
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -26,6 +26,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="display_name">Display Name</string>
     <string name="connect">Connect</string>
     <string name="search_hint">Search trainer..</string>
     <string name="search_text">Search</string>
@@ -67,4 +68,17 @@
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
+    <string name="log_in">Log in</string>
+    <string name="email">Email</string>
+    <string name="pick_date">Birthdate</string>
+    <string name="city">City</string>
+    <string name="agree_to_coach">I want to coach others</string>
+    <string name="register">Register</string>
+    <string name="description">Describe yourself and why you are here</string>
+    <string name="title_register_activity">Register</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="register_failed">Register request failed</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="sign_up">Sign up</string>
+    <string name="not_registered_question">Not registered yet ?</string>
 </resources>
