@@ -27,11 +27,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:layout_margin="@dimen/standard_margin" >
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imagePicture"
                     android:layout_margin="@dimen/standard_margin"
+                    android:layout_marginTop="0dp"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:scaleType="centerCrop"
@@ -77,8 +79,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/messagePager"

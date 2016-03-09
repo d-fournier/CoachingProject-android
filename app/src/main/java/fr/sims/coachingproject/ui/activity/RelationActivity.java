@@ -79,6 +79,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_relation);
+
+        // Set Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -115,12 +117,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
+        boolean res = super.onPrepareOptionsMenu(menu);
         if(mRelation != null && mRelation.mIsAccepted && mRelation.mActive) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.activity_relation, menu);
             return true;
         }
-        return false;
+        return res;
     }
 
 
