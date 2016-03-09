@@ -76,10 +76,10 @@ public class GroupActivity extends AppCompatActivity {
         mPager.setVisibility(View.VISIBLE);
     }
 
-    public static void startActivity(Context ctx, long id) {
+    public static void startActivity(Context ctx, long idGroup) {
         Intent startIntent = new Intent(ctx, GroupActivity.class);
-        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startIntent.putExtra("groupIdDb", id);
+      //  startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.putExtra("groupIdDb", idGroup);
         ctx.startActivity(startIntent);
     }
 

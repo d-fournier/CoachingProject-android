@@ -74,7 +74,7 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchGroupListAdapter = new SearchGroupListAdapter();
+        mSearchGroupListAdapter = new SearchGroupListAdapter(getApplicationContext());
         mSearchGroupListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchGroupListAdapter);
 
@@ -108,7 +108,7 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
     @Override
     public void onItemClick(View view, int position) {
-        // GroupActivity.startActivity(this, mGroupList.get(position).mIdDb);
+        GroupActivity.startActivity(this, mGroupList.get(position).mIdDb);
     }
 
     @Override
