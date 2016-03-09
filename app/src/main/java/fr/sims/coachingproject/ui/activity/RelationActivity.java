@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -373,7 +372,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 mSendBtn.setEnabled(true);
                 if(response.isSuccessful()) {
                     mMessageET.setText("");
-                    NetworkService.startActionMessages(getApplicationContext(), mRelationId);
+                    NetworkService.startActionRelationMessages(getApplicationContext(), mRelationId);
                 } else {
                     Snackbar.make(mViewPager, R.string.no_connectivity, Snackbar.LENGTH_SHORT);
                 }

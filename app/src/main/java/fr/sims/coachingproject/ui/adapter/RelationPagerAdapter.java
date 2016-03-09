@@ -24,11 +24,11 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         switch(i) {
             case 1:
-                fragment = MessageFragment.newInstance(mRelationId, true);
+                fragment = MessageFragment.newRelationInstance(mRelationId, true);
                 break;
             case 0:
             default:
-                fragment = MessageFragment.newInstance(mRelationId, false);
+                fragment = MessageFragment.newRelationInstance(mRelationId, false);
                 break;
         }
         return fragment;

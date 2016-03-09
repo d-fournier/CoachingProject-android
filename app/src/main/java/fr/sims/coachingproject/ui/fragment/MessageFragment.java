@@ -13,8 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,10 +37,9 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     public static final String MESSAGES_TITLE = "Messages";
     public static final String PINNED_TITLE = "Favoris";
     private final String RELATION_ID = "relationId";
+    private final String GROUP_ID = "groupId";
 
     private SwipeRefreshLayout mRefreshLayout;
-    private EditText mMessageET;
-    private Button mSendBtn;
 
     private TextView mNoMessageText;
     private RecyclerView mMessagesRV;
@@ -51,16 +48,39 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private long mRelationId;
+    private long mGroupId;
     private boolean mIsPinned;
 
-    public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
+    /***
+     * @param relationId     Id of relation
+     * @param pinnedMessages if true, shows pinned messages
+     * @return the fragment
+     */
+    public static android.support.v4.app.Fragment newRelationInstance(long relationId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
         fragment.mRelationId = relationId;
+        fragment.mGroupId = -1;
         fragment.mIsPinned = pinnedMessages;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+
+    /***
+     * @param groupId        Id of group
+     * @param pinnedMessages if true, shows pinned messages
+     * @return
+     */
+    public static android.support.v4.app.Fragment newGroupInstance(long groupId, boolean pinnedMessages) {
+        MessageFragment fragment = new MessageFragment();
+        fragment.mGroupId = groupId;
+        fragment.mRelationId = -1;
+        fragment.mIsPinned = pinnedMessages;
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public void onActivityCreated(Bundle savedState) {
@@ -75,6 +95,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
         if (savedInstanceState != null) {
             mRelationId = savedInstanceState.getLong(RELATION_ID);
+            mGroupId = savedInstanceState.getLong(GROUP_ID);
         }
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
@@ -103,12 +124,22 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
                 mRefreshLayout.setRefreshing(true);
             }
         });
-        NetworkService.startActionMessages(getContext(), mRelationId);
+
+        if (mRelationId != -1) {
+            NetworkService.startActionRelationMessages(getContext(), mRelationId);
+        } else if (mGroupId != -1) {
+            NetworkService.startActionGroupMessages(getContext(), mGroupId);
+        }
+
     }
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionMessages(getContext(), mRelationId);
+        if (mRelationId != -1) {
+            NetworkService.startActionRelationMessages(getContext(), mRelationId);
+        } else if (mGroupId != -1) {
+            NetworkService.startActionGroupMessages(getContext(), mGroupId);
+        }
     }
 
     @Override
@@ -116,7 +147,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
         if (mNoMessageText != null) {
             mNoMessageText.setVisibility(View.GONE);
         }
-        return new MessageLoader(getContext(), mRelationId);
+        return new MessageLoader(getContext(), mRelationId, mGroupId);
     }
 
     @Override
@@ -147,7 +178,8 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
     @Override
     public void onBroadcastReceive(Intent intent) {
-        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_RELATION_MESSAGES) && mRefreshLayout != null) {
+        if ((intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_RELATION_MESSAGES) ||
+                intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_GROUP_MESSAGES)) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
     }
@@ -156,6 +188,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(RELATION_ID, mRelationId);
+        outState.putLong(GROUP_ID, mGroupId);
     }
 
     @Override
@@ -180,11 +213,10 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
         }
 
 
-
         ContextMenuRecyclerView.RecyclerContextMenuInfo menuInfo = (ContextMenuRecyclerView.RecyclerContextMenuInfo) item.getMenuInfo();
         Message message = mMessageAdapter.getItem(menuInfo.position);
 
-        
+
         NetworkService.startActionTogglePinMessages(getContext(), message.mIdDb, requestPinnedValue);
 
         String display = requestPinnedValue ? getResources().getString(R.string.message_pinned) : getResources().getString(R.string.message_unpinned);

@@ -42,6 +42,9 @@ public class Message extends Model {
     @Column(name = "relation")
     public CoachingRelation mRelation;
 
+    @Column(name = "group")
+    public Group mGroup;
+
     @Column(name = "isPinned")
     @Expose
     @SerializedName("is_pinned")
@@ -52,6 +55,7 @@ public class Message extends Model {
         this.mContent = message.mContent;
         this.mSender = message.mSender;
         this.mRelation = message.mRelation;
+        this.mGroup = message.mGroup;
         this.mTime = message.mTime;
         this.mIsPinned=message.mIsPinned;
     }
@@ -120,5 +124,19 @@ public class Message extends Model {
 
     public static Message getMessageById(long id){
         return new Select().from(Message.class).where("idDb == ?", id).executeSingle();
+    }
+
+    public static List<Message> getAllMessagesByGroupId(long id) {
+        List<Message> res=new ArrayList<>();
+        Group g=new Select().from(Group.class).where("idDb == ?", id).executeSingle();
+        if(g!=null) {
+            res = new Select()
+                    .from(Message.class)
+                    .where("group == ?", g.getId())
+                    .orderBy("time DESC")
+                    .execute();
+        }
+
+        return res;
     }
 }

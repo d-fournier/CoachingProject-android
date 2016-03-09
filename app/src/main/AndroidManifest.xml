@@ -85,7 +85,7 @@
 
         <activity
             android:name=".ui.activity.GroupActivity"
-            android:label="@string/title_activity_login"/>
+            android:label="@string/title_activity_group"/>
 
         <activity
             android:name=".ui.activity.RelationActivity"

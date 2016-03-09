@@ -24,9 +24,9 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 public class NetworkService extends IntentService {
     public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
-    public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.COACHING_RELATION_ITEM";
+    public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.RELATION_MESSAGES";
+    public static final String ACTION_GROUP_MESSAGES = "fr.sims.coachingproject.action.GROUP_MESSAGES";
     public static final String ACTION_TOGGLE_PIN_MESSAGES="fr.sims.coachingproject.action.TOGGLE_PIN_MESSAGES";
-    public static final String ACTION_GROUPS = "fr.sims.coachingproject.action.GROUPS";
     public static final String ACTION_USER_GROUPS = "fr.sims.coachingproject.action.USER_GROUPS";
 
     private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
@@ -48,22 +48,22 @@ public class NetworkService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionGroups(Context context) {
-        Intent intent = new Intent(context, NetworkService.class);
-        intent.setAction(ACTION_GROUPS);
-        context.startService(intent);
-    }
-
-
     public static void startActionUserGroups(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_USER_GROUPS);
         context.startService(intent);
     }
 
-    public static void startActionMessages(Context context, long id) {
+    public static void startActionRelationMessages(Context context, long id) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_RELATION_MESSAGES);
+        intent.putExtra(EXTRA_ITEM_ID, id);
+        context.startService(intent);
+    }
+
+    public static void startActionGroupMessages(Context context, long id) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_GROUP_MESSAGES);
         intent.putExtra(EXTRA_ITEM_ID, id);
         context.startService(intent);
     }
@@ -91,13 +91,14 @@ public class NetworkService extends IntentService {
                     handleActionRelationMessages(intent.getLongExtra(EXTRA_ITEM_ID, -1));
                     break;
                 case ACTION_TOGGLE_PIN_MESSAGES:
-                    handleActionTogglePinMesage(intent.getLongExtra(EXTRA_MESSAGE_ID, -1), intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
-                    break;
-                case ACTION_GROUPS:
-                    handleActionGroups();
+                    handleActionTogglePinMessage(intent.getLongExtra(EXTRA_MESSAGE_ID, -1), intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
                     break;
                 case ACTION_USER_GROUPS:
                     handleActionUserGroups();
+                    break;
+                case ACTION_GROUP_MESSAGES:
+                    handleActionGroupMessages(intent.getLongExtra(EXTRA_ITEM_ID, -1));
+                    break;
             }
 
             Intent endIntent = new Intent(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION);
@@ -149,29 +150,6 @@ public class NetworkService extends IntentService {
         }
     }
 
-
-
-    protected void handleActionGroups() {
-        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());
-        if(res.isSuccessful()) {
-            Group[] gList = Group.parseList(res.getBody());
-
-            ActiveAndroid.beginTransaction();
-            try {
-                for(Group g : gList) {
-                    g.saveOrUpdate();
-                }
-                ActiveAndroid.setTransactionSuccessful();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                ActiveAndroid.endTransaction();
-            }
-
-            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_GROUPS_UPDATED));
-        }
-    }
-
     protected void handleActionUserGroups() {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+ Const.WebServer.USER_GROUPS, getToken());
         if(res.isSuccessful()) {
@@ -217,7 +195,31 @@ public class NetworkService extends IntentService {
         }
     }
 
-    protected void handleActionTogglePinMesage(long messageId, boolean toPin) {
+    protected void handleActionGroupMessages(long groupId) {
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + groupId + Const.WebServer.SEPARATOR + Const.WebServer.MESSAGES, getToken());
+        if(res.isSuccessful()) {
+            Message[] messages = Message.parseList(res.getBody());
+
+            ActiveAndroid.beginTransaction();
+
+            try {
+                for(Message ms : messages){
+                    ms.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+
+            Intent intent = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
+            intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, groupId);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
+    }
+
+    protected void handleActionTogglePinMessage(long messageId, boolean toPin) {
         JSONObject json=new JSONObject();
         try {
             json.put("is_pinned", Boolean.toString(toPin));

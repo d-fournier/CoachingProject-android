@@ -25,7 +25,7 @@ import fr.sims.coachingproject.util.Const;
  */
 public class GroupMembersFragment extends GenericFragment {
 
-    public static final String TABS_TITLE = "Members";
+    public static final String MEMBERS_TITLE = "Members";
     GroupMembersLoaderCallbacks mGroupLoader;
     private UserProfileAdapter mGroupMembersAdapter;
     private RecyclerView mGroupMembersList;

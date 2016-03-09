@@ -60,7 +60,6 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mGroupAdapter = new GroupAdapter();
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);

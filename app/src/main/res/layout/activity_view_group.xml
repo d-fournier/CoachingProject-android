@@ -28,14 +28,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/group_name"
-                    android:text="INSA sport group"
                     style="@style/TextAppearance.AppCompat.Title"/>
 
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/group_description"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nulla purus, lacinia ac aliquet nec, sagittis ac libero. Suspendisse potenti. Interdum et malesuada fames ac ante ipsum primis in posuere. "
                     style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_toRightOf="@id/group_name"
                     android:layout_alignParentRight="true"
@@ -45,7 +43,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/group_creation_date"
-                    android:text="le 1 mars 2016"
                     android:layout_below="@+id/group_name"
                     android:layout_alignParentLeft="true"
                     />
@@ -54,14 +51,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/group_city"
-                    android:text="Paris"
                     android:layout_below="@+id/group_creation_date"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/group_sport"
-                    android:text="Course a pied"
                     android:layout_below="@+id/group_city"/>
             </RelativeLayout>
         </LinearLayout>
