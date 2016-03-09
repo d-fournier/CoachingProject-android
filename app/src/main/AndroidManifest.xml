@@ -59,6 +59,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"/>
 
+        <activity
+            android:name=".ui.activity.CreateGroupActivity"
+
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+
         <service
             android:name=".NetworkService"
             android:exported="false" />
