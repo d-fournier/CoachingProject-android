@@ -9,7 +9,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +23,13 @@ import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
+import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
 import fr.sims.coachingproject.ui.activity.GroupActivity;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 
 
-
-public class GroupFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<Group>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener{
+public class GroupFragment extends GenericFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<List<Group>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener{
 
 
     public static final String TABS_TITLE = "Groups";
@@ -34,6 +38,8 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     private RecyclerView mGroupList;
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
+
+    private Button mCreateGroupBtn;
 
     public GroupFragment() {
     }
@@ -58,8 +64,26 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+         inflater.inflate(R.menu.activity_creategroup,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_group :
+                CreateGroupActivity.startActivity(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mGroupAdapter = new GroupAdapter();
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
@@ -72,6 +96,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         mGroupList = (RecyclerView) view.findViewById(R.id.group_list);
         mGroupList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupList.setAdapter(mGroupAdapter);
+
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh_group);
         mRefreshLayout.setOnRefreshListener(this);
@@ -132,6 +157,9 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         }
     }
 
-
+    @Override
+    public void onClick(View v) {
+        CreateGroupActivity.startActivity(getActivity());
+    }
 
 }
