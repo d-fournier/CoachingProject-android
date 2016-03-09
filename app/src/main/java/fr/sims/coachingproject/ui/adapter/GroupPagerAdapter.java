@@ -28,7 +28,6 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
 
         switch(position) {
-
             case 1:
                 fragment = MessageFragment.newGroupInstance(mGroupIdDb, true);
                 break;
@@ -53,14 +52,14 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
         String title;
         switch(position) {
             case 1:
-                title = MessageFragment.MESSAGES_TITLE;
+                title = MessageFragment.PINNED_TITLE;
                 break;
             case 2:
-                title = MessageFragment.PINNED_TITLE;
+                title = GroupMembersFragment.MEMBERS_TITLE;
                 break;
             case 0:
             default:
-                title = GroupMembersFragment.MEMBERS_TITLE;
+                title = MessageFragment.MESSAGES_TITLE;
                 break;
         }
         return title;

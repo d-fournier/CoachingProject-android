@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class Message extends Model {
     @Column(name = "relation")
     public CoachingRelation mRelation;
 
-    @Column(name = "group")
+    @Column(name = "to_group")
     public Group mGroup;
 
     @Column(name = "isPinned")
@@ -68,8 +69,18 @@ public class Message extends Model {
             JSONArray messageArray=new JSONArray(json);
             for(int i=0; i<messageArray.length(); i++){
                 JSONObject messageObject=messageArray.getJSONObject(i);
-                JSONObject relationObject=messageObject.getJSONObject("to_relation");
-                res[i].mRelation=CoachingRelation.parseItem(relationObject.toString());
+                try{
+                    JSONObject relationObject=messageObject.getJSONObject("to_relation");
+                    res[i].mRelation=CoachingRelation.parseItem(relationObject.toString());
+                }catch(JSONException e){
+                    res[i].mRelation=null;
+                }
+                try{
+                    JSONObject groupObject=messageObject.getJSONObject("to_group");
+                    res[i].mGroup=Group.parseItem(groupObject.toString());
+                }catch(JSONException e){
+                    res[i].mGroup=null;
+                }
             }
 
 
@@ -85,8 +96,19 @@ public class Message extends Model {
         try {
             res = gson.fromJson(json, Message.class);
             JSONObject messageObject=new JSONObject(json);
-            JSONObject relationObject=messageObject.getJSONObject("to_relation");
-            res.mRelation=CoachingRelation.parseItem(relationObject.toString());
+            try{
+                JSONObject relationObject=messageObject.getJSONObject("to_relation");
+                res.mRelation=CoachingRelation.parseItem(relationObject.toString());
+            }catch(JSONException e){
+                res.mRelation=null;
+            }
+            try{
+                JSONObject groupObject=messageObject.getJSONObject("to_group");
+                res.mGroup=Group.parseItem(groupObject.toString());
+            }catch(JSONException e){
+                res.mGroup=null;
+            }
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -94,7 +116,12 @@ public class Message extends Model {
     }
 
     public Message saveOrUpdate(){
-        mRelation=mRelation.saveOrUpdate();
+        if(mGroup!=null){
+            mGroup=mGroup.saveOrUpdate();
+        }
+        if(mRelation!=null){
+            mRelation=mRelation.saveOrUpdate();
+        }
         mSender=mSender.saveOrUpdate();
 
         Message res = new Select().from(Message.class).where("idDb = ?", mIdDb).executeSingle();
@@ -132,7 +159,7 @@ public class Message extends Model {
         if(g!=null) {
             res = new Select()
                     .from(Message.class)
-                    .where("group == ?", g.getId())
+                    .where("to_group == ?", g.getId())
                     .orderBy("time DESC")
                     .execute();
         }
