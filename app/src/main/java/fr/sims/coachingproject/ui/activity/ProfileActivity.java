@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -67,9 +67,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private String mRequest_Body;
 
     private View mMainLayout;
-    ListView mSportsLV;
+    private LinearLayout mSportsLL;
     Button mSendRequestBtn;
-    private ProfileSportListAdapter mProfileAdapter;
+    private ProfileSportListAdapter mSportsListAdapter;
 
     /**
      * Start activity
@@ -94,8 +94,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-            actionBar.setDisplayHomeAsUpEnabled(true);
+//        if (actionBar != null)
+//            actionBar.setDisplayHomeAsUpEnabled(true);
 
         mConnectedUserId = SharedPrefUtil.getConnectedUserId(this);
 
@@ -109,9 +109,8 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         mSendRequestBtn = (Button) findViewById(R.id.profile_send_request);
         mSendRequestBtn.setOnClickListener(this);
 
-        mProfileAdapter = new ProfileSportListAdapter(this);
-        mSportsLV = (ListView) findViewById(R.id.profile_sports);
-        mSportsLV.setAdapter(mProfileAdapter);
+        mSportsListAdapter = new ProfileSportListAdapter(this);
+        mSportsLL = (LinearLayout) findViewById(R.id.profile_sports);
 
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
@@ -146,7 +145,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         infoTV.setText(getString(R.string.separator_strings, mProfile.mCity, age));
         descriptionTV.setText(data.mDescription);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(pictureIV);
-        mProfileAdapter.setData(data.mSportsList);
+
+        mSportsListAdapter.setData(data.mSportsList);
+        updateSportsList();
 
         if (mProfile.mIsCoach) {
             isCoachTV.setText(getString(R.string.profile_accept_coaching, mProfile.mDisplayName));
@@ -163,6 +164,15 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     }
 
+    private void updateSportsList() {
+        mSportsLL.removeAllViews();
+        int length = mSportsListAdapter.getCount();
+        for (int i = 0; i < length; i++) {
+            mSportsLL.addView(mSportsListAdapter.getView(i, null, mSportsLL));
+        }
+    }
+
+    // TODO Debug
     private void fillCoachingRequestLayout(){
         Spinner spinner = (Spinner) findViewById(R.id.spinner_profile_sports);
 
@@ -182,6 +192,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
             spinner.setAdapter(new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_item, sportList));
             if (mSportId != -1) {
+                // TODO Main Thread + BDD
                 spinner.setSelection(sportList.indexOf(Sport.getSportById(mSportId)));
             }
         }
