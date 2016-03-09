@@ -94,5 +94,6 @@
     <string name="sign_up">Sign up</string>
     <string name="not_registered_question">Not registered yet ?</string>
     <string name="title_activity_group">Group</string>
+    <string name="created_on">"Created on %1$s"</string>
 
 </resources>

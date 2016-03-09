@@ -108,7 +108,7 @@ public class GroupActivity extends AppCompatActivity {
                 Group myGroup = data.get(0);
                 mGroupName.setText(myGroup.mName);
                 mGroupDescription.setText(myGroup.mDescription);
-                mGroupCreationDate.setText(myGroup.mCreationDate);
+                mGroupCreationDate.setText(getString(R.string.created_on,myGroup.mCreationDate));
                 mGroupSport.setText(myGroup.mSport.mName);
                 mGroupCity.setText(myGroup.mCity);
             }catch(NullPointerException e){
