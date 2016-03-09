@@ -3,11 +3,14 @@ package fr.sims.coachingproject.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -25,7 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
 import fr.sims.coachingproject.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,28 +55,31 @@ import static fr.sims.coachingproject.util.SharedPrefUtil.getConnectedUserId;
 public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
-    private static final String EXTRA_SPORT_ID="fr.sims.coachingproject.extra.SPORT_ID";
+    private static final String EXTRA_SPORT_ID = "fr.sims.coachingproject.extra.SPORT_ID";
 
     private long mId;
     private long mSportId;
     private String mConnectedToken;
     private long mConnectedUserId;
     private long mCoachUserId;
-    private UserProfile mData;
+
+    private UserProfile mProfile;
     private String mRequest_Body;
 
     private View mMainLayout;
-
+    ListView mSportsLV;
+    Button mSendRequestBtn;
     private ProfileSportListAdapter mProfileAdapter;
 
     /**
      * Start activity
+     *
      * @param ctx
      * @param id
      * @param idSport id of sport to be selected, -1 if no preference
      */
-    public static void startActivity(Context ctx, long id, long idSport){
-        Intent intent = new Intent(ctx,ProfileActivity.class);
+    public static void startActivity(Context ctx, long id, long idSport) {
+        Intent intent = new Intent(ctx, ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
         intent.putExtra(EXTRA_SPORT_ID, idSport);
         ctx.startActivity(intent);
@@ -81,19 +88,30 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mConnectedUserId= SharedPrefUtil.getConnectedUserId(this);
         setContentView(R.layout.activity_profile);
-        Button btn_send_request = (Button) findViewById(R.id.send_request);
+
+        // Set Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mConnectedUserId = SharedPrefUtil.getConnectedUserId(this);
 
         // Get the transferred id
         Intent mIntent = getIntent();
         mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
         mSportId = mIntent.getLongExtra(EXTRA_SPORT_ID, -1);
 
-        mMainLayout = findViewById(R.id.profile_layout);
+        // Bind
+        mMainLayout = findViewById(R.id.profile_main_layout);
+        mSendRequestBtn = (Button) findViewById(R.id.profile_send_request);
+        mSendRequestBtn.setOnClickListener(this);
 
-        btn_send_request.setOnClickListener(this);
-        mProfileAdapter=new ProfileSportListAdapter(this);
+        mProfileAdapter = new ProfileSportListAdapter(this);
+        mSportsLV = (ListView) findViewById(R.id.profile_sports);
+        mSportsLV.setAdapter(mProfileAdapter);
 
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
@@ -109,78 +127,84 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         return new UserLoader(this, mId);
     }
 
-
-    // TODO Crash sometimes Data == null
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, final UserProfile data) {
-        mData = data;
+        mProfile = data;
+
         // Get components
-        TextView tv_Name = (TextView) findViewById(R.id.textName);
-        TextView tv_Birthday = (TextView) findViewById(R.id.textBirthday);
-        TextView tv_City = (TextView) findViewById(R.id.textCity);
-        TextView tv_IsCoach = (TextView) findViewById(R.id.textIsCoach);
-        TextView tv_Description = (TextView) findViewById(R.id.textDescription);
-        ImageView iv_Picture = (ImageView) findViewById(R.id.imagePicture);
-        ListView lv_sport = (ListView) findViewById(R.id.listView1);
-        Spinner spinner=(Spinner) findViewById(R.id.spinner_profile_sports);
+        TextView nameTV = (TextView) findViewById(R.id.profile_name);
+        TextView infoTV = (TextView) findViewById(R.id.profile_info);
+        TextView isCoachTV = (TextView) findViewById(R.id.profile_isCoach);
+        TextView descriptionTV = (TextView) findViewById(R.id.profile_description);
+        ImageView pictureIV = (ImageView) findViewById(R.id.profile_picture);
+
 
         // Set values
-        //tv_Id.setText("UserID: " + Long.toString(data.mId));
-        tv_Name.setText(data.mDisplayName);
-        tv_Birthday.setText(getResources().getQuantityString(R.plurals.user_age,data.getAge(), data.getAge()));
-        tv_City.setText(data.mCity);
-        tv_IsCoach.setText(data.mIsCoach ? "Can coach" : "Cannot coach");
-        tv_Description.setText(data.mDescription);
-        Picasso.with(ProfileActivity.this).load(data.mPicture).into(iv_Picture);
+        String age = getResources().getQuantityString(R.plurals.user_age, mProfile.getAge(), mProfile.getAge());
+        nameTV.setText(mProfile.mDisplayName);
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mProfile.mDisplayName);
+        infoTV.setText(getString(R.string.separator_strings, mProfile.mCity, age));
+        descriptionTV.setText(data.mDescription);
+        Picasso.with(ProfileActivity.this).load(data.mPicture).into(pictureIV);
+        mProfileAdapter.setData(data.mSportsList);
+
+        if (mProfile.mIsCoach) {
+            isCoachTV.setText(getString(R.string.profile_accept_coaching, mProfile.mDisplayName));
+            mSendRequestBtn.setVisibility(View.VISIBLE);
+
+            fillCoachingRequestLayout();
+        } else {
+            isCoachTV.setText(getString(R.string.profile_not_accept_coaching, mProfile.mDisplayName));
+            mSendRequestBtn.setVisibility(View.GONE);
+
+            // TODO tmp
+            findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
+        }
+
+    }
+
+    private void fillCoachingRequestLayout(){
+        Spinner spinner = (Spinner) findViewById(R.id.spinner_profile_sports);
 
         // fill sport list
         List<Sport> sportList = new ArrayList<>();
-        for (SportLevel level :  data.mSportsList)
-        {
-            if(!mData.isCoachingUser(mConnectedUserId, level.mSport.mIdDb )){
+        for (SportLevel level : mProfile.mSportsList) {
+            // TODO Main Thread + BDD
+            if (!mProfile.isCoachingUser(mConnectedUserId, level.mSport.mIdDb)) {
                 sportList.add(level.mSport);
             }
         }
 
-
-        if(sportList.isEmpty()){
-            Button btn_send_request = (Button) findViewById(R.id.send_request);
-            LinearLayout sentence_send_request= (LinearLayout) findViewById(R.id.send_coaching_request_sentence);
-            btn_send_request.setVisibility(View.GONE);
-            sentence_send_request.setVisibility(View.GONE);
-        }else{
+        if (sportList.isEmpty()) {
+            findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
+            mSendRequestBtn.setVisibility(View.GONE);
+        } else {
             spinner.setAdapter(new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_item, sportList));
-            if(mSportId!=-1){
+            if (mSportId != -1) {
                 spinner.setSelection(sportList.indexOf(Sport.getSportById(mSportId)));
             }
         }
-
-
-
-
-
-
-
-
-        mProfileAdapter.setData(data.mSportsList);
-
-        lv_sport.setAdapter(mProfileAdapter);
-
     }
 
     @Override
     public void onLoaderReset(Loader<UserProfile> loader) {
-
     }
 
     @Override
     public void onClick(View v) {
+        int viewId = v.getId();
+        switch (viewId) {
+            case R.id.profile_send_request:
+                displayCoachingRequest();
+                break;
+        }
+    }
+
+    private void displayCoachingRequest() {
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_send_request_coaching, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
 
         // Send Button
         Button btn_confirm_send_request = (Button) popupView.findViewById(R.id.confirm_send_request);
@@ -191,17 +215,17 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                 // Get the trainee id
                 mConnectedUserId = getConnectedUserId(ProfileActivity.this);
                 // Get the coach id
-                mCoachUserId = mData.mIdDb;
+                mCoachUserId = mProfile.mIdDb;
                 // Get checked sport id
                 Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
-                Sport checked_sport = (Sport)lv.getSelectedItem();
+                Sport checked_sport = (Sport) lv.getSelectedItem();
                 long check_sport_id = checked_sport.mIdDb;
                 // Get request comment
                 EditText et = (EditText) popupView.findViewById(R.id.request_comment);
                 String request_comment = et.getText().toString();
                 // Only keep the first 200 characters
                 if (request_comment.length() > 200) {
-                    request_comment = request_comment.substring(0,200);
+                    request_comment = request_comment.substring(0, 200);
                 }
                 // Create request to post
                 try {
@@ -212,30 +236,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                     parent.put("comment", request_comment);
                     Log.d("output", parent.toString(2));
                     mRequest_Body = parent.toString(2);
-                    class SendRequest extends AsyncTask<String, Void, String> {
-                        @Override
-                        protected String doInBackground(String... params) {
-                            NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
-                            return String.valueOf(response.getReturnCode());
-                        }
 
-                        @Override
-                        protected void onPostExecute(String response) {
-                            if (Integer.parseInt(response)== HttpsURLConnection.HTTP_CREATED){
-                                Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        protected void onPreExecute() {
-                        }
-
-                        @Override
-                        protected void onProgressUpdate(Void... values) {
-                        }
-                    }
                     new SendRequest().execute("");
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -256,7 +257,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         // No selected sport, no pop-up window
         Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
         if (lv.getSelectedItem() != null) {
-            popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+            popupWindow.showAtLocation(mMainLayout, Gravity.CENTER, 0, 0);
             // Set focus to popup window
             popupWindow.setFocusable(true);
             popupWindow.update();
@@ -264,6 +265,30 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
             Toast.makeText(getApplicationContext(),
                     "You should choose a sport first !", Toast.LENGTH_LONG).show();
         }
+    }
 
+    class SendRequest extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
+            return String.valueOf(response.getReturnCode());
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (Integer.parseInt(response) == HttpsURLConnection.HTTP_CREATED) {
+                Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 }

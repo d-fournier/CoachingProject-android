@@ -198,7 +198,7 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
 
             Picasso.with(mCtx).load(partner.mPicture).into(cvh.mPictureIV);
             cvh.mNameTV.setText(partner.mDisplayName);
-            cvh.mDescTV.setText(mCtx.getString(R.string.relation_list_description, partner.mCity, cr.mSport.mName));
+            cvh.mDescTV.setText(mCtx.getString(R.string.separator_strings, partner.mCity, cr.mSport.mName));
         } else {
             HeaderViewHolder hvh = (HeaderViewHolder) vh;
             int resId;

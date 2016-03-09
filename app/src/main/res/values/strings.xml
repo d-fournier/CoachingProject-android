@@ -50,7 +50,7 @@
     </plurals>
 
 
-    <string name="relation_list_description">%1$s - %2$s</string>
+    <string name="separator_strings">%1$s - %2$s</string>
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
@@ -93,5 +93,9 @@
     <string name="passwords_dont_match">Passwords don\'t match</string>
     <string name="sign_up">Sign up</string>
     <string name="not_registered_question">Not registered yet ?</string>
+    <string name="profile_accept_coaching">Accept to coach</string>
+    <string name="profile_not_accept_coaching">Refuse to coach</string>
+    <string name="profile_description">Description</string>
+    <string name="profile_sports">Sports</string>
 
 </resources>
