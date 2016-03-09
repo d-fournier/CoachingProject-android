@@ -52,8 +52,6 @@ public class Group extends Model {
     @SerializedName("city")
     public String mCity;
 
-
-
     public Group() {
 
     }
@@ -85,6 +83,13 @@ public class Group extends Model {
 
     public static List<Group> getAllGroups() {
         return new Select().from(Group.class).execute();
+    }
+
+    public static Group getGroupById(long id){
+        return new Select()
+                .from(Group.class)
+                .where("idDb = ?", id)
+                .executeSingle();
     }
 
     public Group saveOrUpdate() {

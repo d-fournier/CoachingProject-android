@@ -23,13 +23,13 @@ import fr.sims.coachingproject.R;
  * Created by Anthony Barbosa on 17/02/2016.
  */
 
-public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ViewHolder> {
+public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.ViewHolder> {
 
     private List<UserProfile> userList;
     private OnItemClickListener mOnItemClickListener;
     private Context mCtx;
 
-    public SearchListAdapter(Context context) {
+    public UserProfileAdapter(Context context) {
         mCtx=context;
         this.userList = new ArrayList<>();
     }
@@ -101,6 +101,10 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     @Override
     public int getItemCount() {
         return userList.size();
+    }
+
+    public long getItemId(int position){
+        return userList.get(position).mIdDb;
     }
 
     public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {

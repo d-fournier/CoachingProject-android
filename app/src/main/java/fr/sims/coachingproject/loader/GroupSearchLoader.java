@@ -48,7 +48,6 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
             if (mSport != -1) {
                 request += queryStarted ? "&" : "";
                 request += "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
-                queryStarted=true;
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

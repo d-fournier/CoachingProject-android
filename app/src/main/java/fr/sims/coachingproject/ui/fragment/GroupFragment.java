@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -14,11 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +22,9 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
-
-import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
-
 import fr.sims.coachingproject.service.NetworkService;
-
+import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
+import fr.sims.coachingproject.ui.activity.GroupActivity;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 
@@ -91,13 +84,10 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-
         mGroupAdapter = new GroupAdapter();
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
-
     }
 
     @Override
@@ -117,8 +107,13 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
             }
         });
 
-
-
+        // set onItemClick event
+        mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, String data) {
+                GroupActivity.startActivity(getContext(), Long.parseLong(data));
+            }
+        });
     }
 
     @Override
@@ -129,7 +124,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-        return new GroupLoader(getContext());
+        return new GroupLoader(getContext(),-1);
     }
 
     @Override
@@ -152,7 +147,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionGroups(getContext());
+        NetworkService.startActionUserGroups(getContext());
     }
 
     @Override
@@ -166,4 +161,5 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     public void onClick(View v) {
         CreateGroupActivity.startActivity(getActivity());
     }
+
 }

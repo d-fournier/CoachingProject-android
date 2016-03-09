@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.ui.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import android.util.Log;
@@ -8,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import fr.sims.coachingproject.model.Group;
 /**
  * Created by Benjamin on 01/03/2016.
  */
-public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> implements View.OnClickListener {
 
 
     private static final int LIST_GROUP_TYPE = 0;
@@ -29,6 +29,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public GroupAdapter() {
         mGroupList = new ArrayList<>();
     }
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
 
     @Override
@@ -41,9 +43,24 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_group, parent, false);
                 vh = new ViewHolder(v);
+
+                LinearLayout ll = (LinearLayout) v.findViewById(R.id.group_item_linear_layout);
+                ll.setOnClickListener(this);
+
                 break;
         }
         return vh;
+    }
+
+    @Override
+    public void onClick (View v){
+        // use getTag() to pass clicked item IdDb
+        if (mOnItemClickListener != null)
+            mOnItemClickListener.onItemClick(v, v.getTag().toString());
+    }
+
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.mOnItemClickListener = listener;
     }
 
     @Override
@@ -52,6 +69,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.name.setText(g.mName);
         holder.description.setText(g.mDescription);
         holder.sport.setText(g.mSport.mName);
+        holder.linear_layout.setTag(g.mIdDb);
         holder.members.setText(String.valueOf(g.mMembers));
     }
 
@@ -80,6 +98,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView name;
         TextView description;
         TextView sport;
+        LinearLayout linear_layout;
         TextView members;
 
         public ViewHolder(View itemView) {
@@ -88,12 +107,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
             sport = (TextView) itemView.findViewById(R.id.group_item_sport);
+            linear_layout = (LinearLayout) itemView.findViewById(R.id.group_item_linear_layout);
             members = (TextView) itemView.findViewById(R.id.group_item_members);
-
         }
 
 
     }
 
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view , String data);
+    }
 
 }

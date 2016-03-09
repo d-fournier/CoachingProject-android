@@ -85,6 +85,10 @@
             android:windowSoftInputMode="stateHidden"/>
 
         <activity
+            android:name=".ui.activity.GroupActivity"
+            android:label="@string/title_activity_group"/>
+
+        <activity
             android:name=".ui.activity.RelationActivity"
             android:label="@string/activity_relation_name"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"

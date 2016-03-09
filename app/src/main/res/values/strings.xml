@@ -97,5 +97,7 @@
     <string name="profile_not_accept_coaching">Refuse to coach</string>
     <string name="profile_description">Description</string>
     <string name="profile_sports">Sports</string>
+    <string name="title_activity_group">Group</string>
+    <string name="created_on">"Created on %1$s"</string>
 
 </resources>
