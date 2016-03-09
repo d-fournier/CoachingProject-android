@@ -47,6 +47,11 @@ public class Group extends Model {
     @SerializedName("sport")
     public Sport mSport;
 
+    @Column(name = "city")
+    @Expose
+    @SerializedName("city")
+    public String mCity;
+
     public Group() {
 
     }
@@ -105,5 +110,6 @@ public class Group extends Model {
         this.mMembers = g.mMembers;
         this.mName = g.mName;
         this.mDescription = g.mDescription;
+        this.mCity = g.mCity;
     }
 }

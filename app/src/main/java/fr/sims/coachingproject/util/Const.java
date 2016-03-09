@@ -51,6 +51,7 @@ public class Const {
         public final static int USER_LOADER_ID = 5;
         public final static int RELATION_LOADER_ID = 6;
         public final static int COACH_LOADER_ID = 7;
+        public final static int GROUP_MEMBERS_ID = 8;
     }
 
     public static class Notification {

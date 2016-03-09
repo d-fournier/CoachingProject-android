@@ -53,8 +53,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/group_creator"
-                    android:text="INSA de Lyon"
+                    android:id="@+id/group_city"
+                    android:text="Paris"
                     android:layout_below="@+id/group_creation_date"/>
 
                 <TextView
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/group_sport"
                     android:text="Course a pied"
-                    android:layout_below="@+id/group_creator"/>
+                    android:layout_below="@+id/group_city"/>
             </RelativeLayout>
         </LinearLayout>
 

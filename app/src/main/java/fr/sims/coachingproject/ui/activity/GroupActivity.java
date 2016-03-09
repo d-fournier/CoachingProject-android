@@ -28,6 +28,7 @@ public class GroupActivity extends AppCompatActivity {
     private TextView mGroupDescription;
     private TextView mGroupCreationDate;
     private TextView mGroupSport;
+    private TextView mGroupCity;
 
     private int mGroupIdDb;
 
@@ -57,6 +58,7 @@ public class GroupActivity extends AppCompatActivity {
         mGroupDescription = (TextView) findViewById(R.id.group_description);
         mGroupCreationDate = (TextView) findViewById(R.id.group_creation_date);
         mGroupSport = (TextView) findViewById(R.id.group_sport);
+        mGroupCity = (TextView) findViewById(R.id.group_city);
 
         mGroupLoader = new GroupLoaderCallbacks();
         getSupportLoaderManager().initLoader(0, null, mGroupLoader);
@@ -99,8 +101,8 @@ public class GroupActivity extends AppCompatActivity {
             mGroupName.setText(myGroup.mName);
             mGroupDescription.setText(myGroup.mDescription);
             mGroupCreationDate.setText(myGroup.mCreationDate);
-            //mGroupCreator.setText(myGroup.m);
             mGroupSport.setText(myGroup.mSport.mName);
+            mGroupCity.setText(myGroup.mCity);
         }
 
         @Override
