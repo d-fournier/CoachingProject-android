@@ -41,7 +41,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Segolene on 18/02/2016.
  */
-public class RelationChatFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
+public class MessageFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener, View.OnClickListener {
 
     public static final String MESSAGES_TITLE = "Messages";
     public static final String PINNED_TITLE = "Favoris";
@@ -56,7 +56,7 @@ public class RelationChatFragment extends ListFragment implements SwipeRefreshLa
     private TextView mNoMessageText;
 
     public static android.support.v4.app.Fragment newInstance(long relationId, boolean pinnedMessages) {
-        RelationChatFragment fragment = new RelationChatFragment();
+        MessageFragment fragment = new MessageFragment();
         fragment.mRelationId = relationId;
         fragment.mPinned = pinnedMessages;
         Bundle args = new Bundle();

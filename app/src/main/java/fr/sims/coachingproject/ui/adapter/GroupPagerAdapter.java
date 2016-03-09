@@ -28,12 +28,12 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
 
         switch(position) {
             case 0:
-                fragment = GroupMembersFragment.newInstance();
+                fragment = GroupMembersFragment.newInstance(mGroupIdDb);
                 break;
             case 1:
             case 2:
             default:
-                fragment = GroupMembersFragment.newInstance();
+                fragment = GroupMembersFragment.newInstance(mGroupIdDb);
                 break;
         }
         return fragment;

@@ -1,6 +1,7 @@
 package fr.sims.coachingproject.ui.activity;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -30,9 +31,9 @@ public class GroupActivity extends AppCompatActivity {
     private TextView mGroupSport;
     private TextView mGroupCity;
 
-    private int mGroupIdDb;
+    private long mGroupIdDb;
 
-    private GroupLoaderCallbacks mGroupLoader = null;
+    private GroupLoaderCallbacks mGroupLoader;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -52,7 +53,7 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_group);
 
         Intent intent = getIntent();
-        mGroupIdDb = Integer.parseInt(intent.getExtras().getString("groupIdDb"));
+        mGroupIdDb = intent.getLongExtra("groupIdDb",-1);
 
         mGroupName = (TextView) findViewById(R.id.group_name);
         mGroupDescription = (TextView) findViewById(R.id.group_description);
@@ -75,6 +76,12 @@ public class GroupActivity extends AppCompatActivity {
         mPager.setVisibility(View.VISIBLE);
     }
 
+    public static void startActivity(Context ctx, long id) {
+        Intent startIntent = new Intent(ctx, GroupActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.putExtra("groupIdDb", id);
+        ctx.startActivity(startIntent);
+    }
 
     @Override
     public void onBackPressed() {
@@ -97,12 +104,16 @@ public class GroupActivity extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
-            Group myGroup = data.get(0);
-            mGroupName.setText(myGroup.mName);
-            mGroupDescription.setText(myGroup.mDescription);
-            mGroupCreationDate.setText(myGroup.mCreationDate);
-            mGroupSport.setText(myGroup.mSport.mName);
-            mGroupCity.setText(myGroup.mCity);
+            try{
+                Group myGroup = data.get(0);
+                mGroupName.setText(myGroup.mName);
+                mGroupDescription.setText(myGroup.mDescription);
+                mGroupCreationDate.setText(myGroup.mCreationDate);
+                mGroupSport.setText(myGroup.mSport.mName);
+                mGroupCity.setText(myGroup.mCity);
+            }catch(NullPointerException e){
+                //TODO rajouter le catch de l'erreur
+            }
         }
 
         @Override

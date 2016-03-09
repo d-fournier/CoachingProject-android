@@ -28,14 +28,14 @@ import fr.sims.coachingproject.loader.SportLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
+import fr.sims.coachingproject.ui.adapter.UserProfileAdapter;
 import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener {
+public class SearchActivity extends AppCompatActivity implements UserProfileAdapter.OnItemClickListener {
 
     private final static String ID_SPORT = "idSport";
     private final static String ID_LEVEL = "idLevel";
@@ -48,7 +48,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
     List<UserProfile> mUserList;
     List<Sport> mSportList;
     List<SportLevel> mLevelList;
-    SearchListAdapter mSearchListAdapter;
+    UserProfileAdapter mUserProfileAdapter;
     Bundle mSearchArgs;
     Spinner mSportsSpinner;
     ProgressBar mLoadingBar;
@@ -76,9 +76,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchListAdapter = new SearchListAdapter(getApplicationContext());
-        mSearchListAdapter.setOnItemClickListener(this);
-        mRecycleView.setAdapter(mSearchListAdapter);
+        mUserProfileAdapter = new UserProfileAdapter(getApplicationContext());
+        mUserProfileAdapter.setOnItemClickListener(this);
+        mRecycleView.setAdapter(mUserProfileAdapter);
 
         mSportsSpinner = (Spinner) findViewById(R.id.spinner_sports);
         mSportsAdapter = new ArrayAdapter<>(this,
@@ -193,7 +193,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 mUserList.addAll(data);
             }
 
-            mSearchListAdapter.setData(mUserList);
+            mUserProfileAdapter.setData(mUserList);
             mLoadingBar.setVisibility(View.GONE);
 
             if (mUserList.isEmpty()) {

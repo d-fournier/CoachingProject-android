@@ -13,9 +13,9 @@ import fr.sims.coachingproject.util.Const;
  */
 public class GroupLoader  extends GenericLocalLoader<List<Group>> {
 
-    private int mId;
+    private long mId;
 
-    public GroupLoader(Context context,int id) {
+    public GroupLoader(Context context,long id) {
         super(context);
         mId = id;
     }

@@ -54,6 +54,7 @@ public class NetworkService extends IntentService {
         context.startService(intent);
     }
 
+
     public static void startActionUserGroups(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_USER_GROUPS);
@@ -90,7 +91,7 @@ public class NetworkService extends IntentService {
                     handleActionRelationMessages(intent.getLongExtra(EXTRA_ITEM_ID, -1));
                     break;
                 case ACTION_TOGGLE_PIN_MESSAGES:
-                    handleActionTogglePinMesages(intent.getLongExtra(EXTRA_MESSAGE_ID, -1),intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
+                    handleActionTogglePinMesages(intent.getLongExtra(EXTRA_MESSAGE_ID, -1), intent.getBooleanExtra(EXTRA_PINNED_VALUE, false));
                     break;
                 case ACTION_GROUPS:
                     handleActionGroups();
@@ -147,6 +148,8 @@ public class NetworkService extends IntentService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_COACHING_RELATIONS_UPDATED));
         }
     }
+
+
 
     protected void handleActionGroups() {
         NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, getToken());

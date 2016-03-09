@@ -33,6 +33,7 @@ public class Const {
         public final static String SEPARATOR = "/";
 
         public final static String USER_GROUPS = "my_groups";
+        public final static String MEMBERS = "members";
 
 
 
@@ -51,7 +52,7 @@ public class Const {
         public final static int USER_LOADER_ID = 5;
         public final static int RELATION_LOADER_ID = 6;
         public final static int COACH_LOADER_ID = 7;
-        public final static int GROUP_MEMBERS_ID = 8;
+        public final static int GROUP_MEMBERS_LOADER_ID = 8;
     }
 
     public static class Notification {
@@ -83,5 +84,6 @@ public class Const {
         public final static String EVENT_MESSAGES_UPDATED = "fr.sims.coachingproject.event.MESSAGES_UPDATED";
         public final static String EXTRA_ITEM_ID = "fr.sims.coachingproject.event.EXTRA_ITEM_ID";
         public static final String EVENT_GROUPS_UPDATED = "fr.sims.coachingproject.event.GROUPS_UPDATED";
+        public static final String EVENT_GROUP_MEMBERS_UPDATED = "fr.sims.coachingproject.event.GROUP_MEMBERS_UPDATED";
     }
 }

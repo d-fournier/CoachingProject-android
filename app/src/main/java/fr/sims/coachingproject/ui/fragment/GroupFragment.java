@@ -87,10 +87,7 @@ public class GroupFragment extends GenericFragment implements LoaderManager.Load
         mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, String data) {
-                //Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
-                Intent myIntent = new Intent(getActivity(), GroupActivity.class);
-                myIntent.putExtra("groupIdDb", data);
-                getActivity().startActivity(myIntent);
+                GroupActivity.startActivity(getContext(),Long.parseLong(data));
             }
         });
 

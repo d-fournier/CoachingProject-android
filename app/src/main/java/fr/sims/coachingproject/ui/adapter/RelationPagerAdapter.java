@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import fr.sims.coachingproject.ui.fragment.RelationChatFragment;
+import fr.sims.coachingproject.ui.fragment.MessageFragment;
 
 /**
  * Created by Segolene on 18/02/2016.
@@ -23,11 +23,11 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         switch(i) {
             case 1:
-                fragment = RelationChatFragment.newInstance(mRelationId, true);
+                fragment = MessageFragment.newInstance(mRelationId, true);
                 break;
             case 0:
             default:
-                fragment = RelationChatFragment.newInstance(mRelationId, false);
+                fragment = MessageFragment.newInstance(mRelationId, false);
                 break;
         }
         return fragment;
@@ -43,11 +43,11 @@ public class RelationPagerAdapter extends FragmentPagerAdapter {
         String title;
         switch(position) {
             case 1:
-                title = RelationChatFragment.PINNED_TITLE;
+                title = MessageFragment.PINNED_TITLE;
                 break;
             case 0:
             default:
-                title = RelationChatFragment.MESSAGES_TITLE;
+                title = MessageFragment.MESSAGES_TITLE;
                 break;
         }
         return title;
