@@ -26,7 +26,7 @@ import fr.sims.coachingproject.util.Const;
 public class GroupMembersFragment extends GenericFragment {
 
     public static final String TABS_TITLE = "Members";
-    GroupLoaderCallbacks mGroupLoader;
+    GroupMembersLoaderCallbacks mGroupLoader;
     private UserProfileAdapter mGroupMembersAdapter;
     private RecyclerView mGroupMembersList;
     private long mGroupId;
@@ -42,25 +42,19 @@ public class GroupMembersFragment extends GenericFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mGroupLoader = new GroupMembersLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupLoader);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGroupMembersAdapter = new UserProfileAdapter(getContext());
-        mGroupLoader = new GroupLoaderCallbacks();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_group_members, container, false);
     }
 
     @Override
     protected void bindView(View view) {
         super.bindView(view);
+        mGroupMembersAdapter = new UserProfileAdapter(getContext());
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
@@ -84,7 +78,7 @@ public class GroupMembersFragment extends GenericFragment {
     }
 
 
-    public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
+    public class GroupMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
