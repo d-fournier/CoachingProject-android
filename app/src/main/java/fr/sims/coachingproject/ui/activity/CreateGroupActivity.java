@@ -10,11 +10,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +29,12 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.SportLoader;
 import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
-public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener{
+public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener {
 
     private static final String EXTRA_CREATE_GROUP = "fr.sims.coachingproject.extra.CREATE_GROUP";
 
@@ -43,10 +47,18 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private EditText  mNameET;
     private EditText  mDescriptionET;
     private CheckBox mPrivateCB;
+     AutoCompleteTextView mCityAT;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+
+        mCityAT = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+
+        mCityAT.setAdapter(new CityAutoCompleteAdapter(this, R.layout.list_item_city));
+        mCityAT.setOnItemClickListener(this);
+
 
         mSportList = new ArrayList<>();
         mSportsSpinner = (Spinner) findViewById(R.id.spinner_sports);
@@ -73,12 +85,20 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         ctx.startActivity(intent);
     }
 
+    @Override
+    public void onItemClick(AdapterView parent, View view, int position, long id) {
+        String str = (String) parent.getItemAtPosition(position);
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+
+
+    }
 
     @Override
     public void onClick(View v) {
         long  ID_sport = ((Sport)mSportsSpinner.getSelectedItem()).getmIdDb();
         String mName = mNameET.getText().toString();
         String mDescription =  mDescriptionET.getText().toString();
+        String mCity =  mCityAT.getText().toString();
         Boolean mPrivate = mPrivateCB.isChecked();
         String body = "";
 
@@ -87,6 +107,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
             parent.put("sport",ID_sport);
             parent.put("name", ""+mName);
             parent.put("description",""+mDescription);
+            parent.put("city",""+mCity);
             parent.put("private",""+mPrivate);
 
             body = parent.toString(2);
@@ -115,6 +136,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 if(response.isSuccessful()) {
                     mNameET.setText("");
                     mDescriptionET.setText("");
+                    mCityAT.setText("");
 //                    NetworkService.startActionMessages(getContext(), mRelationId);
                 } else {
 //                    Snackbar.make(getListView(), R.string.no_connectivity, Snackbar.LENGTH_SHORT);

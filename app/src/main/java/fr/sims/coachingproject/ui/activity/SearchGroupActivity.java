@@ -154,7 +154,6 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
         @Override
         public void onLoaderReset(Loader<List<Group>> loader) {
-
         }
 
 

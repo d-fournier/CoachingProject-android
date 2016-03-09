@@ -64,7 +64,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/edit_Description"
             android:layout_weight="1" />
+
+        <!-- AutoCompleteTextView for Search -->
+
     </LinearLayout>
+
+
 
     <Button
         android:layout_width="wrap_content"
@@ -102,14 +107,31 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout3">
 
-        <CheckBox
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Private"
-            android:id="@+id/checkBox" />
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/edit_Description"
+            android:completionThreshold="1"
+            android:ems="10"
+            android:hint="Search place.."
+            android:layout_weight="1">
+            <requestFocus />
+        </AutoCompleteTextView>
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Private"
+        android:id="@+id/checkBox"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_toRightOf="@+id/ok_button"
+        android:layout_toEndOf="@+id/ok_button" />
 
 
 </RelativeLayout>
