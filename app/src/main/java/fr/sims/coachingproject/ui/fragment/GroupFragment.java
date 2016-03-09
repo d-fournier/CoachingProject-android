@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -21,17 +20,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.sims.coachingproject.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+
 import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
+
+import fr.sims.coachingproject.service.NetworkService;
+
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 
 
 public class GroupFragment extends GenericFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<List<Group>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener{
+
 
     public static final String TABS_TITLE = "Groups";
 
@@ -59,9 +62,17 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLoaderManager().initLoader(0, null, this);
+
+        mGroupAdapter = new GroupAdapter();
+        NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
 
@@ -72,7 +83,6 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         super.bindView(view);
         mGroupList = (RecyclerView) view.findViewById(R.id.group_list);
         mGroupList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mGroupAdapter = new GroupAdapter();
         mGroupList.setAdapter(mGroupAdapter);
 
         mCreateGroupBtn = (Button) view.findViewById(R.id.create_group_button);
@@ -87,7 +97,8 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
             }
         });
 
-        NetworkService.startActionGroups(getContext());
+
+
     }
 
     @Override
@@ -103,14 +114,16 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
-        if(data != null) {
+        if (data != null) {
             mGroupAdapter.clearData();
             mGroupAdapter.setData(data);
-        }else{
+
+        } else {
             mGroupAdapter.setData(new ArrayList<Group>());
-            //Here is an error
         }
     }
+
+
 
     @Override
     public void onLoaderReset(Loader<List<Group>> loader) {
@@ -124,7 +137,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public void onBroadcastReceive(Intent intent) {
-        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_GROUPS) && mRefreshLayout != null) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_USER_GROUPS) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
     }

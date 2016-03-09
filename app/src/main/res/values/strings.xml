@@ -16,8 +16,8 @@
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -26,32 +26,42 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="display_name">Display Name</string>
     <string name="connect">Connect</string>
     <string name="search_hint">Search trainer..</string>
+    <string name="search_group_hint">Search group..</string>
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
     <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
+
+    <string name="no_group_found">No group found</string>
+
     <string name="no_connectivity">No connection available</string>
     <string name="retry">Retry</string>
     <string name="pin_message">Pin message</string>
     <string name="unpin_message">Unpin message</string>
+
 
     <plurals name="user_age">
         <item quantity="one">%1$d year old</item>
         <item quantity="other">%1$d years old</item>
     </plurals>
 
+
+    <string name="relation_list_description">%1$s - %2$s</string>
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
     <string name="accept">Accept</string>
+    <string name="end_relation">End relation</string>
 
     <string name="no_group">No group found</string>
     <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
+    <string name="request_refused">You request has been refused by the coach.</string>
     <string name="send_request">Send request</string>
     <string name="ask_for_coaching_in">Ask for coaching in</string>
     <string name="title_activity_first_launch">FirstLaunchActivity</string>
@@ -61,4 +71,27 @@
     <string name="first_launch_next_cd">Next tutorial</string>
     <string name="first_launch_previous_cd">Previous tutorial</string>
     <string name="send_message">Send</string>
+    <string name="notif_coaching_accept">%1$s has accepted your coaching request</string>
+    <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
+    <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
+    <string name="notif_coaching_new">%1$s sent you a coaching request</string>
+
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="message_pinned">Message pinned</string>
+    <string name="message_unpinned">Message unpinned</string>
+
+    <string name="log_in">Log in</string>
+    <string name="email">Email</string>
+    <string name="pick_date">Birthdate</string>
+    <string name="city">City</string>
+    <string name="agree_to_coach">I want to coach others</string>
+    <string name="register">Register</string>
+    <string name="description">Describe yourself and why you are here</string>
+    <string name="title_register_activity">Register</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="register_failed">Register request failed</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="sign_up">Sign up</string>
+    <string name="not_registered_question">Not registered yet ?</string>
+
 </resources>

@@ -9,6 +9,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +40,6 @@ public class Message extends Model {
     public UserProfile mSender;
 
     @Column(name = "relation")
-    @Expose
-    @SerializedName("to_relation")
     public CoachingRelation mRelation;
 
     @Column(name = "isPinned")
@@ -60,6 +61,14 @@ public class Message extends Model {
         Message[] res = null;
         try {
             res = gson.fromJson(json, Message[].class);
+            JSONArray messageArray=new JSONArray(json);
+            for(int i=0; i<messageArray.length(); i++){
+                JSONObject messageObject=messageArray.getJSONObject(i);
+                JSONObject relationObject=messageObject.getJSONObject("to_relation");
+                res[i].mRelation=CoachingRelation.parseItem(relationObject.toString());
+            }
+
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -71,6 +80,9 @@ public class Message extends Model {
         Message res = null;
         try {
             res = gson.fromJson(json, Message.class);
+            JSONObject messageObject=new JSONObject(json);
+            JSONObject relationObject=messageObject.getJSONObject("to_relation");
+            res.mRelation=CoachingRelation.parseItem(relationObject.toString());
         } catch (Exception e){
             e.printStackTrace();
         }
