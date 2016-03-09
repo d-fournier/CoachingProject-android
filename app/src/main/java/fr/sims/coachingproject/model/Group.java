@@ -56,6 +56,7 @@ public class Group extends Model {
 
     }
 
+
     /* Json Builder */
     public static Group parseItem(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -78,6 +79,7 @@ public class Group extends Model {
         }
         return res;
     }
+
 
     public static List<Group> getAllGroups() {
         return new Select().from(Group.class).execute();
@@ -103,6 +105,7 @@ public class Group extends Model {
         }
         return res;
     }
+
 
     private void bindProperties(Group g) {
         this.mCreationDate = g.mCreationDate;

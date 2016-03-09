@@ -3,6 +3,7 @@ package fr.sims.coachingproject.loader;
 import android.content.Context;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import fr.sims.coachingproject.model.Group;
@@ -44,4 +45,6 @@ public class GroupLoader  extends GenericLocalLoader<List<Group>> {
         super.onStartLoading();
         forceLoad();
     }
+
+
 }

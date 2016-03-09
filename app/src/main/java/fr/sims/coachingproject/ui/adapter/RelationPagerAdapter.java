@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import fr.sims.coachingproject.ui.fragment.MessageFragment;
 
+
 /**
  * Created by Segolene on 18/02/2016.
  */

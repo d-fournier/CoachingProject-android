@@ -53,6 +53,7 @@ public class CoachingRelation extends Model {
     @SerializedName("requestStatus")
     public Boolean mRequestStatus;
 
+    @Column(name= "active")
     @Expose
     @SerializedName("active")
     public boolean mActive;

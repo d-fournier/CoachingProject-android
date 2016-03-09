@@ -53,7 +53,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_coach, parent, false);
+                .inflate(R.layout.list_item_user, parent, false);
         return new ViewHolder(v);
     }
 
