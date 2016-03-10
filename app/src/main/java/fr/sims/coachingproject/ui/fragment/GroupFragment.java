@@ -122,7 +122,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-        return new GroupLoader(getContext(),-1);
+        return new GroupLoader(getContext());
     }
 
     @Override

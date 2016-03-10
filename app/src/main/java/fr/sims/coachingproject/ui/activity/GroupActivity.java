@@ -23,6 +23,7 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
+import fr.sims.coachingproject.loader.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.ui.adapter.GroupPagerAdapter;
 import fr.sims.coachingproject.util.Const;
@@ -126,29 +127,28 @@ public class GroupActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
+    class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
 
         @Override
-        public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new GroupLoader(getApplicationContext(), mGroupIdDb);
+        public Loader<Group> onCreateLoader(int id, Bundle args) {
+            return new SingleGroupLoader(getApplicationContext(), mGroupIdDb);
         }
 
         @Override
-        public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
+        public void onLoadFinished(Loader<Group> loader, Group data) {
             try {
-                Group myGroup = data.get(0);
-                mGroupName.setText(myGroup.mName);
-                mGroupDescription.setText(myGroup.mDescription);
-                mGroupCreationDate.setText(getString(R.string.created_on, myGroup.mCreationDate));
-                mGroupSport.setText(myGroup.mSport.mName);
-                mGroupCity.setText(myGroup.mCity);
+                mGroupName.setText(data.mName);
+                mGroupDescription.setText(data.mDescription);
+                mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
+                mGroupSport.setText(data.mSport.mName);
+                mGroupCity.setText(data.mCity);
             } catch (NullPointerException e) {
                 //TODO rajouter le catch de l'erreur
             }
         }
 
         @Override
-        public void onLoaderReset(Loader<List<Group>> loader) {
+        public void onLoaderReset(Loader<Group> loader) {
 
         }
 
