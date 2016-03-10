@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -34,7 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -68,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     private View mMainLayout;
     private LinearLayout mSportsLL;
-    Button mSendRequestBtn;
+    private FloatingActionButton mSendRequestBtn;
     private ProfileSportListAdapter mSportsListAdapter;
 
     /**
@@ -106,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
         // Bind
         mMainLayout = findViewById(R.id.profile_main_layout);
-        mSendRequestBtn = (Button) findViewById(R.id.profile_send_request);
+        mSendRequestBtn = (FloatingActionButton) findViewById(R.id.profile_send_request);
         mSendRequestBtn.setOnClickListener(this);
 
         mSportsListAdapter = new ProfileSportListAdapter(this);
@@ -177,23 +180,29 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         Spinner spinner = (Spinner) findViewById(R.id.spinner_profile_sports);
 
         // fill sport list
-        List<Sport> sportList = new ArrayList<>();
+        Map<Long,Sport> sports = new HashMap<>();
         for (SportLevel level : mProfile.mSportsList) {
             // TODO Main Thread + BDD
-            if (!mProfile.isCoachingUser(mConnectedUserId, level.mSport.mIdDb)) {
-                sportList.add(level.mSport);
+            Sport s = level.mSport;
+            if (!mProfile.isCoachingUser(mConnectedUserId, s.mIdDb) && !sports.containsKey(s.mIdDb)) {
+                sports.put(s.mIdDb, s);
             }
         }
 
-        if (sportList.isEmpty()) {
+        if (sports.isEmpty()) {
             findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
             mSendRequestBtn.setVisibility(View.GONE);
         } else {
+            List<Sport> sportslist = new ArrayList<>(sports.values());
             spinner.setAdapter(new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, sportList));
+                    android.R.layout.simple_spinner_item, sportslist));
             if (mSportId != -1) {
-                // TODO Main Thread + BDD
-                spinner.setSelection(sportList.indexOf(Sport.getSportById(mSportId)));
+                for (int i = 0; i < sportslist.size(); i++) {
+                    if(sportslist.get(i).mIdDb == mSportId) {
+                        spinner.setSelection(i);
+                        break;
+                    }
+                }
             }
         }
     }
