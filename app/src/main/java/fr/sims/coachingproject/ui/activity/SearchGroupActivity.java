@@ -26,6 +26,7 @@ import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.ui.adapter.SearchGroupListAdapter;
 import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
+import fr.sims.coachingproject.util.Const;
 
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,7 +38,7 @@ import android.widget.Toast;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchGroupActivity extends AppCompatActivity implements SearchGroupListAdapter.OnItemClickListener, OnItemClickListener {
+public class SearchGroupActivity extends AppCompatActivity implements SearchGroupListAdapter.OnItemClickListener {
 
     EditText mSearchInput;
 
@@ -63,7 +64,6 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
         final AutoCompleteTextView mAutoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
 
         mAutoCompView.setAdapter(new CityAutoCompleteAdapter(this, R.layout.list_item_city));
-        mAutoCompView.setOnItemClickListener(this);
 
         mLoadingBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
 
@@ -74,7 +74,7 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchGroupListAdapter = new SearchGroupListAdapter();
+        mSearchGroupListAdapter = new SearchGroupListAdapter(getApplicationContext());
         mSearchGroupListAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mSearchGroupListAdapter);
 
@@ -96,32 +96,23 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
                 mSearchArgs.putCharSequence("searchText", mSearchInput.getText().toString());
                 mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
                 mSearchArgs.putCharSequence("searchPlace", mAutoCompView.getText().toString());
-                getLoaderManager().restartLoader(0, mSearchArgs, mGroupLoader);
+                getLoaderManager().restartLoader(Const.Loaders.GROUP_LOADER_ID, mSearchArgs, mGroupLoader);
             }
         });
 
         mSportLoader = new SportLoaderCallbacks();
         mGroupLoader = new GroupsLoaderCallbacks();
-        getLoaderManager().initLoader(0, mSearchArgs, mGroupLoader);
-        getLoaderManager().initLoader(1, mSearchArgs, mSportLoader);
+        getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, mSearchArgs, mGroupLoader);
+        getLoaderManager().initLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        // GroupActivity.startActivity(this, mGroupList.get(position).mIdDb);
+        GroupActivity.startActivity(this, mGroupList.get(position).mIdDb);
     }
 
     @Override
     public void onItemLongClick(View view, int position) {
-    }
-
-
-    @Override
-    public void onItemClick(AdapterView parent, View view, int position, long id) {
-        String str = (String) parent.getItemAtPosition(position);
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-
-
     }
 
 

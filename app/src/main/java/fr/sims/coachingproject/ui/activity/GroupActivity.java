@@ -29,6 +29,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
+
 /**
  * Created by Zhenjie CEN on 2016/3/6.
  */
@@ -86,7 +87,7 @@ public class GroupActivity extends AppCompatActivity {
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
         mGroupLoader = new GroupLoaderCallbacks();
-        getSupportLoaderManager().initLoader(0, null, mGroupLoader);
+        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
 
 
         // Instantiate a ViewPager and a PagerAdapter.
@@ -99,6 +100,7 @@ public class GroupActivity extends AppCompatActivity {
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
