@@ -19,6 +19,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.ui.adapter.GroupPagerAdapter;
+import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Zhenjie CEN on 2016/3/6.
@@ -62,7 +63,7 @@ public class GroupActivity extends AppCompatActivity {
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
         mGroupLoader = new GroupLoaderCallbacks();
-        getSupportLoaderManager().initLoader(0, null, mGroupLoader);
+        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
 
 
         // Instantiate a ViewPager and a PagerAdapter.

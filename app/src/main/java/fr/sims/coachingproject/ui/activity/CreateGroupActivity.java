@@ -31,6 +31,7 @@ import fr.sims.coachingproject.loader.SportLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.ui.adapter.MessageAdapter;
+import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -75,7 +76,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mDescriptionET = (EditText) findViewById(R.id.edit_Description);
         mPrivateCB =(CheckBox) findViewById(R.id.checkBox);
 
-        getLoaderManager().initLoader(0, null, mSportLoader);
+        getLoaderManager().initLoader(Const.Loaders.SPORT_LOADER_ID, null, mSportLoader);
     }
 
 
