@@ -264,10 +264,6 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
         return cr;
     }
 
-    private CoachingRelation getItem(int position) {
-        return getItem(getItemViewType(position), position);
-    }
-
     public long getRelationId(int position) {
         int index;
         if (position <= mDatasetCr.size()) {

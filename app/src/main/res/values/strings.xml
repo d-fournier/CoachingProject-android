@@ -100,5 +100,7 @@
     <string name="title_activity_group">Group</string>
     <string name="created_on">"Created on %1$s"</string>
     <string name="join_group">Join group</string>
+    <string name="members">Members</string>
+    <string name="pending_members">Pending members</string>
 
 </resources>

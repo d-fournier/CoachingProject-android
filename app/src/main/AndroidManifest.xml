@@ -99,7 +99,8 @@
             android:label="@string/title_activity_group"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".ui.activity.MainActivity"/>
 
         <activity
             android:name=".ui.activity.RelationActivity"
@@ -111,7 +112,6 @@
 
         <activity
             android:name=".ui.activity.CreateGroupActivity"
-
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />

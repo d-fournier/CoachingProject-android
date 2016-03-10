@@ -35,6 +35,8 @@ public class Const {
 
         public final static String USER_GROUPS = "my_groups";
         public final static String MEMBERS = "members";
+        public final static String IS_ADMIN = "is_admin";
+        public final static String PENDING_MEMBERS = "pending_members";
         public final static String JOIN = "join";
 
 
@@ -62,6 +64,7 @@ public class Const {
         public final static int RELATION_LOADER_ID = 6;
         public final static int COACH_LOADER_ID = 7;
         public final static int GROUP_MEMBERS_LOADER_ID = 8;
+        public static final int GROUP_PENDING_MEMBERS_LOADER_ID = 9;
     }
 
     public static class Notification {

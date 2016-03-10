@@ -234,7 +234,12 @@ public class NetworkService extends IntentService {
             message.save();
 
             Intent intent = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
-            intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+            if(message.mRelation==null){
+                intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mGroup.mIdDb);
+            }else{
+                intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+            }
+
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
     }

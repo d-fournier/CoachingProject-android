@@ -241,6 +241,7 @@ public class LoginFragment extends GenericFragment {
             if (success) {
                 RegistrationGCMIntentService.startActionRegistrationGCM(getContext());
                 MainActivity.startActivity(getContext());
+                SharedPrefUtil.putIsFirstLaunch(getContext(), false);
                 getActivity().finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect));
