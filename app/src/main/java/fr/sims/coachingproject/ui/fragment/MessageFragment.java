@@ -56,7 +56,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      * @param pinnedMessages if true, shows pinned messages
      * @return the fragment
      */
-    public static android.support.v4.app.Fragment newRelationInstance(long relationId, boolean pinnedMessages) {
+    public static MessageFragment newRelationInstance(long relationId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
         fragment.mRelationId = relationId;
         fragment.mGroupId = -1;
@@ -71,7 +71,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      * @param pinnedMessages if true, shows pinned messages
      * @return
      */
-    public static android.support.v4.app.Fragment newGroupInstance(long groupId, boolean pinnedMessages) {
+    public static MessageFragment newGroupInstance(long groupId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
         fragment.mGroupId = groupId;
         fragment.mRelationId = -1;
