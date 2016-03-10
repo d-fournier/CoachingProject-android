@@ -35,6 +35,7 @@ public class Const {
 
         public final static String USER_GROUPS = "my_groups";
         public final static String MEMBERS = "members";
+        public final static String JOIN = "join";
 
 
 

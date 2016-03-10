@@ -39,8 +39,6 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     private SwipeRefreshLayout mRefreshLayout;
     private GenericBroadcastReceiver mBroadcastReceiver;
 
-    private Button mCreateGroupBtn;
-
     public GroupFragment() {
     }
 
@@ -65,7 +63,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-         inflater.inflate(R.menu.activity_creategroup,menu);
+        inflater.inflate(R.menu.activity_creategroup,menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
