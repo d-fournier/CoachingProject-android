@@ -142,8 +142,6 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-
-
         switch (viewType) {
             case HEADER_REQUEST_LEARNER:
             case HEADER_REQUEST_COACH:

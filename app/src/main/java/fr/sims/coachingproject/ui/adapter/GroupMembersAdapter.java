@@ -62,7 +62,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                         }
                     }
                 });
-                return new MemberViewHolder(v);
+                return mvh;
         }
     }
 
@@ -113,7 +113,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         if (position <= mMembersList.size())
             return mMembersList.get(position - 1).mIdDb;
         else if (position <= (mMembersList.size() + mPendingMembersList.size() + 1)) {
-            return mPendingMembersList.get(position - 2).mIdDb;
+            return mPendingMembersList.get(position - mMembersList.size() - 2).mIdDb;
         }
         return -1;
     }
