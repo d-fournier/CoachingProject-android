@@ -3,33 +3,46 @@ package fr.sims.coachingproject.ui.activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.loader.LevelLoader;
+import fr.sims.coachingproject.loader.SportLoader;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
+import fr.sims.coachingproject.ui.adapter.RegisterLevelsAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -38,9 +51,20 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Segolene on 08/03/2016.
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements RegisterLevelsAdapter.OnSportChangedListener {
 
-    DatePickerFragment mDateFragment;
+    private final int SPORT_LOADER_ID=0;
+    private final String ARG_SPORT_ID="sportId";
+    private final String ARG_VIEW_HOLDER="viewHolder";
+
+    private DatePickerFragment mDateFragment;
+    private ListView mLevelView;
+    private RegisterLevelsAdapter mLevelAdapter;
+
+    private SportLoaderCallbacks mSportLoader;
+    private LevelsLoaderCallbacks mLevelLoader;
+
+    private List<Sport> mSportList=new ArrayList<>();
 
     private UserRegisterTask mRegisterTask = null;
 
@@ -52,6 +76,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mLevelView = (ListView) findViewById(R.id.register_levels_list);
+        mLevelAdapter = new RegisterLevelsAdapter(this, this);
+        mLevelView.setAdapter(mLevelAdapter);
+
+        mSportLoader = new SportLoaderCallbacks();
+        getLoaderManager().initLoader(SPORT_LOADER_ID, null, mSportLoader);
+        mLevelLoader = new LevelsLoaderCallbacks();
+
     }
 
 
@@ -133,6 +165,21 @@ public class RegisterActivity extends AppCompatActivity {
 
         mDateFragment.show(getSupportFragmentManager(), "datePicker");
 
+    }
+
+    @Override
+    public void reloadLevels(long sportId) {
+        // Loader id specific to sport and different from SPORT_LOADER_ID
+        int loaderId = (int)sportId + SPORT_LOADER_ID + 1;
+
+        Bundle args = new Bundle();
+        args.putLong(ARG_SPORT_ID, sportId);
+
+        if(getLoaderManager().getLoader(loaderId)!=null){
+            getLoaderManager().restartLoader(loaderId, args,mLevelLoader);
+        }else{
+            getLoaderManager().initLoader(loaderId,args,mLevelLoader);
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment
@@ -242,6 +289,48 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             mRegisterTask = null;
+        }
+    }
+
+    class SportLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sport>> {
+
+        @Override
+        public Loader<List<Sport>> onCreateLoader(int id, Bundle args) {
+            return new SportLoader(getApplicationContext());
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
+            if(data!=null){
+                mSportList = data;
+            }else{
+                mSportList.clear();
+            }
+            mLevelAdapter.setSports(mSportList);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Sport>> loader) {
+
+        }
+    }
+
+    class LevelsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<SportLevel>> {
+
+        @Override
+        public Loader<List<SportLevel>> onCreateLoader(int id, Bundle args) {
+            return new LevelLoader(getApplicationContext(), args.getLong(ARG_SPORT_ID, -1));
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<SportLevel>> loader, List<SportLevel> data) {
+            LevelLoader levelLoader=(LevelLoader)loader;
+            mLevelAdapter.setLevels(levelLoader.mSport, data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<SportLevel>> loader) {
+
         }
     }
 }

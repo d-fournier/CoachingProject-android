@@ -69,4 +69,8 @@ public class Sport extends Model {
         return new Select().from(Sport.class).where("idDb = ?", id).executeSingle();
     }
 
+    public List<SportLevel> getLevels(){
+        return new Select().from(SportLevel.class).where("sport == ?", mIdDb).execute();
+    }
+
 }
