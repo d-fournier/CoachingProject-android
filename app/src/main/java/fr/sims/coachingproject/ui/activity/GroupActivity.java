@@ -69,7 +69,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     public static void startActivity(Context ctx, long id) {
         Intent startIntent = new Intent(ctx, GroupActivity.class);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startIntent.putExtra("groupIdDb", id);
+        startIntent.putExtra(EXTRA_GROUP_ID, id);
         ctx.startActivity(startIntent);
     }
 
@@ -93,7 +93,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
 
         Intent intent = getIntent();
-        mGroupIdDb = intent.getLongExtra("groupIdDb", -1);
+        mGroupIdDb = intent.getLongExtra(EXTRA_GROUP_ID, -1);
 
         mGroupName = (TextView) findViewById(R.id.group_name);
         mGroupDescription = (TextView) findViewById(R.id.group_description);
