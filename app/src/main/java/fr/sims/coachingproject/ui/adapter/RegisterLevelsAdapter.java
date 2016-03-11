@@ -35,8 +35,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     private Sport mNoSelectionSport;
     private SportLevel mNoSelectionLevel;
 
-    private final int LISTVIEW_RESOURCE_ID = R.id.register_levels_list;
-
     private OnDataChangedListener mListener;
 
     public RegisterLevelsAdapter(Context context, OnDataChangedListener listener) {
@@ -119,8 +117,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                         noLevels.add(mNoSelectionLevel);
                         mLevelMap.put(globalPos, noLevels);
                         mLevelsSelected.put(globalPos, mNoSelectionLevel);
-                        // notifyDataSetChanged();
-                        mListener.refreshViewAtPosition(globalPos, LISTVIEW_RESOURCE_ID);
+                         notifyDataSetChanged();
                     }
                 }
 
@@ -144,8 +141,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
                 SportLevel previousLevel = mLevelsSelected.put(globalPos, level);
                 if (previousLevel == null || previousLevel.mIdDb != level.mIdDb) {
-                    // notifyDataSetChanged();
-                    mListener.refreshViewAtPosition(globalPos, LISTVIEW_RESOURCE_ID);
+                     notifyDataSetChanged();
                 }
             }
 
@@ -170,11 +166,13 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     public void setLevels(long sportId, List<SportLevel> levels) {
         for (int pos : mSportSelected.keySet()) {
             if (mSportSelected.get(pos).mIdDb == sportId) {
-                mLevelMap.put(pos, levels);
+                List<SportLevel> levelsToSave=new ArrayList<>();
+                levelsToSave.add(mNoSelectionLevel);
+                levelsToSave.addAll(levels);
+                mLevelMap.put(pos, levelsToSave);
                 mLevelsSelected.put(pos, mNoSelectionLevel);
 
-                mListener.refreshViewAtPosition(pos, LISTVIEW_RESOURCE_ID);
-                //  notifyDataSetChanged();
+                 notifyDataSetChanged();
                 break;
             }
         }
@@ -184,8 +182,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
     public interface OnDataChangedListener {
         void reloadLevels(long sportId);
-
-        void refreshViewAtPosition(int position, int listViewResourceId);
     }
 
 

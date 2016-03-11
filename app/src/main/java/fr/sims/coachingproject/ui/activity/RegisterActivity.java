@@ -179,13 +179,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
-    @Override
-    public void refreshViewAtPosition(int position, int listViewResourceId) {
-        ListView listView=(ListView)findViewById(listViewResourceId);
-        View view=listView.getChildAt(position);
-        listView.getAdapter().getView(position, view, listView);
-    }
-
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
         private Date mDate=null;
