@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
 
 
-public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener{
+public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener {
 
 
     public static final String TABS_TITLE = "Groups";
@@ -65,7 +64,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         mGroupLoader = new GroupLoaderCallbacks();
         mInvitationLoader = new InvitationLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
-        getLoaderManager().initLoader(Const.Loaders.INVITATION_LOADER_ID,null,mInvitationLoader);
+        getLoaderManager().initLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add_group :
+            case R.id.add_group:
                 CreateGroupActivity.startActivity(getActivity());
                 return true;
             default:
@@ -136,6 +135,12 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_USER_GROUPS) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);
         }
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_INVITATION_USER_GROUPS))
+        {
+            mRefreshLayout.setRefreshing(true);
+            NetworkService.startActionUserGroups(getContext());
+            getLoaderManager().restartLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
+        }
     }
 
     @Override
@@ -144,7 +149,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     }
 
 
-    public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>>{
+    public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
             return new GroupLoader(getContext());
@@ -167,7 +172,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         }
     }
 
-    public class InvitationLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>>{
+    public class InvitationLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
             return new InvitationLoader(getContext());

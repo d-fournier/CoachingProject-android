@@ -109,7 +109,7 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
     }
 
     public static void startActivity(Context ctx) {
-        Intent startIntent = new Intent(ctx, GroupActivity.class);
+        Intent startIntent = new Intent(ctx, SearchGroupActivity.class);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(startIntent);
     }
