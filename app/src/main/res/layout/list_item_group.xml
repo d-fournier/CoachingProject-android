@@ -49,11 +49,11 @@
         android:drawableStart="@drawable/ic_group_24dp" />
 
 
-    <View
-        android:id="@+id/group_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#BDBDBD" />
+    <!--<View-->
+        <!--android:id="@+id/group_separator"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="#BDBDBD" />-->
 
 
 </LinearLayout>
