@@ -36,6 +36,7 @@ dependencies {
 
     compile "com.google.android.gms:play-services:8.3.0"
 
+    compile 'us.feras.mdv:markdownview:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
