@@ -15,6 +15,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.ui.activity.GroupActivity;
 import fr.sims.coachingproject.ui.activity.RelationActivity;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -59,11 +60,19 @@ public class PushGcmListenerService extends GcmListenerService {
             return;
 
         message.saveOrUpdate();
+        long id;
+        Intent intent;
+        if(message.mRelation!=null){
+            id = message.mRelation.mIdDb;
+            intent = RelationActivity.getIntent(this, id);
+        }else{
+            id = message.mGroup.mIdDb;
+            intent = GroupActivity.getIntent(this, id);
+        }
 
-        String tag = "" + message.mRelation.mIdDb;
+        String tag = String.valueOf(id);
         // TODO Retrieve unread messages from the relation to update notif
 
-        Intent intent = RelationActivity.getIntent(this, message.mRelation.mIdDb);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -77,7 +86,7 @@ public class PushGcmListenerService extends GcmListenerService {
         notificationManager.notify(tag, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
 
         Intent broadcast = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
-        intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+        intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, id);
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
     }
 

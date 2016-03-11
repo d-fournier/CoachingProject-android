@@ -17,14 +17,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.loader.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.GroupPagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -34,14 +38,18 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Zhenjie CEN on 2016/3/6.
  */
-public class GroupActivity extends AppCompatActivity {
+public class GroupActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
+
+    // Send message views
+    private Button mSendBtn;
+    private EditText mMessageET;
     private TextView mGroupName;
     private TextView mGroupDescription;
     private TextView mGroupCreationDate;
     private TextView mGroupSport;
     private TextView mGroupCity;
-
     private long mGroupIdDb;
 
     private GroupLoaderCallbacks mGroupLoader;
@@ -63,6 +71,12 @@ public class GroupActivity extends AppCompatActivity {
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startIntent.putExtra("groupIdDb", id);
         ctx.startActivity(startIntent);
+    }
+
+    public static Intent getIntent(Context ctx, long id) {
+        Intent intent = new Intent(ctx, GroupActivity.class);
+        intent.putExtra(EXTRA_GROUP_ID, id);
+        return intent;
     }
 
     @Override
@@ -98,8 +112,23 @@ public class GroupActivity extends AppCompatActivity {
         mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
         mTabLayout.setupWithViewPager(mPager);
 
+        // Send Message View
+        mSendBtn = (Button) findViewById(R.id.message_send);
+        mSendBtn.setOnClickListener(this);
+        mMessageET = (EditText) findViewById(R.id.message_content);
+
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        switch (viewId) {
+            case R.id.message_send:
+                sendMessage();
+            default:
+        }
     }
 
 
@@ -118,17 +147,32 @@ public class GroupActivity extends AppCompatActivity {
                 new SendJoinTask().execute();
                 return true;
             case R.id.invite_group:
-                SearchActivity.startActivity(getApplicationContext(),true,mGroupIdDb);
+                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void sendMessage() {
+        String message = mMessageET.getText().toString();
+        JSONObject json = new JSONObject();
+        try {
+            json.put("content", message);
+            json.put("to_group", String.valueOf(mGroupIdDb));
+            json.put("is_pinned", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendMessageTask().execute(json.toString());
+
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 
     class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
 
@@ -162,17 +206,45 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         protected NetworkUtil.Response doInBackground(Void... params) {
             return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mGroupIdDb + Const.WebServer.SEPARATOR
-                            + Const.WebServer.JOIN+Const.WebServer.SEPARATOR,
+                            + Const.WebServer.JOIN + Const.WebServer.SEPARATOR,
                     SharedPrefUtil.getConnectedToken(getApplicationContext()), "");
         }
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
-            Snackbar.make(mGroupName,response.getBody().replace("\"",""),Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
         }
     }
 
+    private class SendMessageTask extends AsyncTask<String, Void, NetworkUtil.Response> {
+        @Override
+        protected NetworkUtil.Response doInBackground(String... params) {
+            String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
+            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES, connectedToken, params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(NetworkUtil.Response response) {
+            mSendBtn.setEnabled(true);
+            mMessageET.setText("");
+            if (response.isSuccessful()) {
+                NetworkService.startActionGroupMessages(getApplicationContext(), mGroupIdDb);
+            } else {
+                Snackbar.make(mPager, response.getBody(), Snackbar.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mSendBtn.setEnabled(false);
+        }
+    }
 
 }
+
+
+
+
+
 
 
