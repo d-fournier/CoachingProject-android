@@ -102,5 +102,6 @@
     <string name="join_group">Join group</string>
     <string name="members">Members</string>
     <string name="pending_members">Pending members</string>
+    <string name="invite_group">Invite in group</string>
 
 </resources>

@@ -1,9 +1,11 @@
 package fr.sims.coachingproject.ui.fragment;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -28,6 +30,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     public static final String MEMBERS_TITLE = "Members";
     GroupMembersLoaderCallbacks mGroupMembersLoader;
     GroupPendingMembersLoaderCallbacks mGroupPendingMembersLoader;
+    GenericBroadcastReceiver mBroadcastReceiver;
     private GroupMembersAdapter mGroupMembersAdapter;
     private RecyclerView mGroupMembersList;
     private long mGroupId;
@@ -46,19 +49,21 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         mGroupMembersLoader = new GroupMembersLoaderCallbacks();
         mGroupPendingMembersLoader = new GroupPendingMembersLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
-        getLoaderManager().initLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID,null,mGroupPendingMembersLoader);
+        getLoaderManager().initLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
 
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBroadcastReceiver = new GenericBroadcastReceiver(this);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        mGroupMembersAdapter = new GroupMembersAdapter(getContext(),mGroupId);
+        mGroupMembersAdapter = new GroupMembersAdapter(getContext(), mGroupId);
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
@@ -80,8 +85,9 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     @Override
     public void onBroadcastReceive(Intent intent) {
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_ACCEPT_USER_GROUPS)) {
-            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
-            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
+            //Todo bug avec les loaders - Fragment not attached
+//            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
+//            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
         }
     }
 
@@ -91,7 +97,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new GroupMembersLoader(getContext(),mGroupId, true);
+            return new GroupMembersLoader(getContext(), mGroupId, true);
         }
 
         @Override
@@ -116,7 +122,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new GroupMembersLoader(getContext(),mGroupId, false);
+            return new GroupMembersLoader(getContext(), mGroupId, false);
         }
 
         @Override

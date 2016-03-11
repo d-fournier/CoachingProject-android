@@ -1,12 +1,10 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
-import android.net.Network;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;

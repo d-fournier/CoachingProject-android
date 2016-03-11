@@ -117,6 +117,9 @@ public class GroupActivity extends AppCompatActivity {
             case R.id.join_group:
                 new SendJoinTask().execute();
                 return true;
+            case R.id.invite_group:
+                SearchActivity.startActivity(getApplicationContext(),true,mGroupIdDb);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -2,6 +2,8 @@ package fr.sims.coachingproject.ui.activity;
 
 
 import android.app.LoaderManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -104,6 +106,12 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
         mGroupLoader = new GroupsLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, mSearchArgs, mGroupLoader);
         getLoaderManager().initLoader(Const.Loaders.SPORT_LOADER_ID, mSearchArgs, mSportLoader);
+    }
+
+    public static void startActivity(Context ctx) {
+        Intent startIntent = new Intent(ctx, GroupActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ctx.startActivity(startIntent);
     }
 
     @Override
