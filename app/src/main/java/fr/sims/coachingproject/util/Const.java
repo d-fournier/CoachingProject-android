@@ -38,6 +38,7 @@ public class Const {
         public final static String IS_ADMIN = "is_admin";
         public final static String PENDING_MEMBERS = "pending_members";
         public final static String JOIN = "join";
+        public final static String ACCEPT_JOIN = "accept_join";
 
 
 

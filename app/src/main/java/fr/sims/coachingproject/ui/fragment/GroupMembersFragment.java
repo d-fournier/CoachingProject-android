@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,6 +14,8 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupMembersLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.ProfileActivity;
 import fr.sims.coachingproject.ui.adapter.GroupMembersAdapter;
 import fr.sims.coachingproject.util.Const;
@@ -20,7 +23,7 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by Zhenjie CEN on 2016/3/7.
  */
-public class GroupMembersFragment extends GenericFragment {
+public class GroupMembersFragment extends GenericFragment implements GenericBroadcastReceiver.BroadcastReceiverListener {
 
     public static final String MEMBERS_TITLE = "Members";
     GroupMembersLoaderCallbacks mGroupMembersLoader;
@@ -55,7 +58,7 @@ public class GroupMembersFragment extends GenericFragment {
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        mGroupMembersAdapter = new GroupMembersAdapter(getContext());
+        mGroupMembersAdapter = new GroupMembersAdapter(getContext(),mGroupId);
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
@@ -72,6 +75,14 @@ public class GroupMembersFragment extends GenericFragment {
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_group_members;
+    }
+
+    @Override
+    public void onBroadcastReceive(Intent intent) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_ACCEPT_USER_GROUPS)) {
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
+        }
     }
 
 

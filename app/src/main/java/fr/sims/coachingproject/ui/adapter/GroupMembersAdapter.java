@@ -1,10 +1,13 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
+import android.net.Network;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +18,7 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.service.NetworkService;
 
 /**
  * Created by Benjamin on 10/03/2016.
@@ -30,9 +34,11 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     private List<UserProfile> mPendingMembersList;
     private Context mCtx;
     private OnItemClickListener mOnItemClickListener;
+    private long mGroupId;
 
-    public GroupMembersAdapter(Context ctx) {
+    public GroupMembersAdapter(Context ctx, long groupId) {
         mCtx = ctx;
+        mGroupId=groupId;
         mMembersList = new ArrayList<>();
         mPendingMembersList = new ArrayList<>();
     }
@@ -49,7 +55,6 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                 return new HeaderViewHolder(v);
             default:
             case LIST_MEMBERS:
-            case LIST_PENDING_MEMBERS:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_user, parent, false);
                 final MemberViewHolder mvh = new MemberViewHolder(v);
@@ -63,6 +68,20 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     }
                 });
                 return mvh;
+            case LIST_PENDING_MEMBERS:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_pending_member, parent, false);
+                final PendingMemberViewHolder pmvh = new PendingMemberViewHolder(v);
+                pmvh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            int pos = pmvh.getAdapterPosition();
+                            mOnItemClickListener.onItemClick(v, pos);
+                        }
+                    }
+                });
+                return pmvh;
         }
     }
 
@@ -70,15 +89,38 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         int itemViewType = holder.getItemViewType();
 
-        if (itemViewType == LIST_MEMBERS || itemViewType == LIST_PENDING_MEMBERS) {
-
+        if (itemViewType == LIST_MEMBERS) {//Liste des membres
             final MemberViewHolder mvh = (MemberViewHolder) holder;
             UserProfile up = getItem(itemViewType, position);
 
             Picasso.with(mCtx).load(up.mPicture).into(mvh.mPictureIV);
             mvh.mNameTV.setText(up.mDisplayName);
             mvh.mDescTV.setText(up.mCity);
-        } else {
+        } else if (itemViewType == LIST_PENDING_MEMBERS) {//Liste des membres en attente
+            final PendingMemberViewHolder pmvh = (PendingMemberViewHolder) holder;
+            final UserProfile up = getItem(itemViewType, position);
+
+            Picasso.with(mCtx).load(up.mPicture).into(pmvh.mPictureIV);
+            pmvh.mNameTV.setText(up.mDisplayName);
+            pmvh.mDescTV.setText(up.mCity);
+            pmvh.mAcceptButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pmvh.mAcceptButton.setEnabled(false);
+                    pmvh.mRefuseButton.setEnabled(false);
+                    NetworkService.startActionAcceptUserGroups(mCtx,new long[]{up.mIdDb},mGroupId,true);
+                }
+            });
+            pmvh.mRefuseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pmvh.mRefuseButton.setEnabled(false);
+                    pmvh.mAcceptButton.setEnabled(false);
+                    NetworkService.startActionAcceptUserGroups(mCtx,new long[]{up.mIdDb},mGroupId,false);
+                }
+            });
+
+        } else {//Headers
             HeaderViewHolder hvh = (HeaderViewHolder) holder;
             int resId;
             switch (itemViewType) {
@@ -191,4 +233,22 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             this.mDescTV = (TextView) v.findViewById(R.id.user_description);
         }
     }
+
+    protected class PendingMemberViewHolder extends ViewHolder {
+        protected ImageView mPictureIV;
+        protected TextView mNameTV;
+        protected TextView mDescTV;
+        protected ImageButton mAcceptButton;
+        protected ImageButton mRefuseButton;
+
+        public PendingMemberViewHolder(View v) {
+            super(v);
+            this.mPictureIV = (ImageView) v.findViewById(R.id.user_picture);
+            this.mNameTV = (TextView) v.findViewById(R.id.user_name);
+            this.mDescTV = (TextView) v.findViewById(R.id.user_description);
+            this.mAcceptButton = (ImageButton) v.findViewById(R.id.button_accept_pending);
+            this.mRefuseButton = (ImageButton) v.findViewById(R.id.button_refuse_pending);
+        }
+    }
+
 }
