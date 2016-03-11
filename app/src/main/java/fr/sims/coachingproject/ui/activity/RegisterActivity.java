@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.ui.activity;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
@@ -12,8 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +37,6 @@ import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.ui.adapter.RegisterLevelsAdapter;
 import fr.sims.coachingproject.util.Const;
@@ -51,7 +47,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Segolene on 08/03/2016.
  */
-public class RegisterActivity extends AppCompatActivity implements RegisterLevelsAdapter.OnSportChangedListener {
+public class RegisterActivity extends AppCompatActivity implements RegisterLevelsAdapter.OnDataChangedListener {
 
     private final int SPORT_LOADER_ID=0;
     private final String ARG_SPORT_ID="sportId";
@@ -167,6 +163,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
     }
 
+
     @Override
     public void reloadLevels(long sportId) {
         // Loader id specific to sport and different from SPORT_LOADER_ID
@@ -180,6 +177,13 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }else{
             getLoaderManager().initLoader(loaderId,args,mLevelLoader);
         }
+    }
+
+    @Override
+    public void refreshViewAtPosition(int position, int listViewResourceId) {
+        ListView listView=(ListView)findViewById(listViewResourceId);
+        View view=listView.getChildAt(position);
+        listView.getAdapter().getView(position, view, listView);
     }
 
     public static class DatePickerFragment extends DialogFragment
