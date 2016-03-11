@@ -14,22 +14,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.ImageUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -169,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
         if (user != null) {
             header.setText(user.mDisplayName);
-            Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
+            ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
             mDrawerHeader.setOnClickListener(null);
         } else {

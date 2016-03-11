@@ -1,23 +1,19 @@
 package fr.sims.coachingproject.ui.adapter;
 
-import android.support.v7.widget.RecyclerView;
-
-import java.util.List;
-
-import fr.sims.coachingproject.model.UserProfile;
-
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.util.ImageUtil;
 
 /**
  * Created by Anthony Barbosa on 17/02/2016.
@@ -61,7 +57,8 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
     public void onBindViewHolder(final ViewHolder vh, int position) {
         UserProfile user;
         user = userList.get(position);
-        Picasso.with(mCtx).load(user.mPicture).into(vh.mPictureIV);
+
+        ImageUtil.loadProfilePicture(mCtx, user.mPicture, vh.mPictureIV);
         vh.mNameTV.setText(user.mDisplayName);
         vh.mDescTV.setText(user.mCity);
 

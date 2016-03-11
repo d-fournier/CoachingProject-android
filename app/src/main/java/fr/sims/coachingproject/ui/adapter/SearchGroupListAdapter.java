@@ -5,19 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Group;
-import fr.sims.coachingproject.model.UserProfile;
 
 /**
  * Created by Anthony Barbosa on 17/02/2016.

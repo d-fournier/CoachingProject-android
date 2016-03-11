@@ -3,6 +3,7 @@ package fr.sims.coachingproject.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,10 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
-import fr.sims.coachingproject.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,13 +37,14 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
+import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.ProfileSportListAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -147,7 +144,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mProfile.mDisplayName);
         infoTV.setText(getString(R.string.separator_strings, mProfile.mCity, age));
         descriptionTV.setText(data.mDescription);
-        Picasso.with(ProfileActivity.this).load(data.mPicture).into(pictureIV);
+        ImageUtil.loadProfilePicture(this, data.mPicture, pictureIV);
 
         mSportsListAdapter.setData(data.mSportsList);
         updateSportsList();
