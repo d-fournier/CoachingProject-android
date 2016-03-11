@@ -6,7 +6,9 @@ import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,10 +30,15 @@ public class NetworkService extends IntentService {
     public static final String ACTION_GROUP_MESSAGES = "fr.sims.coachingproject.action.GROUP_MESSAGES";
     public static final String ACTION_TOGGLE_PIN_MESSAGES="fr.sims.coachingproject.action.TOGGLE_PIN_MESSAGES";
     public static final String ACTION_USER_GROUPS = "fr.sims.coachingproject.action.USER_GROUPS";
+    public static final String ACTION_ACCEPT_USER_GROUPS = "fr.sims.coachingproject.action.ACCEPT_USER_GROUPS";
+    public static final String ACTION_INVITATION_USER_GROUPS = "fr.sims.coachingproject.action.INVITATION_USER_GROUPS";
 
     private static final String EXTRA_ITEM_ID = "fr.sims.coachingproject.extra.ITEM_ID";
     private static final String EXTRA_PINNED_VALUE = "fr.sims.coachingproject.extra.PINNED_VALUE";
     private static final String EXTRA_MESSAGE_ID = "fr.sims.coachingproject.extra.MESSAGE_ID";
+    private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
+    private static final String EXTRA_USER_IDS = "fr.sims.coachingproject.extra.USER_ID";
+    private static final String EXTRA_ACCEPTED = "fr.sims.coachingproject.extra.ACCEPTED";
 
     public NetworkService() {
         super("NetworkService");
@@ -47,6 +54,24 @@ public class NetworkService extends IntentService {
         intent.setAction(ACTION_COACHING_RELATIONS);
         context.startService(intent);
     }
+
+    public static void startActionAcceptUserGroups(Context context, long[] userId, long groupId, boolean accepted) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_ACCEPT_USER_GROUPS);
+        intent.putExtra(EXTRA_USER_IDS, userId);
+        intent.putExtra(EXTRA_GROUP_ID, groupId);
+        intent.putExtra(EXTRA_ACCEPTED, accepted);
+        context.startService(intent);
+    }
+
+    public static void startActionInvitationUserGroups(Context context, long groupId, boolean accepted) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_INVITATION_USER_GROUPS);
+        intent.putExtra(EXTRA_GROUP_ID, groupId);
+        intent.putExtra(EXTRA_ACCEPTED, accepted);
+        context.startService(intent);
+    }
+
 
     public static void startActionUserGroups(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
@@ -99,6 +124,11 @@ public class NetworkService extends IntentService {
                 case ACTION_GROUP_MESSAGES:
                     handleActionGroupMessages(intent.getLongExtra(EXTRA_ITEM_ID, -1));
                     break;
+                case ACTION_ACCEPT_USER_GROUPS:
+                    handleActionAcceptUserGroups(intent.getLongArrayExtra(EXTRA_USER_IDS),intent.getLongExtra(EXTRA_GROUP_ID,-1), intent.getBooleanExtra(EXTRA_ACCEPTED,false));
+                    break;
+                case ACTION_INVITATION_USER_GROUPS:
+                    handleActionInvitationUserGroups(intent.getLongExtra(EXTRA_GROUP_ID, -1), intent.getBooleanExtra(EXTRA_ACCEPTED, false));
             }
 
             Intent endIntent = new Intent(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION);
@@ -107,10 +137,51 @@ public class NetworkService extends IntentService {
         }
     }
 
+    private void handleActionInvitationUserGroups(long groupId, boolean accepted) {
+        JSONObject json=new JSONObject();
+        try {
+            json.put("accepted", accepted);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        NetworkUtil.Response res = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + groupId +
+                Const.WebServer.SEPARATOR + Const.WebServer.ACCEPT_INVITE + Const.WebServer.SEPARATOR, getToken(), json.toString());
+
+        if(res.isSuccessful()){
+            //TODO je sais pas quoi faire ici
+        }else{
+
+        }
+    }
+
+
+    private void handleActionAcceptUserGroups(long[] userIds,long groupId, boolean accepted) {
+        JSONObject json=new JSONObject();
+        JSONArray idArray= new JSONArray();
+        for (long userId : userIds) {
+            idArray.put(userId);
+        }
+        try {
+            json.put("accepted", accepted);
+            json.put("users",idArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        NetworkUtil.Response res = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + groupId +
+                Const.WebServer.SEPARATOR + Const.WebServer.ACCEPT_JOIN + Const.WebServer.SEPARATOR, getToken(), json.toString());
+
+        if(res.isSuccessful()){
+            //TODO je sais pas quoi faire ici
+        }else{
+
+        }
+
+    }
+
 
     protected void handleActionConnectedUserInfo() {
         long id = SharedPrefUtil.getConnectedUserId(this);
-        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id + Const.WebServer.SEPARATOR, getToken());
         if(res.isSuccessful()) {
             UserProfile up = UserProfile.parseItem(res.getBody());
 
@@ -151,7 +222,8 @@ public class NetworkService extends IntentService {
     }
 
     protected void handleActionUserGroups() {
-        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+ Const.WebServer.USER_GROUPS, getToken());
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS
+                + Const.WebServer.USER_GROUPS+ Const.WebServer.SEPARATOR, getToken());
         if(res.isSuccessful()) {
             Group[] gList = Group.parseList(res.getBody());
 
@@ -234,7 +306,12 @@ public class NetworkService extends IntentService {
             message.save();
 
             Intent intent = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
-            intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+            if(message.mRelation==null){
+                intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mGroup.mIdDb);
+            }else{
+                intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mRelation.mIdDb);
+            }
+
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
     }
@@ -242,5 +319,6 @@ public class NetworkService extends IntentService {
     private String getToken() {
         return SharedPrefUtil.getConnectedToken(this);
     }
+
 
 }

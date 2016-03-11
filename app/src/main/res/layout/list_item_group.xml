@@ -8,12 +8,11 @@
 
     <TextView
         android:id="@+id/group_item_name"
-        style="@style/TextAppearance.AppCompat.Title"
+        style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        android:layout_marginStart="@dimen/activity_horizontal_margin" />
 
     <TextView
         android:id="@+id/group_item_sport"
@@ -49,11 +48,11 @@
         android:drawableStart="@drawable/ic_group_24dp" />
 
 
-    <View
-        android:id="@+id/group_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#BDBDBD" />
+    <!--<View-->
+        <!--android:id="@+id/group_separator"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="#BDBDBD" />-->
 
 
 </LinearLayout>
