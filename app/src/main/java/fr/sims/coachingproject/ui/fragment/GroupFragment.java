@@ -131,6 +131,12 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        NetworkService.startActionUserGroups(getContext());
+    }
+
+    @Override
     public void onBroadcastReceive(Intent intent) {
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_USER_GROUPS) && mRefreshLayout != null) {
             mRefreshLayout.setRefreshing(false);

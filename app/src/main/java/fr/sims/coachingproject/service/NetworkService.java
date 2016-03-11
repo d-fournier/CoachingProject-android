@@ -181,7 +181,7 @@ public class NetworkService extends IntentService {
 
     protected void handleActionConnectedUserInfo() {
         long id = SharedPrefUtil.getConnectedUserId(this);
-        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id, getToken());
+        NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + id + Const.WebServer.SEPARATOR, getToken());
         if(res.isSuccessful()) {
             UserProfile up = UserProfile.parseItem(res.getBody());
 

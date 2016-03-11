@@ -85,15 +85,13 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     @Override
     public void onBroadcastReceive(Intent intent) {
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_ACCEPT_USER_GROUPS)) {
-            //Todo bug avec les loaders - Fragment not attached
-//            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
-//            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
         }
     }
 
 
     public class GroupPendingMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
-
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
@@ -116,7 +114,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         }
     }
-
 
     public class GroupMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
