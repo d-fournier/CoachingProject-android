@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import fr.sims.coachingproject.R;
-import us.feras.mdv.MarkdownView;
+import fr.sims.coachingproject.ui.view.MarkDownView;
 
 public class PostCreationActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText mContentET;
-    MarkdownView mMdPreview;
+    MarkDownView mMdPreview;
 
     Button mRenderBt;
 
@@ -29,7 +29,7 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_post_creation);
 
         mContentET = (EditText) findViewById(R.id.post_content);
-        mMdPreview = (MarkdownView) findViewById(R.id.post_preview);
+        mMdPreview = (MarkDownView) findViewById(R.id.post_preview);
         mRenderBt = (Button) findViewById(R.id.post_render);
 
         mRenderBt.setOnClickListener(this);
@@ -40,7 +40,7 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
         int id = v.getId();
         switch (id) {
             case R.id.post_render:
-                mMdPreview.loadMarkdown(mContentET.getText().toString());
+                mMdPreview.setMarkdown(mContentET.getText().toString());
                 break;
         }
     }

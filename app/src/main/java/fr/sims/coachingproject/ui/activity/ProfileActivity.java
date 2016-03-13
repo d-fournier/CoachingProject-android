@@ -3,13 +3,13 @@ package fr.sims.coachingproject.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,8 +28,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import fr.sims.coachingproject.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,7 +36,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
+import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
@@ -70,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private LinearLayout mSportsLL;
     Button mSendRequestBtn;
     private ProfileSportListAdapter mSportsListAdapter;
+    private RecyclerView mBlogPostRV;
 
     /**
      * Start activity
@@ -93,9 +92,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         // Set Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null)
-//            actionBar.setDisplayHomeAsUpEnabled(true);
 
         mConnectedUserId = SharedPrefUtil.getConnectedUserId(this);
 
@@ -109,8 +105,11 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         mSendRequestBtn = (Button) findViewById(R.id.profile_send_request);
         mSendRequestBtn.setOnClickListener(this);
 
+        // List Header
         mSportsListAdapter = new ProfileSportListAdapter(this);
         mSportsLL = (LinearLayout) findViewById(R.id.profile_sports);
+
+        mBlogPostRV = (RecyclerView) findViewById(R.id.profile_post);
 
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
@@ -134,7 +133,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         TextView nameTV = (TextView) findViewById(R.id.profile_name);
         TextView infoTV = (TextView) findViewById(R.id.profile_info);
         TextView isCoachTV = (TextView) findViewById(R.id.profile_isCoach);
-        TextView descriptionTV = (TextView) findViewById(R.id.profile_description);
         ImageView pictureIV = (ImageView) findViewById(R.id.profile_picture);
 
 
@@ -143,11 +141,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         nameTV.setText(mProfile.mDisplayName);
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mProfile.mDisplayName);
         infoTV.setText(getString(R.string.separator_strings, mProfile.mCity, age));
-        descriptionTV.setText(data.mDescription);
         Picasso.with(ProfileActivity.this).load(data.mPicture).into(pictureIV);
-
-        mSportsListAdapter.setData(data.mSportsList);
-        updateSportsList();
 
         if (mProfile.mIsCoach) {
             isCoachTV.setText(getString(R.string.profile_accept_coaching, mProfile.mDisplayName));
@@ -158,10 +152,17 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
             isCoachTV.setText(getString(R.string.profile_not_accept_coaching, mProfile.mDisplayName));
             mSendRequestBtn.setVisibility(View.GONE);
 
-            // TODO tmp
             findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
         }
 
+        //updateHeader(data);
+    }
+
+    private void updateHeader(UserProfile data) {
+        TextView descriptionTV = (TextView) findViewById(R.id.profile_description);
+        descriptionTV.setText(data.mDescription);
+        mSportsListAdapter.setData(data.mSportsList);
+        updateSportsList();
     }
 
     private void updateSportsList() {
@@ -172,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
-    // TODO Debug
+    // TODO Debug Will be remove
     private void fillCoachingRequestLayout(){
         Spinner spinner = (Spinner) findViewById(R.id.spinner_profile_sports);
 
