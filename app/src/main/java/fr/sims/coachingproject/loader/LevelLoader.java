@@ -17,7 +17,7 @@ import fr.sims.coachingproject.util.NetworkUtil;
 public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
 
     List<SportLevel> mLevelsList;
-    private long mSport;
+    public long mSport;
 
     public LevelLoader(Context context, long sport) {
         super(context);
