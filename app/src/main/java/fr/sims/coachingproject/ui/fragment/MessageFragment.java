@@ -58,6 +58,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      */
     public static android.support.v4.app.Fragment newRelationInstance(long relationId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
+// TODO Refactor
         fragment.mRelationId = relationId;
         fragment.mGroupId = -1;
         fragment.mIsPinned = pinnedMessages;

@@ -37,7 +37,7 @@ import fr.sims.coachingproject.loader.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.ui.adapter.RelationPagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.RelationPagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;

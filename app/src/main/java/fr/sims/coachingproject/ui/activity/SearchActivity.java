@@ -52,7 +52,6 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
     private final static String ID_LEVEL = "idLevel";
     private final static String SEARCH_TEXT = "searchText";
 
-    Snackbar mSnackbar;
     EditText mSearchInput;
     RecyclerView mRecycleView;
     Button mSearchButton;
@@ -211,10 +210,9 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
                 We hide the spinners for sports and levels
                 We clear the list of users so that it shows nothing
                  */
-                mSnackbar = Snackbar.make(mRecycleView, R.string.no_connectivity, Snackbar.LENGTH_LONG);
+                Snackbar.make(mRecycleView, R.string.no_connectivity, Snackbar.LENGTH_LONG).show();
                 mSportsSpinner.setVisibility(View.GONE);
                 mLevelsSpinner.setVisibility(View.GONE);
-                mSnackbar.show();
                 mUserList.clear();
             } else {
                 //We clear and add the new data
