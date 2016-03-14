@@ -84,94 +84,105 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         getLoaderManager().initLoader(SPORT_LOADER_ID, null, mSportLoader);
         mLevelLoader = new LevelsLoaderCallbacks();
 
+        mDateFragment = new DatePickerFragment();
+
         reloadView();
 
     }
 
 
     public void register(View v){
-        if(mDateFragment.mDate!=null){
-            EditText usernameView=(EditText)findViewById(R.id.register_username);
-            EditText displaynameView=(EditText)findViewById(R.id.register_display_name);
-            EditText passwordView=(EditText)findViewById(R.id.register_password);
-            EditText repeatPasswordView=(EditText)findViewById(R.id.register_password_repeat);
-            EditText emailView=(EditText)findViewById(R.id.register_email);
-            EditText cityView=(EditText)findViewById(R.id.register_city);
-            CheckBox isCoachView=(CheckBox)findViewById(R.id.register_is_coach);
-            EditText descriptionView=(EditText)findViewById(R.id.register_description);
+        EditText usernameView=(EditText)findViewById(R.id.register_username);
+        EditText displaynameView=(EditText)findViewById(R.id.register_display_name);
+        EditText passwordView=(EditText)findViewById(R.id.register_password);
+        EditText repeatPasswordView=(EditText)findViewById(R.id.register_password_repeat);
+        EditText emailView=(EditText)findViewById(R.id.register_email);
+        EditText cityView=(EditText)findViewById(R.id.register_city);
+        CheckBox isCoachView=(CheckBox)findViewById(R.id.register_is_coach);
+        EditText descriptionView=(EditText)findViewById(R.id.register_description);
 
-            if (mRegisterTask != null) {
-                return;
-            }
-
-            // Reset errors.
-            usernameView.setError(null);
-            passwordView.setError(null);
-            repeatPasswordView.setError(null);
-            emailView.setError(null);
-
-            // Store values at the time of the login attempt.
-            String username = usernameView.getText().toString();
-            String displayName= displaynameView.getText().toString();
-            String password = passwordView.getText().toString();
-            String repeatPassword=repeatPasswordView.getText().toString();
-            String email=emailView.getText().toString();
-
-            boolean cancel = false;
-            View focusView = null;
-
-            // Check for a valid password, if the user entered one.
-            if (TextUtils.isEmpty(password)) {
-                passwordView.setError(getString(R.string.error_invalid_password));
-                focusView = passwordView;
-                cancel = true;
-            }
-
-            if(!TextUtils.equals(password, repeatPassword )){
-                repeatPasswordView.setError(getString(R.string.passwords_dont_match));
-                focusView=repeatPasswordView;
-                cancel=true;
-            }
-
-            // Check for a valid username.
-            if (TextUtils.isEmpty(username)) {
-                usernameView.setError(getString(R.string.error_field_required));
-                focusView = usernameView;
-                cancel = true;
-            }
-
-            // Check for a valid display name.
-            if (TextUtils.isEmpty(displayName)) {
-                usernameView.setError(getString(R.string.error_field_required));
-                focusView = displaynameView;
-                cancel = true;
-            }
-
-            // Check for a valid email address.
-            if (TextUtils.isEmpty(email)) {
-                emailView.setError(getString(R.string.error_field_required));
-                focusView = emailView;
-                cancel = true;
-            }
-
-            if (cancel) {
-                // There was an error; don't attempt login and focus the first
-                // form field with an error.
-                focusView.requestFocus();
-            } else {
-                // Show a progress spinner, and kick off a background task to
-                // perform the user login attempt.
-                mRegisterTask = new UserRegisterTask(username, password, email, displaynameView.getText().toString(),
-                        mDateFragment.mDate, cityView.getText().toString(), descriptionView.getText().toString(), isCoachView.isChecked(), mLevelAdapter.getLevelsSelectedIds());
-                mRegisterTask.execute((Void) null);
-            }
+        if (mRegisterTask != null) {
+            return;
         }
 
+        // Reset errors.
+        usernameView.setError(null);
+        passwordView.setError(null);
+        repeatPasswordView.setError(null);
+        emailView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String username = usernameView.getText().toString();
+        String displayName= displaynameView.getText().toString();
+        String password = passwordView.getText().toString();
+        String repeatPassword=repeatPasswordView.getText().toString();
+        String email=emailView.getText().toString();
+        String city = cityView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid username.
+        if (TextUtils.isEmpty(username) && username.matches("/[a-zA-Z0-9@.+-_]+/")) {
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = usernameView;
+            cancel = true;
+        }
+
+        // Check for a valid display name.
+        if (TextUtils.isEmpty(displayName)) {
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = displaynameView;
+            cancel = true;
+        }
+
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            passwordView.setError(getString(R.string.error_invalid_password));
+            focusView = passwordView;
+            cancel = true;
+        }
+
+        if(!TextUtils.equals(password, repeatPassword )){
+            repeatPasswordView.setError(getString(R.string.passwords_dont_match));
+            focusView=repeatPasswordView;
+            cancel=true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            emailView.setError(getString(R.string.error_field_required));
+            focusView = emailView;
+            cancel = true;
+        }
+
+        // Check for a valid city.
+        if (TextUtils.isEmpty(city)) {
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = cityView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+
+            String date="";
+            if(mDateFragment.mDate!=null){
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+                date= sdf.format(mDateFragment.mDate);
+            }
+
+            mRegisterTask = new UserRegisterTask(username, password, email, displayName,
+                    date, city, descriptionView.getText().toString(), isCoachView.isChecked(), mLevelAdapter.getLevelsSelectedIds());
+            mRegisterTask.execute((Void) null);
+        }
     }
 
-    public void showDatePickerDialog(View v) {
-        mDateFragment = new DatePickerFragment();
 
+    public void showDatePickerDialog(View v) {
         mDateFragment.show(getSupportFragmentManager(), "datePicker");
 
     }
@@ -233,23 +244,24 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         private JSONObject userInfos;
 
-        UserRegisterTask(String username, String password, String email, String displayName, Date birthdate, String city,String description, boolean isCoach, List<Long> sportLevelsIds) {
+        UserRegisterTask(String username, String password, String email, String displayName, String birthdate, String city,String description, boolean isCoach, List<Long> sportLevelsIds) {
             userInfos=new JSONObject();
             try {
                 userInfos.put("username", username);
                 userInfos.put("password", password);
                 userInfos.put("email", email);
                 userInfos.put("displayName", displayName);
-                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-                userInfos.put("birthdate", sdf.format(birthdate));
-                userInfos.put("city", city);
-                userInfos.put("description", description);
                 userInfos.put("isCoach", isCoach);
+                userInfos.put("city", city);
+
+                if(!birthdate.isEmpty())   userInfos.put("birthdate", birthdate);
+                if(!description.isEmpty()) userInfos.put("description", description);
+
                 JSONArray levelsArray=new JSONArray();
                 for(Long levelId : sportLevelsIds){
                     levelsArray.put(levelId);
                 }
-                userInfos.put("levels", levelsArray);
+                if (levelsArray.length()>0) userInfos.put("levels", levelsArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
