@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,6 +33,7 @@ import static fr.sims.coachingproject.service.NetworkService.startActionCoaching
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
+
 
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
@@ -87,27 +89,20 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        SearchActivity.startActivity(getApplicationContext(),false,-1);
+                        SearchActivity.startActivity(getApplicationContext(), false, -1);
                         break;
                     case 1:
                         break;
                     case 2:
                         SearchGroupActivity.startActivity(getApplicationContext());
                         break;
-
-
                 }
             }
-
-
-
-    });
+        });
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
-
     }
 
     @Override
@@ -141,6 +136,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_disconnect) {
+            Disconnect();
+            LoginActivity.startActivity(getApplication());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -176,6 +174,16 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    protected void Disconnect()
+    {
+        SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor e = settings.edit();
+        e.clear();
+        e.commit();
+    }
+
+
     @Override
     public void onClick(View v) {
         if(mConnectedUserId != -1)
@@ -183,6 +191,9 @@ public class MainActivity extends AppCompatActivity
         else
             LoginActivity.startActivity(this);
     }
+
+
+
 
 }
 

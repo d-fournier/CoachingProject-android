@@ -27,10 +27,12 @@ import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
 import fr.sims.coachingproject.ui.activity.GroupActivity;
 import fr.sims.coachingproject.ui.adapter.GroupAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener {
 
+    private long mCurrentUserId;
 
     public static final String TABS_TITLE = "Groups";
 
@@ -69,8 +71,11 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getContext());
         inflater.inflate(R.menu.activity_creategroup, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        boolean mVisible = (mCurrentUserId != -1) ?true : false;
+        menu.setGroupVisible(0, mVisible);
     }
 
     @Override
@@ -83,6 +88,9 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

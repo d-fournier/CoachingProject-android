@@ -23,6 +23,10 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send" />
+            <item
+                android:id="@+id/nav_disconnect"
+                android:icon="@drawable/ic_settings_power_24dp"
+                android:title="Disconnect" />
         </menu>
     </item>
 
