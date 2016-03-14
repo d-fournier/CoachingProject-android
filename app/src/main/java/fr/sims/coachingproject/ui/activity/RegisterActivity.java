@@ -12,11 +12,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -54,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
     private final String ARG_VIEW_HOLDER="viewHolder";
 
     private DatePickerFragment mDateFragment;
-    private ListView mLevelView;
+    private LinearLayout mLevelView;
     private RegisterLevelsAdapter mLevelAdapter;
 
     private SportLoaderCallbacks mSportLoader;
@@ -72,13 +75,16 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mLevelView = (ListView) findViewById(R.id.register_levels_list);
+        mLevelView = (LinearLayout) findViewById(R.id.register_levels_list);
         mLevelAdapter = new RegisterLevelsAdapter(this, this);
-        mLevelView.setAdapter(mLevelAdapter);
+        //mLevelView.setAdapter(mLevelAdapter);
+
 
         mSportLoader = new SportLoaderCallbacks();
         getLoaderManager().initLoader(SPORT_LOADER_ID, null, mSportLoader);
         mLevelLoader = new LevelsLoaderCallbacks();
+
+        reloadView();
 
     }
 
@@ -176,6 +182,15 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             getLoaderManager().restartLoader(loaderId, args,mLevelLoader);
         }else{
             getLoaderManager().initLoader(loaderId,args,mLevelLoader);
+        }
+    }
+
+    @Override
+    public void reloadView() {
+        mLevelView.removeAllViews();
+        for (int i = 0; i < mLevelAdapter.getCount(); i++) {
+            View mLinearView = mLevelAdapter.getView(i, null, null);
+            mLevelView.addView(mLinearView, i);
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -55,15 +56,24 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
+        int counter = getNumberItemsSelected();
+        if(counter<mAllSportsList.size()){
+            // One more item to select a new sport
+            counter++;
+        }
+        return counter;
+    }
+
+    public int getNumberItemsSelected(){
         int counter = 0; // Number of real levels selected
         for (SportLevel level : mLevelsSelected.values()) {
             if (level.mIdDb != -1) {
                 counter++;
             }
         }
-        return counter + 1;
-    }
 
+        return counter;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -73,8 +83,14 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
         // Sports
         List<Sport> sports = new ArrayList<>();
-        sports.add(mNoSelectionSport);
         sports.addAll(mAllSportsList);
+        for(int i=0; i<mSportSelected.size(); i++){
+            if(i!=position){
+                sports.remove(mSportSelected.get(i));
+            }
+        }
+        sports.add(0, mNoSelectionSport);
+
         ArrayAdapter<Sport> sportAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, sports);
         sportSpinner.setAdapter(sportAdapter);
         if (mSportSelected.containsKey(position)) {
@@ -102,8 +118,8 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                 Sport sport = (Sport) spinner.getItemAtPosition(position);
 
                 View repeatedView = (View) spinner.getParent();
-                AdapterView adapterView = (AdapterView) repeatedView.getParent();
-                int globalPos = adapterView.getPositionForView(repeatedView);
+                LinearLayout adapterView = (LinearLayout) repeatedView.getParent();
+                int globalPos = adapterView.indexOfChild(repeatedView);
 
                 Sport previousSport = mSportSelected.put(globalPos, sport);
 
@@ -111,13 +127,41 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                     // Sport changed or initialized
                     if (sport.mIdDb != -1) {
                         mListener.reloadLevels(sport.mIdDb);
-                    } else if (sport.mIdDb == -1) {
+                    } else {
                         // No sport selected
+                        int posEmptyItem=globalPos;
+                        int numItemSelected=getNumberItemsSelected();
+                        if(globalPos < numItemSelected){
+                            // Item not at the end
+
+                            for(int i=globalPos+1; i<mAllSportsList.size(); i++){
+                                if(mLevelMap.containsKey(i)){
+                                    mLevelMap.put(i-1, mLevelMap.get(i));
+                                }
+                                if(mLevelsSelected.containsKey(i)){
+                                    mLevelsSelected.put(i-1, mLevelsSelected.get(i));
+                                }
+                                if(mSportSelected.containsKey(i)){
+                                    mSportSelected.put(i-1, mSportSelected.get(i));
+                                }
+                                if(mViewMap.containsKey(i)){
+                                    mViewMap.put(i-1, mViewMap.get(i));
+                                }
+                            }
+                            posEmptyItem=numItemSelected-1;
+                            mLevelMap.remove(posEmptyItem);
+                            mLevelsSelected.remove(posEmptyItem);
+                            mSportSelected.remove(posEmptyItem);
+                            mViewMap.remove(posEmptyItem);
+                        }
+
                         List<SportLevel> noLevels = new ArrayList<>();
                         noLevels.add(mNoSelectionLevel);
-                        mLevelMap.put(globalPos, noLevels);
-                        mLevelsSelected.put(globalPos, mNoSelectionLevel);
-                         notifyDataSetChanged();
+                        mLevelMap.put(posEmptyItem, noLevels);
+                        mLevelsSelected.put(posEmptyItem, mNoSelectionLevel);
+
+                        //    notifyDataSetChanged();
+                        mListener.reloadView();
                     }
                 }
 
@@ -136,12 +180,13 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                 SportLevel level = (SportLevel) spinner.getItemAtPosition(position);
 
                 View repeatedView = (View) spinner.getParent();
-                AdapterView adapterView = (AdapterView) repeatedView.getParent();
-                int globalPos = adapterView.getPositionForView(spinner);
+                LinearLayout adapterView = (LinearLayout) repeatedView.getParent();
+                int globalPos = adapterView.indexOfChild(repeatedView);
 
                 SportLevel previousLevel = mLevelsSelected.put(globalPos, level);
                 if (previousLevel == null || previousLevel.mIdDb != level.mIdDb) {
-                     notifyDataSetChanged();
+                    //       notifyDataSetChanged();
+                    mListener.reloadView();
                 }
             }
 
@@ -160,7 +205,8 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     public void setSports(List<Sport> sportList) {
         mAllSportsList.clear();
         mAllSportsList.addAll(sportList);
-        notifyDataSetChanged();
+        //   notifyDataSetChanged();
+        mListener.reloadView();
     }
 
     public void setLevels(long sportId, List<SportLevel> levels) {
@@ -172,7 +218,8 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                 mLevelMap.put(pos, levelsToSave);
                 mLevelsSelected.put(pos, mNoSelectionLevel);
 
-                 notifyDataSetChanged();
+                //   notifyDataSetChanged();
+                mListener.reloadView();
                 break;
             }
         }
@@ -182,6 +229,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
     public interface OnDataChangedListener {
         void reloadLevels(long sportId);
+        void reloadView();
     }
 
 

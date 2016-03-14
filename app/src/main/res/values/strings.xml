@@ -75,7 +75,7 @@
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
     <string name="log_in">Log in</string>
     <string name="email">Email</string>
-    <string name="pick_date">Birthdate</string>
+    <string name="pick_date">Select birthdate</string>
     <string name="city">City</string>
     <string name="agree_to_coach">I want to coach others</string>
     <string name="register">Register</string>
@@ -88,4 +88,5 @@
     <string name="not_registered_question">Not registered yet ?</string>
     <string name="select_sport">Select sport</string>
     <string name="select_level">Select level</string>
+    <string name="label_register_level_list">Select your level in each sport you practice</string>
 </resources>
