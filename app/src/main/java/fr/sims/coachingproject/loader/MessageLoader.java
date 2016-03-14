@@ -2,6 +2,7 @@ package fr.sims.coachingproject.loader;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.model.Message;
@@ -13,10 +14,12 @@ import fr.sims.coachingproject.util.Const;
 public class MessageLoader extends GenericLocalLoader<List<Message>> {
 
     private long mRelationId;
+    private long mGroupId;
 
-    public MessageLoader(Context context, long relationId) {
+    public MessageLoader(Context context, long relationId, long groupId) {
         super(context);
-        mRelationId=relationId;
+        mRelationId = relationId;
+        mGroupId = groupId;
     }
 
     @Override
@@ -32,7 +35,12 @@ public class MessageLoader extends GenericLocalLoader<List<Message>> {
 
     @Override
     public List<Message> loadInBackground() {
-        List<Message> r = Message.getAllMessagesByRelationId(mRelationId);
-        return r;
+        if (mRelationId != -1) {
+            return Message.getAllMessagesByRelationId(mRelationId);
+        } else if (mGroupId != -1) {
+            return Message.getAllMessagesByGroupId(mGroupId);
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

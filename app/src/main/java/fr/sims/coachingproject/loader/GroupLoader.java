@@ -1,10 +1,8 @@
 package fr.sims.coachingproject.loader;
 
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 
-import com.activeandroid.query.Select;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +14,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Benjamin on 01/03/2016.
  */
-public class GroupLoader  extends GenericLocalLoader<List<Group>> {
+public class GroupLoader extends GenericLocalLoader<List<Group>> {
 
     public GroupLoader(Context context) {
         super(context);
@@ -29,9 +27,7 @@ public class GroupLoader  extends GenericLocalLoader<List<Group>> {
 
     @Override
     public List<Group> loadInBackground() {
-
-        return Group.getAllGroups();
-
+            return Group.getAllGroups();
     }
 
     @Override

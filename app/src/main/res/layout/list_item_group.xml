@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:id="@+id/group_item_linear_layout">
+
 
     <TextView
         android:id="@+id/group_item_name"
-        style="@style/TextAppearance.AppCompat.Title"
+        style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        android:layout_marginStart="@dimen/activity_horizontal_margin" />
 
     <TextView
         android:id="@+id/group_item_sport"
@@ -27,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="3"
         android:lines="1"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin" />
@@ -37,7 +37,7 @@
         android:id="@+id/group_item_members"
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/standard_height"
+        android:layout_height="@dimen/standard_drawable_height"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -48,11 +48,11 @@
         android:drawableStart="@drawable/ic_group_24dp" />
 
 
-    <View
-        android:id="@+id/group_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#BDBDBD" />
+    <!--<View-->
+        <!--android:id="@+id/group_separator"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="#BDBDBD" />-->
 
 
 </LinearLayout>

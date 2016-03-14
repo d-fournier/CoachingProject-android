@@ -14,9 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -36,8 +39,6 @@ public class MainActivity extends AppCompatActivity
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
     View mDrawerHeader;
-    Intent mIntent;
-
 
     public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
@@ -92,13 +93,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 
                 switch (tabLayout.getSelectedTabPosition()) {
-                    case 0: mIntent = new Intent(MainActivity.this, SearchActivity.class);
-                        startActivity(mIntent);
+                    case 0:
+                        SearchActivity.startActivity(getApplicationContext(),false,-1);
                         break;
                     case 1:
                         break;
-                    case 2: mIntent = new Intent(MainActivity.this, SearchGroupActivity.class);
-                        startActivity(mIntent);
+                    case 2:
+                        SearchGroupActivity.startActivity(getApplicationContext());
                         break;
 
 

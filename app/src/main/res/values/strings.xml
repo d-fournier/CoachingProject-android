@@ -49,12 +49,14 @@
         <item quantity="other">%1$d years old</item>
     </plurals>
 
+
+    <string name="separator_strings">%1$s - %2$s</string>
     <string name="coaching_invitation_trainee_title">You sent %1$s a coaching demand</string>
     <string name="coaching_invitation_coach_title">%1$s sent you a coaching demand</string>
     <string name="refuse">Refuse</string>
     <string name="accept">Accept</string>
-    <string name="end_relation">End relation, button</string>
-
+    <string name="end_relation">End relation</string>
+    <string name="add_group">Add group</string>
     <string name="no_group">No group found</string>
     <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
@@ -73,6 +75,11 @@
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
+
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="message_pinned">Message pinned</string>
+    <string name="message_unpinned">Message unpinned</string>
+
     <string name="log_in">Log in</string>
     <string name="email">Email</string>
     <string name="pick_date">Select birthdate</string>
@@ -89,4 +96,16 @@
     <string name="select_sport">Select sport</string>
     <string name="select_level">Select level</string>
     <string name="label_register_level_list">Select your level in each sport you practice</string>
+    <string name="profile_accept_coaching">Accept to coach</string>
+    <string name="profile_not_accept_coaching">Refuse to coach</string>
+    <string name="profile_description">Description</string>
+    <string name="profile_sports">Sports</string>
+    <string name="title_activity_group">Group</string>
+    <string name="created_on">"Created on %1$s"</string>
+    <string name="join_group">Join group</string>
+    <string name="members">Members</string>
+    <string name="pending_members">Pending members</string>
+    <string name="invite_group">Invite in group</string>
+    <string name="groups">My groups</string>
+    <string name="invitations">My invitations</string>
 </resources>

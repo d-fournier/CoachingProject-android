@@ -2,7 +2,10 @@ package fr.sims.coachingproject.ui.activity;
 
 
 import android.app.LoaderManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +37,16 @@ import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.adapter.SearchListAdapter;
+import fr.sims.coachingproject.ui.adapter.UserProfileAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity implements SearchListAdapter.OnItemClickListener {
+public class SearchActivity extends AppCompatActivity implements UserProfileAdapter.OnItemClickListener {
 
     private final static String ID_SPORT = "idSport";
     private final static String ID_LEVEL = "idLevel";
@@ -50,7 +59,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
     List<UserProfile> mUserList;
     List<Sport> mSportList;
     List<SportLevel> mLevelList;
-    SearchListAdapter mSearchListAdapter;
+    UserProfileAdapter mUserProfileAdapter;
     Bundle mSearchArgs;
     Spinner mSportsSpinner;
     ProgressBar mLoadingBar;
@@ -61,6 +70,10 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
     SportLoaderCallbacks mSportLoader;
     CoachLoaderCallbacks mCoachLoader;
     LevelsLoaderCallbacks mLevelLoader;
+    private SearchActivity mActivity;
+
+    private boolean inviteInGroup;
+    private long mInviteGroupIdDb;
 
 
     @Override
@@ -68,9 +81,12 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        mActivity = this;
         mLoadingBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
 
         mSearchArgs = new Bundle();
+        inviteInGroup = getIntent().getBooleanExtra("invite",false);
+        mInviteGroupIdDb = getIntent().getLongExtra("groupId",-1);
 
         mUserList = new ArrayList<>();
         mSportList = new ArrayList<>();
@@ -78,9 +94,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mSearchListAdapter = new SearchListAdapter(getApplicationContext());
-        mSearchListAdapter.setOnItemClickListener(this);
-        mRecycleView.setAdapter(mSearchListAdapter);
+        mUserProfileAdapter = new UserProfileAdapter(getApplicationContext());
+        mUserProfileAdapter.setOnItemClickListener(this);
+        mRecycleView.setAdapter(mUserProfileAdapter);
 
         mSportsSpinner = (Spinner) findViewById(R.id.spinner_sports);
         mSportsAdapter = new ArrayAdapter<>(this,
@@ -150,6 +166,14 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         getLoaderManager().initLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
     }
 
+    public static void startActivity(Context ctx, boolean invite, long groupId) {
+        Intent startIntent = new Intent(ctx, SearchActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.putExtra("invite", invite);
+        startIntent.putExtra("groupId",groupId);
+        ctx.startActivity(startIntent);
+    }
+
     @Override
     public void onItemClick(View view, int position) {
         ProfileActivity.startActivity(this, mUserList.get(position).mIdDb,mSportsSpinner.getSelectedItemId());
@@ -157,6 +181,9 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
 
     @Override
     public void onItemLongClick(View view, int position) {
+        if(inviteInGroup){
+            new InviteTask().execute(mUserList.get(position).mIdDb);
+        }
     }
 
     class CoachLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
@@ -195,7 +222,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 mUserList.addAll(data);
             }
 
-            mSearchListAdapter.setData(mUserList);
+            mUserProfileAdapter.setData(mUserList);
             mLoadingBar.setVisibility(View.GONE);
 
             if (mUserList.isEmpty()) {
@@ -275,6 +302,41 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         public void onLoaderReset(Loader<List<SportLevel>> loader) {
 
         }
+    }
+
+    private class InviteTask extends AsyncTask<Long, Void, NetworkUtil.Response> {
+        @Override
+        protected NetworkUtil.Response doInBackground(Long... params) {
+            JSONObject json = new JSONObject();
+            JSONArray idArray= new JSONArray();
+            for (long userId : params) {
+                idArray.put(userId);
+            }
+            try {
+                json.put("users",idArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
+            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mInviteGroupIdDb + Const.WebServer.SEPARATOR
+                    + Const.WebServer.INVITE+Const.WebServer.SEPARATOR, connectedToken, json.toString());
+        }
+
+        @Override
+        protected void onPostExecute(NetworkUtil.Response response) {
+            if (response.isSuccessful()) {
+                mActivity.finish();
+            } else {
+                Snackbar.make(mRecycleView, response.getBody().replace("\"",""), Snackbar.LENGTH_LONG).show();
+                //TODO voir quoi afficher, là je mets juste le body de la réponse
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
     }
 
 }

@@ -7,18 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.activity.MainActivity;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 // TODO Header ???
@@ -26,26 +23,26 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by dfour on 11/02/2016.
  */
-public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.ViewHolder> {
+public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdapter.ViewHolder> {
 
     private long mCurrentUserId;
 
     /**
      * My Coach
      */
-    private List<UserProfile> mDatasetCr;
+    private List<CoachingRelation> mDatasetCr;
     /**
      * My Trainee
      */
-    private List<UserProfile> mDatasetLr;
+    private List<CoachingRelation> mDatasetLr;
     /**
      * Pending Trainer Request
      */
-    private List<UserProfile> mDatasetPendingCr;
+    private List<CoachingRelation> mDatasetPendingCr;
     /**
      * Pending Trainee request
      */
-    private List<UserProfile> mDatasetPendingLr;
+    private List<CoachingRelation> mDatasetPendingLr;
     private List<CoachingRelation> mDatasetRelations;
     private Context mCtx;
 
@@ -61,7 +58,6 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     private OnItemClickListener mOnItemClickListener;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
-
         public ViewHolder(View v) {
             super(v);
         }
@@ -92,7 +88,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
         }
     }
 
-    public CoachListAdapter(Context ctx) {
+    public RelationsListAdapter(Context ctx) {
         mCtx = ctx;
         mDatasetCr = new ArrayList<>();
         mDatasetLr = new ArrayList<>();
@@ -108,37 +104,28 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
 
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
 
-        List<CoachingRelation> relationsCr = new ArrayList<CoachingRelation>();
-        List<CoachingRelation> relationsLr = new ArrayList<CoachingRelation>();
-        List<CoachingRelation> relationsPendingCr = new ArrayList<CoachingRelation>();
-        List<CoachingRelation> relationsPendingLr = new ArrayList<CoachingRelation>();
-
         for (CoachingRelation relation : dataset) {
            if(relation.mActive) {
                 if (!relation.mIsPending) {
                     if (relation.mCoach.mIdDb != mCurrentUserId) {
-                        mDatasetCr.add(relation.mCoach);
-                        relationsCr.add(relation);
+                        mDatasetCr.add(relation);
                     } else {
-                        mDatasetLr.add(relation.mTrainee);
-                        relationsLr.add(relation);
+                        mDatasetLr.add(relation);
                     }
                 } else {
                     if (relation.mCoach.mIdDb != mCurrentUserId) {
-                        mDatasetPendingCr.add(relation.mCoach);
-                        relationsPendingCr.add(relation);
+                        mDatasetPendingCr.add(relation);
                     } else {
-                        mDatasetPendingLr.add(relation.mTrainee);
-                        relationsPendingLr.add(relation);
+                        mDatasetPendingLr.add(relation);
                     }
                 }
            }
         }
 
-        mDatasetRelations.addAll(relationsCr);
-        mDatasetRelations.addAll(relationsLr);
-        mDatasetRelations.addAll(relationsPendingCr);
-        mDatasetRelations.addAll(relationsPendingLr);
+        mDatasetRelations.addAll(mDatasetCr);
+        mDatasetRelations.addAll(mDatasetLr);
+        mDatasetRelations.addAll(mDatasetPendingCr);
+        mDatasetRelations.addAll(mDatasetPendingLr);
 
         notifyDataSetChanged();
     }
@@ -155,8 +142,6 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-
-
         switch (viewType) {
             case HEADER_REQUEST_LEARNER:
             case HEADER_REQUEST_COACH:
@@ -171,7 +156,7 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             case LIST_LEARNER:
             case LIST_COACH: // normal list - Coach
                 v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_coach, parent, false);
+                        .inflate(R.layout.list_item_relation, parent, false);
                 final CoachViewHolder cvh = new CoachViewHolder(v);
                 cvh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -206,11 +191,12 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
                 || itemViewType == LIST_PENDING_COACH || itemViewType == LIST_PENDING_LEARNER) {
 
             final CoachViewHolder cvh = (CoachViewHolder) vh;
-            UserProfile cr = getItem(itemViewType, position);
+            CoachingRelation cr = getItem(itemViewType, position);
+            UserProfile partner = (itemViewType == LIST_COACH || itemViewType == LIST_PENDING_COACH) ? cr.mCoach : cr.mTrainee;
 
-            Picasso.with(mCtx).load(cr.mPicture).into(cvh.mPictureIV);
-            cvh.mNameTV.setText(cr.mDisplayName);
-            cvh.mDescTV.setText(cr.mCity);
+            Picasso.with(mCtx).load(partner.mPicture).into(cvh.mPictureIV);
+            cvh.mNameTV.setText(partner.mDisplayName);
+            cvh.mDescTV.setText(mCtx.getString(R.string.separator_strings, partner.mCity, cr.mSport.mName));
         } else {
             HeaderViewHolder hvh = (HeaderViewHolder) vh;
             int resId;
@@ -255,38 +241,25 @@ public class CoachListAdapter extends RecyclerView.Adapter<CoachListAdapter.View
             return LIST_PENDING_LEARNER;
     }
 
-    private UserProfile getItem(int type, int position) {
-        UserProfile up;
+    private CoachingRelation getItem(int type, int position) {
+        CoachingRelation cr;
         switch (type) {
             case LIST_COACH:
-                up = mDatasetCr.get(position - 1);//Un header
+                cr = mDatasetCr.get(position - 1);
                 break;
             case LIST_LEARNER:
-                up = mDatasetLr.get(position - (mDatasetCr.size() + 2));//Première liste + 2 headers
+                cr = mDatasetLr.get(position - (mDatasetCr.size() + 2));
                 break;
             case LIST_PENDING_COACH:
-                up = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3)); //2 premières listes + 3 headers
+                cr = mDatasetPendingCr.get(position - (mDatasetCr.size() + mDatasetLr.size() + 3));
                 break;
             case LIST_PENDING_LEARNER:
-                up = mDatasetPendingLr.get(position - (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 4)); //3 premières listes + 4 headers
+                cr = mDatasetPendingLr.get(position - (mDatasetCr.size() + mDatasetLr.size() + mDatasetPendingCr.size() + 4));
                 break;
             default:
-                up = null;
+                cr = null;
         }
-        return up;
-    }
-
-    private UserProfile getItem(int position) {
-        return getItem(getItemViewType(position), position);
-    }
-
-    public long getUserProfileId(int position) {
-        UserProfile up = getItem(position);
-        if (up != null) {
-            return up.mIdDb;
-        } else {
-            return -1;
-        }
+        return cr;
     }
 
     public long getRelationId(int position) {

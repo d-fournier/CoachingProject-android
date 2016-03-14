@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/relation_cancel"
+        android:title="@string/end_relation"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/button_cancel_white"
+        />
+</menu>
