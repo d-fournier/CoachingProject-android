@@ -10,9 +10,10 @@
     card_view:cardElevation="2dp"
     card_view:cardCornerRadius="2dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
             android:src="@drawable/first_launch_1"
@@ -21,23 +22,21 @@
             android:layout_width="match_parent"
             android:layout_height="200dp" />
         <TextView
-            android:text="TEST"
             android:id="@+id/post_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_margin"
-            android:layout_alignBottom="@id/post_picture"
             android:maxLines="2"
             android:ellipsize="end"
             style="@style/TextAppearance.AppCompat.Title" />
         <TextView
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             android:id="@+id/post_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/post_title"
-            android:layout_margin="@dimen/standard_margin"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
             style="@style/TextAppearance.AppCompat.Caption"/>
-    </RelativeLayout>
+    </LinearLayout>
     
 </android.support.v7.widget.CardView>

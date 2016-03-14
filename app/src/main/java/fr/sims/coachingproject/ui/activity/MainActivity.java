@@ -14,12 +14,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -28,7 +25,7 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
@@ -40,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     ViewPager mViewPager;
     View mDrawerHeader;
     Intent mIntent;
+
+    private long mConnectedUserId;
 
 
     public static void startActivity(Context ctx) {
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity
         // Drawer Items
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = navigationView.getHeaderView(0);
-        mDrawerHeader.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
@@ -86,8 +84,6 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mHomePagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        //startActivity(new Intent(this, ProfileActivity.class));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -167,15 +163,18 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
         ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+
         if (user != null) {
+            mConnectedUserId = user.mIdDb;
             header.setText(user.mDisplayName);
             Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
-            mDrawerHeader.setOnClickListener(null);
         } else {
+            mConnectedUserId = -1;
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
         }
+        mDrawerHeader.setOnClickListener(this);
     }
 
     @Override
@@ -185,7 +184,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        LoginActivity.startActivity(this);
+        if(mConnectedUserId != -1)
+            ProfileActivity.startActivity(this, mConnectedUserId);
+        else
+            LoginActivity.startActivity(this);
     }
 
 }

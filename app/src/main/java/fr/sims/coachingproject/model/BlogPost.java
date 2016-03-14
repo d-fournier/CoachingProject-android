@@ -31,6 +31,22 @@ public class BlogPost {
     @SerializedName("picture")
     public String mPicture;
 
+    @Expose
+    @SerializedName("sport")
+    public Sport mSport;
+
+    @Expose
+    @SerializedName("date")
+    public String mDate;
+
+    @Expose
+    @SerializedName("last_modification_date")
+    public String mLastModificationDate;
+
+    @Expose
+    @SerializedName("author")
+    public UserProfile mAuthor;
+
     public BlogPost() { }
 
     public static BlogPost parseItem(String json){

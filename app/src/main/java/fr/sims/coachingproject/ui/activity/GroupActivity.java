@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.ui.activity;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupLoader;
 import fr.sims.coachingproject.model.Group;
-import fr.sims.coachingproject.ui.adapter.GroupPagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;
 
 /**
  * Created by Zhenjie CEN on 2016/3/6.
