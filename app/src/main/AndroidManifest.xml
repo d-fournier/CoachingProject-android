@@ -9,8 +9,10 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <permission android:name="fr.sims.coachingproject.permission.C2D_MESSAGE"
+    <permission
+        android:name="fr.sims.coachingproject.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="fr.sims.coachingproject.permission.C2D_MESSAGE" />
 
     <application
@@ -20,7 +22,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="AA_DB_NAME"
             android:value="coachingproject.db" />
@@ -31,7 +32,9 @@
             android:name="AA_MODELS"
             android:value="fr.sims.coachingproject.model.UserProfile,fr.sims.coachingproject.model.CoachingRelation,fr.sims.coachingproject.model.Sport,fr.sims.coachingproject.model.SportLevel,fr.sims.coachingproject.model.UserSportLevel, fr.sims.coachingproject.model.Message, fr.sims.coachingproject.model.Group" />
 
-        <activity android:name=".ui.activity.SplashScreenActivity"
+        <activity
+            android:name=".ui.activity.SplashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,27 +42,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.FirstLaunchActivity"
             android:label="@string/title_activity_first_launch"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar.StatusBar"/>
-
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.StatusBar" />
 
         <activity
-
             android:name=".ui.activity.SearchGroupActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -71,35 +74,54 @@
 
         <activity
             android:name=".ui.activity.RegisterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_register_activity" />
 
-
-        <activity android:name=".ui.activity.ProfileActivity"
+        <activity
+            android:name=".ui.activity.ProfileActivity"
+            android:label="@string/title_register_activity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar" />
-
 
         <activity
             android:name=".ui.activity.SearchActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".ui.activity.GroupActivity"
-            android:label="@string/title_activity_group"/>
-
-        <activity
-            android:name=".ui.activity.RelationActivity"
-            android:label="@string/activity_relation_name"
+            android:label="@string/title_activity_group"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".ui.activity.MainActivity"/>
 
         <activity
-            android:name=".ui.activity.CreateGroupActivity"
+            android:name=".ui.activity.RelationActivity"
+            android:label="@string/activity_relation_name"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar.StatusBar"
+            android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".ui.activity.CreateGroupActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+
+        <activity
+            android:screenOrientation="portrait"
+            android:label="@string/activity_blog_post_new"
+            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.activity.PostCreationActivity" />
+        <activity
+            android:name=".ui.activity.PostReadActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.StatusBar" />
 
         <service
             android:name=".service.NetworkService"
@@ -109,32 +131,31 @@
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="fr.sims.coachingproject" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".service.gcmService.RegistrationGCMIntentService"
-            android:exported="false"/>
+            android:exported="false" />
         <service
             android:name=".service.gcmService.CustomInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-
         <service
             android:name=".service.gcmService.PushGcmListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
 
     </application>
 

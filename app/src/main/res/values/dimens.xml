@@ -8,6 +8,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
+    <dimen name="detail_backdrop_height">256dp</dimen>
+
     <dimen name="standard_margin">16dp</dimen>
 
     <dimen name="profile_picture_size">96dp</dimen>
@@ -25,4 +27,6 @@
     <dimen name="relation_list_profile_picture_size">64dp</dimen>
 
     <dimen name="standard_drawable_height">24dp</dimen>
+
+    <dimen name="standard_image_button_width">48dp</dimen>
 </resources>

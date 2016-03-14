@@ -1,4 +1,4 @@
-package fr.sims.coachingproject.ui.adapter;
+package fr.sims.coachingproject.ui.adapter.pager;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

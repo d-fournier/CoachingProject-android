@@ -2,6 +2,7 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,7 +24,7 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
 
@@ -32,11 +33,12 @@ import static fr.sims.coachingproject.service.NetworkService.startActionCoaching
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
+
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
     View mDrawerHeader;
-    Intent mIntent;
 
+    private long mConnectedUserId;
 
     public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity
         // Drawer Items
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = navigationView.getHeaderView(0);
-        mDrawerHeader.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
@@ -83,33 +84,24 @@ public class MainActivity extends AppCompatActivity
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //startActivity(new Intent(this, ProfileActivity.class));
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 switch (tabLayout.getSelectedTabPosition()) {
-                    case 0: mIntent = new Intent(MainActivity.this, SearchActivity.class);
-                        startActivity(mIntent);
+                    case 0:
+                        SearchActivity.startActivity(getApplicationContext(), false, -1);
                         break;
                     case 1:
                         break;
-                    case 2: mIntent = new Intent(MainActivity.this, SearchGroupActivity.class);
-                        startActivity(mIntent);
+                    case 2:
+                        SearchGroupActivity.startActivity(getApplicationContext());
                         break;
-
-
                 }
             }
-
-
-
-    });
+        });
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
-
     }
 
     @Override
@@ -135,18 +127,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
+        if (id == R.id.nav_blog_post_new) {
+            PostCreationActivity.startActivity(this);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_disconnect) {
+            Disconnect();
+            LoginActivity.startActivity(getApplication());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -163,15 +154,18 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
         ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
+
         if (user != null) {
+            mConnectedUserId = user.mIdDb;
             header.setText(user.mDisplayName);
             ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
-            mDrawerHeader.setOnClickListener(null);
         } else {
+            mConnectedUserId = -1;
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
         }
+        mDrawerHeader.setOnClickListener(this);
     }
 
     @Override
@@ -179,10 +173,26 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    protected void Disconnect()
+    {
+        SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor e = settings.edit();
+        e.clear();
+        e.commit();
+    }
+
+
     @Override
     public void onClick(View v) {
-        LoginActivity.startActivity(this);
+        if(mConnectedUserId != -1)
+            ProfileActivity.startActivity(this, mConnectedUserId);
+        else
+            LoginActivity.startActivity(this);
     }
+
+
+
 
 }
 

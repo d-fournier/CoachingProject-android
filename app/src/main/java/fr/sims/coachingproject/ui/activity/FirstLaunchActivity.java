@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.ui.adapter.FirstLaunchPagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.FirstLaunchPagerAdapter;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 public class FirstLaunchActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {

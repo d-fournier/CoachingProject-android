@@ -31,10 +31,19 @@ public class Const {
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
         public static final String DEVICES = "devices/";
+        public static final String BLOG = "blog/";
         public final static String SEPARATOR = "/";
 
+        public final static String BLOG_EXTENSION = "blog";
         public final static String USER_GROUPS = "my_groups";
         public final static String MEMBERS = "members";
+        public final static String IS_ADMIN = "is_admin";
+        public final static String PENDING_MEMBERS = "pending_members";
+        public final static String JOIN = "join";
+        public final static String INVITE = "invite";
+        public final static String ACCEPT_JOIN = "accept_join";
+        public final static String ACCEPT_INVITE = "accept_invite";
+        public static final String MY_INVITATIONS = "my_invitations";
 
 
 
@@ -49,6 +58,7 @@ public class Const {
         public static final String OUT_JSON = "/json";
 
         public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
+
     }
 
     public static class Loaders{
@@ -61,6 +71,10 @@ public class Const {
         public final static int RELATION_LOADER_ID = 6;
         public final static int COACH_LOADER_ID = 7;
         public final static int GROUP_MEMBERS_LOADER_ID = 8;
+        public static final int GROUP_PENDING_MEMBERS_LOADER_ID = 9;
+        public static final int INVITATION_LOADER_ID = 10;
+        public final static int BLOG_POSTS_LOADER_ID = 11;
+        public final static int BLOG_POST_LOADER_ID = 12;
     }
 
     public static class Notification {
@@ -95,5 +109,6 @@ public class Const {
         public final static String EXTRA_ITEM_ID = "fr.sims.coachingproject.event.EXTRA_ITEM_ID";
         public static final String EVENT_GROUPS_UPDATED = "fr.sims.coachingproject.event.GROUPS_UPDATED";
         public static final String EVENT_GROUP_MEMBERS_UPDATED = "fr.sims.coachingproject.event.GROUP_MEMBERS_UPDATED";
+        public static final String EVENT_INVITATIONS_UPDATED = "fr.sims.coachingproject.event.INVITATIONS_UPDATED";
     }
 }

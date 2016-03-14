@@ -103,19 +103,21 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
 
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
 
-        for (CoachingRelation relation : dataset) {
-           if(relation.mActive) {
-                if (!relation.mIsPending) {
-                    if (relation.mCoach.mIdDb != mCurrentUserId) {
-                        mDatasetCr.add(relation);
+      if(mCurrentUserId!=-1) {
+            for (CoachingRelation relation : dataset) {
+                if (relation.mActive) {
+                    if (!relation.mIsPending) {
+                        if (relation.mCoach.mIdDb != mCurrentUserId) {
+                            mDatasetCr.add(relation);
+                        } else {
+                            mDatasetLr.add(relation);
+                        }
                     } else {
-                        mDatasetLr.add(relation);
-                    }
-                } else {
-                    if (relation.mCoach.mIdDb != mCurrentUserId) {
-                        mDatasetPendingCr.add(relation);
-                    } else {
-                        mDatasetPendingLr.add(relation);
+                        if (relation.mCoach.mIdDb != mCurrentUserId) {
+                            mDatasetPendingCr.add(relation);
+                        } else {
+                            mDatasetPendingLr.add(relation);
+                        }
                     }
                 }
            }
@@ -141,8 +143,6 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-
-
         switch (viewType) {
             case HEADER_REQUEST_LEARNER:
             case HEADER_REQUEST_COACH:
@@ -261,10 +261,6 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
                 cr = null;
         }
         return cr;
-    }
-
-    private CoachingRelation getItem(int position) {
-        return getItem(getItemViewType(position), position);
     }
 
     public long getRelationId(int position) {

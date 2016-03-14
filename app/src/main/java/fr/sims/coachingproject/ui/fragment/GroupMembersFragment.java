@@ -1,13 +1,14 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +16,22 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.GroupMembersLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.ProfileActivity;
-import fr.sims.coachingproject.ui.adapter.UserProfileAdapter;
+import fr.sims.coachingproject.ui.adapter.GroupMembersAdapter;
 import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by Zhenjie CEN on 2016/3/7.
  */
-public class GroupMembersFragment extends GenericFragment {
+public class GroupMembersFragment extends GenericFragment implements GenericBroadcastReceiver.BroadcastReceiverListener {
 
     public static final String MEMBERS_TITLE = "Members";
-    GroupMembersLoaderCallbacks mGroupLoader;
-    private UserProfileAdapter mGroupMembersAdapter;
+    GroupMembersLoaderCallbacks mGroupMembersLoader;
+    GroupPendingMembersLoaderCallbacks mGroupPendingMembersLoader;
+    GenericBroadcastReceiver mBroadcastReceiver;
+    private GroupMembersAdapter mGroupMembersAdapter;
     private RecyclerView mGroupMembersList;
     private long mGroupId;
 
@@ -42,34 +46,35 @@ public class GroupMembersFragment extends GenericFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mGroupLoader = new GroupMembersLoaderCallbacks();
-        getLoaderManager().initLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupLoader);
+        mGroupMembersLoader = new GroupMembersLoaderCallbacks();
+        mGroupPendingMembersLoader = new GroupPendingMembersLoaderCallbacks();
+        getLoaderManager().initLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
+        getLoaderManager().initLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBroadcastReceiver = new GenericBroadcastReceiver(this);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        mGroupMembersAdapter = new UserProfileAdapter(getContext());
+        mGroupMembersAdapter = new GroupMembersAdapter(getContext(), mGroupId);
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
 
-        mGroupMembersAdapter.setOnItemClickListener(new UserProfileAdapter.OnItemClickListener() {
+        mGroupMembersAdapter.setOnItemClickListener(new GroupMembersAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ProfileActivity.startActivity(getContext(), mGroupMembersAdapter.getItemId(position),-1);
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
+                ProfileActivity.startActivity(getContext(), mGroupMembersAdapter.getMemberId(position), -1);
             }
         });
+
     }
 
     @Override
@@ -77,22 +82,53 @@ public class GroupMembersFragment extends GenericFragment {
         return R.layout.fragment_group_members;
     }
 
+    @Override
+    public void onBroadcastReceive(Intent intent) {
+        if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_ACCEPT_USER_GROUPS)) {
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
+            getLoaderManager().restartLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
+        }
+    }
 
-    public class GroupMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
+
+    public class GroupPendingMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new GroupMembersLoader(getContext(),mGroupId);
+            return new GroupMembersLoader(getContext(), mGroupId, true);
         }
 
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
             if (data != null) {
-                mGroupMembersAdapter.clearData();
-                mGroupMembersAdapter.setData(data);
+                mGroupMembersAdapter.clearPendingMembers();
+                mGroupMembersAdapter.setPendingMembers(data);
             } else {
-                mGroupMembersAdapter.setData(new ArrayList<UserProfile>());
-                //Here is an error
+                mGroupMembersAdapter.setPendingMembers(new ArrayList<UserProfile>());
+                //TODO Don't display this section if not admin
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<UserProfile>> loader) {
+
+        }
+    }
+
+    public class GroupMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
+
+        @Override
+        public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
+            return new GroupMembersLoader(getContext(), mGroupId, false);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
+            if (data != null) {
+                mGroupMembersAdapter.clearMembers();
+                mGroupMembersAdapter.setMembers(data);
+            } else {
+                mGroupMembersAdapter.setMembers(new ArrayList<UserProfile>());
             }
         }
 
