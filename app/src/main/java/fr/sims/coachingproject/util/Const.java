@@ -83,6 +83,12 @@ public class Const {
             public static final int COACHING_NEW_ID = 2;
             public static final String COACHING_END = "coaching_end";
             public static final int COACHING_END_ID = 3;
+            public static final String GROUP_JOIN = "group_join";
+            public static final int GROUP_JOIN_ID = 4;
+            public static final String GROUP_INVITE = "group_invite";
+            public static final int GROUP_INVITE_ID = 4;
+            public static final String GROUP_JOIN_ACCEPTED = "group_join_accepted";
+            public static final int GROUP_JOIN_ACCEPTED_ID = 4;
         }
 
         public static class Data {

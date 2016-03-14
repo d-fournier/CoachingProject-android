@@ -105,5 +105,8 @@
     <string name="invite_group">Invite in group</string>
     <string name="groups">My groups</string>
     <string name="invitations">My invitations</string>
+    <string name="notif_group_join">Someone asked to join %1$s</string>
+    <string name="notif_group_invite">You have been invited in %1$s</string>
+    <string name="notif_group_join_accepted">You have been accepted in %1$s</string>
 
 </resources>
