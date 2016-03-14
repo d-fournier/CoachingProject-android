@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Sport;
@@ -133,7 +134,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                         int numItemSelected=getNumberItemsSelected();
                         if(globalPos < numItemSelected){
                             // Item not at the end
-
                             for(int i=globalPos+1; i<mAllSportsList.size(); i++){
                                 if(mLevelMap.containsKey(i)){
                                     mLevelMap.put(i-1, mLevelMap.get(i));
@@ -160,7 +160,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                         mLevelMap.put(posEmptyItem, noLevels);
                         mLevelsSelected.put(posEmptyItem, mNoSelectionLevel);
 
-                        //    notifyDataSetChanged();
                         mListener.reloadView();
                     }
                 }
@@ -185,7 +184,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
                 SportLevel previousLevel = mLevelsSelected.put(globalPos, level);
                 if (previousLevel == null || previousLevel.mIdDb != level.mIdDb) {
-                    //       notifyDataSetChanged();
                     mListener.reloadView();
                 }
             }
@@ -205,7 +203,6 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     public void setSports(List<Sport> sportList) {
         mAllSportsList.clear();
         mAllSportsList.addAll(sportList);
-        //   notifyDataSetChanged();
         mListener.reloadView();
     }
 
@@ -218,12 +215,20 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                 mLevelMap.put(pos, levelsToSave);
                 mLevelsSelected.put(pos, mNoSelectionLevel);
 
-                //   notifyDataSetChanged();
                 mListener.reloadView();
                 break;
             }
         }
+    }
 
+    public List<Long> getLevelsSelectedIds(){
+        List<Long> levelsSelected = new ArrayList<>();
+        for (SportLevel level : mLevelsSelected.values()) {
+            if (level.mIdDb != -1) {
+                levelsSelected.add(level.mIdDb);
+            }
+        }
+        return levelsSelected;
     }
 
 

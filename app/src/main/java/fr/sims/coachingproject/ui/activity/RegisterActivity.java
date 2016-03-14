@@ -112,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
             // Store values at the time of the login attempt.
             String username = usernameView.getText().toString();
+            String displayName= displaynameView.getText().toString();
             String password = passwordView.getText().toString();
             String repeatPassword=repeatPasswordView.getText().toString();
             String email=emailView.getText().toString();
@@ -132,10 +133,17 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
                 cancel=true;
             }
 
-            // Check for a valid email address.
+            // Check for a valid username.
             if (TextUtils.isEmpty(username)) {
                 usernameView.setError(getString(R.string.error_field_required));
                 focusView = usernameView;
+                cancel = true;
+            }
+
+            // Check for a valid display name.
+            if (TextUtils.isEmpty(displayName)) {
+                usernameView.setError(getString(R.string.error_field_required));
+                focusView = displaynameView;
                 cancel = true;
             }
 
@@ -153,9 +161,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             } else {
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
-                int[] levels={1,2};
                 mRegisterTask = new UserRegisterTask(username, password, email, displaynameView.getText().toString(),
-                        mDateFragment.mDate, cityView.getText().toString(), descriptionView.getText().toString(), isCoachView.isSelected(), levels);
+                        mDateFragment.mDate, cityView.getText().toString(), descriptionView.getText().toString(), isCoachView.isChecked(), mLevelAdapter.getLevelsSelectedIds());
                 mRegisterTask.execute((Void) null);
             }
         }
@@ -226,7 +233,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         private JSONObject userInfos;
 
-        UserRegisterTask(String username, String password, String email, String displayName, Date birthdate, String city,String description, boolean isCoach, int[] sportLevels) {
+        UserRegisterTask(String username, String password, String email, String displayName, Date birthdate, String city,String description, boolean isCoach, List<Long> sportLevelsIds) {
             userInfos=new JSONObject();
             try {
                 userInfos.put("username", username);
@@ -239,8 +246,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
                 userInfos.put("description", description);
                 userInfos.put("isCoach", isCoach);
                 JSONArray levelsArray=new JSONArray();
-                for(int i=0; i<sportLevels.length;i++){
-                    levelsArray.put(sportLevels[i]);
+                for(Long levelId : sportLevelsIds){
+                    levelsArray.put(levelId);
                 }
                 userInfos.put("levels", levelsArray);
             } catch (JSONException e) {
