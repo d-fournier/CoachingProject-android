@@ -21,10 +21,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 
@@ -36,10 +36,8 @@ public class MainActivity extends AppCompatActivity
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
     View mDrawerHeader;
-    Intent mIntent;
 
     private long mConnectedUserId;
-
 
     public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
@@ -91,13 +89,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 
                 switch (tabLayout.getSelectedTabPosition()) {
-                    case 0: mIntent = new Intent(MainActivity.this, SearchActivity.class);
-                        startActivity(mIntent);
+                    case 0:
+                        SearchActivity.startActivity(getApplicationContext(),false,-1);
                         break;
                     case 1:
                         break;
-                    case 2: mIntent = new Intent(MainActivity.this, SearchGroupActivity.class);
-                        startActivity(mIntent);
+                    case 2:
+                        SearchGroupActivity.startActivity(getApplicationContext());
                         break;
 
 

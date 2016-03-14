@@ -82,7 +82,7 @@
 
     <string name="log_in">Log in</string>
     <string name="email">Email</string>
-    <string name="pick_date">Birthdate</string>
+    <string name="pick_date">Select birthdate</string>
     <string name="city">City</string>
     <string name="agree_to_coach">I want to coach others</string>
     <string name="register">Register</string>
@@ -93,11 +93,19 @@
     <string name="passwords_dont_match">Passwords don\'t match</string>
     <string name="sign_up">Sign up</string>
     <string name="not_registered_question">Not registered yet ?</string>
+    <string name="select_sport">Select sport</string>
+    <string name="select_level">Select level</string>
+    <string name="label_register_level_list">Select your level in each sport you practice</string>
     <string name="profile_accept_coaching">Accept to coach</string>
     <string name="profile_not_accept_coaching">Refuse to coach</string>
     <string name="profile_description">Description</string>
     <string name="profile_sports">Sports</string>
     <string name="title_activity_group">Group</string>
     <string name="created_on">"Created on %1$s"</string>
-
+    <string name="join_group">Join group</string>
+    <string name="members">Members</string>
+    <string name="pending_members">Pending members</string>
+    <string name="invite_group">Invite in group</string>
+    <string name="groups">My groups</string>
+    <string name="invitations">My invitations</string>
 </resources>

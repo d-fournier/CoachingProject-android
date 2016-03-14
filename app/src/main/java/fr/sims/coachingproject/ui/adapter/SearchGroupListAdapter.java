@@ -72,6 +72,27 @@ public class SearchGroupListAdapter extends RecyclerView.Adapter<SearchGroupList
         vh.mNameTV.setText(group.mName);
         vh.mDescTV.setText(group.mDescription);
         vh.mMembersTV.setText(String.valueOf(group.mMembers));
+
+
+        if (mOnItemClickListener != null) {
+            if (!vh.itemView.hasOnClickListeners()) {
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = vh.getAdapterPosition();
+                        mOnItemClickListener.onItemClick(v, pos);
+                    }
+                });
+                vh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int pos = vh.getAdapterPosition();
+                        mOnItemClickListener.onItemLongClick(v, pos);
+                        return true;
+                    }
+                });
+            }
+        }
     }
 
     public void setData(List<Group> dataset) {
@@ -87,6 +108,10 @@ public class SearchGroupListAdapter extends RecyclerView.Adapter<SearchGroupList
     @Override
     public int getItemCount() {
         return groupList.size();
+    }
+
+    public long getItemId(int position) {
+        return groupList.get(position).mIdDb;
     }
 
     public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {

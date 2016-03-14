@@ -360,25 +360,18 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private class SendRequestTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
         protected NetworkUtil.Response doInBackground(String... params) {
-            if (params.length > 0) {
-                String body = params[0];
-                String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
-                NetworkUtil.Response response = NetworkUtil.post("https://coachingproject.herokuapp.com/api/messages/", connectedToken, body);
-                return response;
-            } else
-                return null;
+            String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
+            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES, connectedToken, params[0]);
         }
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
-            if(response != null) {
-                mSendBtn.setEnabled(true);
-                if(response.isSuccessful()) {
-                    mMessageET.setText("");
-                    NetworkService.startActionRelationMessages(getApplicationContext(), mRelationId);
-                } else {
-                    Snackbar.make(mViewPager, R.string.no_connectivity, Snackbar.LENGTH_SHORT);
-                }
+            mSendBtn.setEnabled(true);
+            mMessageET.setText("");
+            if (response.isSuccessful()) {
+                NetworkService.startActionRelationMessages(getApplicationContext(), mRelationId);
+            } else {
+                Snackbar.make(mViewPager, response.getBody(), Snackbar.LENGTH_LONG);
             }
         }
 
@@ -386,7 +379,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         protected void onPreExecute() {
             mSendBtn.setEnabled(false);
         }
-
     }
 }
 

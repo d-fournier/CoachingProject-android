@@ -27,4 +27,6 @@
     <dimen name="relation_list_profile_picture_size">64dp</dimen>
 
     <dimen name="standard_drawable_height">24dp</dimen>
+
+    <dimen name="standard_image_button_width">48dp</dimen>
 </resources>

@@ -17,16 +17,37 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 public class GroupMembersLoader extends AsyncTaskLoader<List<UserProfile>> {
 
     List<UserProfile> mUserList;
-    long mGroupId;
+    private long mGroupId;
+    private boolean mPending;
 
-    public GroupMembersLoader(Context context, long id) {
+    public GroupMembersLoader(Context context, long id, boolean pending) {
         super(context);
         mGroupId = id;
+        mPending = pending;
     }
 
     @Override
     public List<UserProfile> loadInBackground() {
-        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+mGroupId+Const.WebServer.SEPARATOR+Const.WebServer.MEMBERS;
+        String request;
+        if(mPending){
+            NetworkUtil.Response isAdminResponse = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+mGroupId+Const.WebServer.SEPARATOR
+                    +Const.WebServer.IS_ADMIN+Const.WebServer.SEPARATOR,  SharedPrefUtil.getConnectedToken(getContext()));
+            if(isAdminResponse.isSuccessful()){
+                boolean isAdmin = Boolean.parseBoolean(isAdminResponse.getBody());
+                if(isAdmin){
+                    request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+mGroupId+Const.WebServer.SEPARATOR
+                            +Const.WebServer.PENDING_MEMBERS+Const.WebServer.SEPARATOR;
+                }else{
+                    return null;
+                }
+            }else{
+                return null;
+            }
+        }else{
+            request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+mGroupId+Const.WebServer.SEPARATOR
+                    +Const.WebServer.MEMBERS+Const.WebServer.SEPARATOR;
+
+        }
         NetworkUtil.Response res = NetworkUtil.get(request,  SharedPrefUtil.getConnectedToken(getContext()));
         if(res.isSuccessful()) {
             return Arrays.asList(UserProfile.parseList(res.getBody()));
