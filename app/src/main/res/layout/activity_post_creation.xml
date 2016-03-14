@@ -10,21 +10,57 @@
     tools:context="fr.sims.coachingproject.ui.activity.PostCreationActivity"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/post_content"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_title"
+            android:inputType="textCapSentences"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="top" />
+    </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/post_render"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/post_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_description"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:gravity="top" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Render"/>
+        android:id="@+id/post_spinner_sports"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
 
-    <fr.sims.coachingproject.ui.view.MarkDownView
-        android:id="@+id/post_preview"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+        <EditText
+            android:id="@+id/post_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/prompt_content"
+            android:inputType="textMultiLine"
+            android:gravity="top"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/post_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/post_create"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
 </LinearLayout>

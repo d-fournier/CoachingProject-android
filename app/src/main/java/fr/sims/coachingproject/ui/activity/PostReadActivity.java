@@ -2,7 +2,6 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +33,7 @@ public class PostReadActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blog_post_read);
+        setContentView(R.layout.activity_post_read);
 
         Intent mIntent = getIntent();
         mPostId= mIntent.getLongExtra(EXTRA_POST_ID, -1);

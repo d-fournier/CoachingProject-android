@@ -39,7 +39,7 @@ public class BlogListFragment extends GenericFragment implements LoaderManager.L
     @Override
     protected void bindArguments(Bundle args) {
         super.bindArguments(args);
-        mUserId = args.getLong(EXTRA_USER_ID);
+        mUserId = args.getLong(EXTRA_USER_ID, -1);
     }
 
     @Override
