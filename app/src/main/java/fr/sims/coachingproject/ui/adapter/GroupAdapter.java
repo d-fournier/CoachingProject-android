@@ -15,11 +15,14 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.service.NetworkService;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Benjamin on 01/03/2016.
  */
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
+
+    private long mCurrentUserId;
 
 
     private static final int HEADER_GROUP = 0;
@@ -36,6 +39,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         mCtx = ctx;
         mGroupList = new ArrayList<>();
         mInvitationsList = new ArrayList<>();
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
     }
 
     @Override
@@ -141,7 +145,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
 
 
     public void setGroups(List<Group> gList) {
-        mGroupList.addAll(gList);
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
+        if (mCurrentUserId != -1)
+            mGroupList.addAll(gList);
         notifyDataSetChanged();
     }
 

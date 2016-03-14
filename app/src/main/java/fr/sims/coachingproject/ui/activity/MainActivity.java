@@ -1,7 +1,10 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,6 +18,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+
+import android.content.SharedPreferences.Editor;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +29,26 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
+import fr.sims.coachingproject.model.fakejson.LoginRequest;
+import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
+
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
+
 
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
@@ -94,7 +108,7 @@ public class MainActivity extends AppCompatActivity
 
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        SearchActivity.startActivity(getApplicationContext(),false,-1);
+                        SearchActivity.startActivity(getApplicationContext(), false, -1);
                         break;
                     case 1:
                         break;
@@ -107,8 +121,7 @@ public class MainActivity extends AppCompatActivity
             }
 
 
-
-    });
+        });
         NetworkService.startActionConnectedUserInfo(this);
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
 
@@ -149,6 +162,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_disconnect) {
+            Disconnect();
+            LoginActivity.startActivity(getApplication());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -181,10 +197,23 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    protected void Disconnect()
+    {
+        SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+
+        Editor e = settings.edit();
+        e.clear();
+        e.commit();
+    }
+
+
     @Override
     public void onClick(View v) {
         LoginActivity.startActivity(this);
     }
+
+
+
 
 }
 

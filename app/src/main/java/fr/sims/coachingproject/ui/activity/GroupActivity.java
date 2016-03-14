@@ -51,6 +51,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private TextView mGroupSport;
     private TextView mGroupCity;
     private long mGroupIdDb;
+    private long mCurrentUserId;
 
     private GroupLoaderCallbacks mGroupLoader;
 
@@ -134,9 +135,14 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getApplication());
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_group, menu);
+        boolean mVisible = (mCurrentUserId != -1) ?true : false;
+        menu.setGroupVisible(0, mVisible);
+        menu.setGroupVisible(1, mVisible);
         return true;
+
     }
 
     @Override

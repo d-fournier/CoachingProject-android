@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by dfour on 15/02/2016.
  */
@@ -63,6 +65,10 @@ public class Sport extends Model {
 
     public static Sport getSportById(long id){
         return new Select().from(Sport.class).where("idDb = ?", id).executeSingle();
+    }
+
+    public List<SportLevel> getLevels(){
+        return new Select().from(SportLevel.class).where("sport == ?", mIdDb).execute();
     }
 
 }
