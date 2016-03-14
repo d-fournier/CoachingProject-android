@@ -31,11 +31,12 @@ public class Const {
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
         public static final String DEVICES = "devices/";
+        public static final String BLOG = "blog/";
         public final static String SEPARATOR = "/";
 
         public final static String USER_GROUPS = "my_groups";
         public final static String MEMBERS = "members";
-        public final static String BLOG = "blog";
+        public final static String BLOG_EXTENSION = "blog";
 
 
 
@@ -63,6 +64,7 @@ public class Const {
         public final static int COACH_LOADER_ID = 7;
         public final static int GROUP_MEMBERS_LOADER_ID = 8;
         public final static int BLOG_POSTS_LOADER_ID = 9;
+        public final static int BLOG_POST_LOADER_ID = 10;
     }
 
     public static class Notification {

@@ -28,7 +28,9 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
     private List<BlogPost> mBlogPostList;
     private Context mCtx;
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    OnItemClickListener mOnItemClickListener;
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
         }
@@ -67,20 +69,29 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
                 break;
         }
         return vh;
-
     }
 
     @Override
-    public void onBindViewHolder(BlogAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final BlogAdapter.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         switch (viewType) {
             case POST_TYPE:
             default:
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(mOnItemClickListener != null) {
+                            int pos = holder.getAdapterPosition();
+                            mOnItemClickListener.onItemClick(v, pos);
+                        }
+                    }
+                });
+
                 BlogPost bp = getItem(position);
                 BlogPostViewHolder bvh = (BlogPostViewHolder) holder;
                 bvh.mTitle.setText(bp.mTitle);
                 bvh.mShortDescription.setText(bp.mShortDescription);
-                if(bp.mPicture != null) {
+                if (bp.mPicture != null) {
                     bvh.mPicture.setVisibility(View.VISIBLE);
                     Picasso.with(mCtx).load(bp.mPicture).into(bvh.mPicture);
                 } else {
@@ -98,16 +109,16 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if(mHeader != null && position == 0)
+        if (mHeader != null && position == 0)
             return HEADER_TYPE;
         else
             return POST_TYPE;
     }
 
     public BlogPost getItem(int position) {
-        if(mHeader != null && position <= mBlogPostList.size())
+        if (mHeader != null && position <= mBlogPostList.size())
             return mBlogPostList.get(position - 1);
-        else if(position < mBlogPostList.size())
+        else if (position < mBlogPostList.size())
             return mBlogPostList.get(position);
         else
             return null;
@@ -119,8 +130,16 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
         this.notifyDataSetChanged();
     }
 
-    public void setHeader(View view){
+    public void setHeader(View view) {
         mHeader = view;
         this.notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mOnItemClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

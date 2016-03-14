@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import fr.sims.coachingproject.ui.fragment.BlogFragment;
+import fr.sims.coachingproject.ui.fragment.BlogListFragment;
 import fr.sims.coachingproject.ui.fragment.ProfileAboutFragment;
 
 /**
@@ -32,7 +32,7 @@ public class ProfilePagerAdapter  extends FragmentPagerAdapter {
                 break;
             case 0:
             default:
-                fragment = BlogFragment.newInstance(mUserId);
+                fragment = BlogListFragment.newInstance(mUserId);
                 break;
         }
         return fragment;
@@ -52,7 +52,7 @@ public class ProfilePagerAdapter  extends FragmentPagerAdapter {
                 break;
             case 0:
             default:
-                title = BlogFragment.TITLE;
+                title = BlogListFragment.TITLE;
                 break;
         }
         return title;
