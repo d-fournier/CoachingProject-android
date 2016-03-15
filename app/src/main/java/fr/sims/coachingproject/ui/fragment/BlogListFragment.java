@@ -9,7 +9,7 @@ import android.view.View;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.BlogPostListLoader;
+import fr.sims.coachingproject.loader.network.BlogPostListLoader;
 import fr.sims.coachingproject.model.BlogPost;
 import fr.sims.coachingproject.ui.activity.PostReadActivity;
 import fr.sims.coachingproject.ui.adapter.BlogAdapter;

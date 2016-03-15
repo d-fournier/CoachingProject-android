@@ -1,4 +1,4 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.network;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;

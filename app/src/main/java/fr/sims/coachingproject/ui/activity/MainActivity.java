@@ -20,14 +20,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.UserLoader;
+import fr.sims.coachingproject.loader.local.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.ImageUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         if (user != null) {
             mConnectedUserId = user.mIdDb;
             header.setText(user.mDisplayName);
-            Picasso.with(MainActivity.this).load(user.mPicture).into(profilePicture);
+            ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
         } else {
             mConnectedUserId = -1;

@@ -1,8 +1,9 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import fr.sims.coachingproject.loader.local.GenericLocalLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;

@@ -1,5 +1,8 @@
 package fr.sims.coachingproject.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -15,7 +18,7 @@ import java.util.List;
  * Created by dfour on 15/02/2016.
  */
 @Table(name="Sport")
-public class Sport extends Model {
+public class Sport extends Model implements Parcelable {
 
     @Column(name = "idDb", unique = true)
     @Expose
@@ -26,6 +29,25 @@ public class Sport extends Model {
     @Expose
     @SerializedName("name")
     public String mName;
+
+    public Sport() { }
+
+    protected Sport(Parcel in) {
+        mIdDb = in.readLong();
+        mName = in.readString();
+    }
+
+    public static final Creator<Sport> CREATOR = new Creator<Sport>() {
+        @Override
+        public Sport createFromParcel(Parcel in) {
+            return new Sport(in);
+        }
+
+        @Override
+        public Sport[] newArray(int size) {
+            return new Sport[size];
+        }
+    };
 
     public Sport saveOrUpdate(){
         Sport res = new Select().from(Sport.class).where("idDb = ?", mIdDb).executeSingle();
@@ -71,4 +93,15 @@ public class Sport extends Model {
         return new Select().from(SportLevel.class).where("sport == ?", mIdDb).execute();
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mIdDb);
+        dest.writeString(mName);
+    }
 }

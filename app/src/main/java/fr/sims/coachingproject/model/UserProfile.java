@@ -166,9 +166,13 @@ public class UserProfile extends Model{
     }
 
     public boolean isCoachingUser(long userId, long sportId){
-        CoachingRelation relation=new Select().from(CoachingRelation.class).where("coach == ?", mIdDb).and("trainee == ?", userId).and("sport == ?", sportId).executeSingle();
-        if(relation!=null){
-            return (relation.mRequestStatus !=null && relation.mRequestStatus);
+        List<CoachingRelation> relationsList=new Select().from(CoachingRelation.class).where("coach = ?", getId()).execute();
+        if(relationsList == null)
+            return false;
+        for(CoachingRelation r : relationsList) {
+            if(r.mSport.mIdDb == sportId && r.mTrainee.mIdDb == userId) {
+                return true;
+            }
         }
         return false;
     }

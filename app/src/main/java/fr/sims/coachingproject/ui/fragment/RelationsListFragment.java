@@ -15,7 +15,7 @@ import android.view.View;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.RelationListLoader;
+import fr.sims.coachingproject.loader.local.RelationListLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;

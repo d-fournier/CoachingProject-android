@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.MessageLoader;
+import fr.sims.coachingproject.loader.local.MessageLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
@@ -56,7 +56,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      * @param pinnedMessages if true, shows pinned messages
      * @return the fragment
      */
-    public static android.support.v4.app.Fragment newRelationInstance(long relationId, boolean pinnedMessages) {
+    public static MessageFragment newRelationInstance(long relationId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
 // TODO Refactor
         fragment.mRelationId = relationId;
@@ -72,7 +72,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      * @param pinnedMessages if true, shows pinned messages
      * @return
      */
-    public static android.support.v4.app.Fragment newGroupInstance(long groupId, boolean pinnedMessages) {
+    public static MessageFragment newGroupInstance(long groupId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
         fragment.mGroupId = groupId;
         fragment.mRelationId = -1;
