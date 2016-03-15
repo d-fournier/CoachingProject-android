@@ -12,37 +12,26 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +47,7 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
+import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.ui.adapter.RegisterLevelsAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.MultipartUtility;
@@ -72,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
     private final int SPORT_LOADER_ID=0;
     private final String ARG_SPORT_ID="sportId";
-    private final String ARG_VIEW_HOLDER="viewHolder";
 
     private DatePickerFragment mDateFragment;
     private LinearLayout mLevelView;
@@ -96,14 +85,17 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         setContentView(R.layout.activity_register);
         mLevelView = (LinearLayout) findViewById(R.id.register_levels_list);
         mLevelAdapter = new RegisterLevelsAdapter(this, this);
-        //mLevelView.setAdapter(mLevelAdapter);
 
+        AutoCompleteTextView cityView=(AutoCompleteTextView)findViewById(R.id.register_city);
+        cityView.setAdapter(new CityAutoCompleteAdapter(this, android.R.layout.simple_list_item_1));
 
         mSportLoader = new SportLoaderCallbacks();
         getLoaderManager().initLoader(SPORT_LOADER_ID, null, mSportLoader);
         mLevelLoader = new LevelsLoaderCallbacks();
 
         mDateFragment = new DatePickerFragment();
+
+        displayError(false);
 
         reloadView();
 
@@ -116,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         EditText passwordView=(EditText)findViewById(R.id.register_password);
         EditText repeatPasswordView=(EditText)findViewById(R.id.register_password_repeat);
         EditText emailView=(EditText)findViewById(R.id.register_email);
-        EditText cityView=(EditText)findViewById(R.id.register_city);
+        AutoCompleteTextView cityView=(AutoCompleteTextView)findViewById(R.id.register_city);
         CheckBox isCoachView=(CheckBox)findViewById(R.id.register_is_coach);
         EditText descriptionView=(EditText)findViewById(R.id.register_description);
 
@@ -200,6 +192,20 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
+    public void displayError(Boolean errorVisible){
+        LinearLayout content=(LinearLayout)findViewById(R.id.register_content);
+        LinearLayout error=(LinearLayout)findViewById(R.id.register_error);
+
+        if(errorVisible){
+            content.setVisibility(View.GONE);
+            error.setVisibility(View.VISIBLE);
+        }else{
+            content.setVisibility(View.VISIBLE);
+            error.setVisibility(View.GONE);
+        }
+
+    }
+
 
     public void showDatePickerDialog(View v) {
         mDateFragment.show(getSupportFragmentManager(), "datePicker");
@@ -219,6 +225,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             startActivityForResult(intent, Const.WebServer.PICK_IMAGE_AFTER_KITKAT_REQUEST);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -243,7 +250,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
-
     @Override
     public void reloadLevels(long sportId) {
         // Loader id specific to sport and different from SPORT_LOADER_ID
@@ -262,10 +268,25 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
     @Override
     public void reloadView() {
         mLevelView.removeAllViews();
-        for (int i = 0; i < mLevelAdapter.getCount(); i++) {
-            View mLinearView = mLevelAdapter.getView(i, null, null);
-            mLevelView.addView(mLinearView, i);
+        int numberItems=mLevelAdapter.getCount();
+        if(numberItems>0){
+            displayError(false);
+
+            for (int i = 0; i < numberItems; i++) {
+                View mLinearView = mLevelAdapter.getView(i, null, null);
+                mLevelView.addView(mLinearView, i);
+            }
+        }else{
+            displayError(true);
         }
+
+
+
+    }
+
+    public void retryToConnect(View view) {
+        getLoaderManager().restartLoader(SPORT_LOADER_ID, null, mSportLoader);
+        reloadView();
     }
 
 
@@ -423,6 +444,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
                 mSportList = data;
             }else{
                 mSportList.clear();
+                displayError(true);
             }
             mLevelAdapter.setSports(mSportList);
         }
@@ -444,6 +466,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         public void onLoadFinished(Loader<List<SportLevel>> loader, List<SportLevel> data) {
             LevelLoader levelLoader=(LevelLoader)loader;
             mLevelAdapter.setLevels(levelLoader.mSport, data);
+
+            if(data==null){
+                displayError(true);
+            }
         }
 
         @Override
