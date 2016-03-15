@@ -2,14 +2,11 @@ package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
@@ -109,7 +107,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonVi
         vh.mDateTV.setText(mDateFormat.format(message.mTime));
 
         if(getItemViewType(position) == MESSAGE_ITEM)
-            Picasso.with(mContext).load(message.mSender.mPicture).into(((OtherUserViewHolder) vh).mPictureIV);
+            ImageUtil.loadProfilePicture(mContext, message.mSender.mPicture, ((OtherUserViewHolder) vh).mPictureIV);
 
     }
 

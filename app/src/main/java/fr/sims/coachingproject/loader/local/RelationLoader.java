@@ -1,7 +1,8 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.local;
 
 import android.content.Context;
 
+import fr.sims.coachingproject.loader.local.GenericLocalLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.util.Const;
 

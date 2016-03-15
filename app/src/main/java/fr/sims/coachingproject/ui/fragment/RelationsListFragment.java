@@ -15,7 +15,7 @@ import android.view.View;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.RelationListLoader;
+import fr.sims.coachingproject.loader.local.RelationListLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
@@ -83,6 +83,12 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
         super.onCreate(savedInstanceState);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override

@@ -2,10 +2,9 @@ package fr.sims.coachingproject.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,43 +12,36 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.UserLoader;
+import fr.sims.coachingproject.loader.local.UserLoader;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.pager.ProfilePagerAdapter;
 import fr.sims.coachingproject.util.Const;
-import fr.sims.coachingproject.util.NetworkUtil;
+import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
-import static fr.sims.coachingproject.util.NetworkUtil.post;
-
-public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile> {
+public class ProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
 
     private static final String EXTRA_USER_PROFILE_ID = "fr.sims.coachingproject.extra.USER_PROFILE_ID";
     private static final String EXTRA_SPORT_ID = "fr.sims.coachingproject.extra.SPORT_ID";
 
-    private long mId;
-    private long mSportId;
-    private String mConnectedToken;
+    private long mUserId;
     private long mConnectedUserId;
-    private long mCoachUserId;
+    private long mSportId;
+    private ArrayList<Sport> mSportsList;
 
-    private UserProfile mProfile;
-    private String mRequest_Body;
+    private FloatingActionButton mSendRequestBtn;
 
-    private ProfilePagerAdapter mProfilePagerAdapter;
-
-    private View mMainLayout;
-    private Button mSendRequestBtn;
-    private ViewPager mViewPager;
 
     /**
      * Start activity
@@ -80,23 +72,24 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mConnectedUserId = SharedPrefUtil.getConnectedUserId(this);
-
         // Get the transferred id
         Intent mIntent = getIntent();
-        mId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
+        mUserId = mIntent.getLongExtra(EXTRA_USER_PROFILE_ID, 0);
         mSportId = mIntent.getLongExtra(EXTRA_SPORT_ID, -1);
 
-        // Bind
-        mMainLayout = findViewById(R.id.profile_main_layout);
+        mSportsList = new ArrayList<>();
+        mConnectedUserId = SharedPrefUtil.getConnectedUserId(this);
+
+        mSendRequestBtn = (FloatingActionButton) findViewById(R.id.profile_send_request);
+        mSendRequestBtn.setOnClickListener(this);
 
         getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
 
-        mProfilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager(), mId);
-        mViewPager = (ViewPager) findViewById(R.id.profile_view_pager);
-        mViewPager.setAdapter(mProfilePagerAdapter);
+        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager(), mUserId);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.profile_view_pager);
+        viewPager.setAdapter(profilePagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.profile_tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -107,12 +100,12 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<UserProfile> onCreateLoader(int id, Bundle args) {
-        return new UserLoader(this, mId);
+        return new UserLoader(this, mUserId);
     }
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, final UserProfile data) {
-        mProfile = data;
+        UserProfile profile = data;
 
         // Get components
         TextView nameTV = (TextView) findViewById(R.id.profile_name);
@@ -122,53 +115,53 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
 
         // Set values
-        String age = getResources().getQuantityString(R.plurals.user_age, mProfile.getAge(), mProfile.getAge());
-        nameTV.setText(mProfile.mDisplayName);
-        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mProfile.mDisplayName);
-        infoTV.setText(getString(R.string.separator_strings, mProfile.mCity, age));
-        Picasso.with(ProfileActivity.this).load(data.mPicture).into(pictureIV);
+        String age = getResources().getQuantityString(R.plurals.user_age, profile.getAge(), profile.getAge());
+        nameTV.setText(profile.mDisplayName);
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(profile.mDisplayName);
+        infoTV.setText(getString(R.string.separator_strings, profile.mCity, age));
+        ImageUtil.loadProfilePicture(this, data.mPicture, pictureIV);
 
-        if (mProfile.mIsCoach) {
-            isCoachTV.setText(getString(R.string.profile_accept_coaching, mProfile.mDisplayName));
-//            mSendRequestBtn.setVisibility(View.VISIBLE);
-//            fillCoachingRequestLayout();
+        if (profile.mIsCoach && mUserId != mConnectedUserId) {
+            isCoachTV.setText(getString(R.string.profile_accept_coaching, profile.mDisplayName));
+            fillCoachingRequestLayout(profile);
         } else {
-            isCoachTV.setText(getString(R.string.profile_not_accept_coaching, mProfile.mDisplayName));
-//            mSendRequestBtn.setVisibility(View.GONE);
-//            findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
+            isCoachTV.setText(getString(R.string.profile_not_accept_coaching, profile.mDisplayName));
+            mSendRequestBtn.hide();
         }
     }
 
-    /*
     // TODO Debug Will be remove
-    private void fillCoachingRequestLayout(){
-        Spinner spinner = (Spinner) findViewById(R.id.spinner_profile_sports);
-
+    private void fillCoachingRequestLayout(UserProfile profile) {
         // fill sport list
-        List<Sport> sportList = new ArrayList<>();
-        for (SportLevel level : mProfile.mSportsList) {
+        Map<Long, Sport> sports = new HashMap<>();
+        for (SportLevel level : profile.mSportsList) {
             // TODO Main Thread + BDD
-            if (!mProfile.isCoachingUser(mConnectedUserId, level.mSport.mIdDb)) {
-                sportList.add(level.mSport);
+            Sport s = level.mSport;
+            if (!profile.isCoachingUser(mConnectedUserId, s.mIdDb) && !sports.containsKey(s.mIdDb)) {
+                sports.put(s.mIdDb, s);
             }
         }
 
-        if (sportList.isEmpty()) {
-            findViewById(R.id.profile_send_request_layout).setVisibility(View.GONE);
-            mSendRequestBtn.setVisibility(View.GONE);
-        } else {
-            spinner.setAdapter(new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, sportList));
-            if (mSportId != -1) {
-                // TODO Main Thread + BDD
-                spinner.setSelection(sportList.indexOf(Sport.getSportById(mSportId)));
-            }
-        }
+        mSportsList.clear();
+        mSportsList.addAll(sports.values());
+        if (sports.isEmpty())
+            mSendRequestBtn.hide();
+        else
+            mSendRequestBtn.show();
     }
-    */
 
     @Override
     public void onLoaderReset(Loader<UserProfile> loader) {
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.profile_send_request:
+                SendRequestActivity.startActivity(this, mUserId, mSportId, mSportsList);
+                break;
+        }
     }
 
     /*
@@ -202,7 +195,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                 try {
                     JSONObject parent = new JSONObject();
                     parent.put("coach", Long.toString(mCoachUserId));
-                    parent.put("trainee", Long.toString(mConnectedUserId));
                     parent.put("sport", Long.toString(check_sport_id));
                     parent.put("comment", request_comment);
                     Log.d("output", parent.toString(2));
@@ -238,29 +230,4 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         }
     }
     */
-
-    class SendRequest extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            NetworkUtil.Response response = post("https://coachingproject.herokuapp.com/api/relations/", mConnectedToken, mRequest_Body);
-            return String.valueOf(response.getReturnCode());
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            if (Integer.parseInt(response) == HttpsURLConnection.HTTP_CREATED) {
-                Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
 }

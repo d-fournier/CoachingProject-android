@@ -3,6 +3,7 @@ package fr.sims.coachingproject.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -165,5 +166,9 @@ public class Message extends Model {
         }
 
         return res;
+    }
+
+    public static void clear(){
+        new Delete().from(Message.class).execute();
     }
 }

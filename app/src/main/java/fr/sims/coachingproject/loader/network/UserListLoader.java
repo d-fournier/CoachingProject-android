@@ -1,4 +1,4 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.network;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -15,33 +15,42 @@ import fr.sims.coachingproject.util.NetworkUtil;
 /**
  * Created by Benjamin on 16/02/2016.
  */
-public class CoachLoader extends AsyncTaskLoader<List<UserProfile>> {
+public class UserListLoader extends AsyncTaskLoader<List<UserProfile>> {
 
     private String mKeywords;
     private long mSport;
     private long mLevel;
+    private boolean mCoach;
 
-    public CoachLoader(Context context, String keywords, long sport, long level) {
+    public UserListLoader(Context context, String keywords, long sport, long level, boolean coach) {
         super(context);
         mKeywords = keywords;
         mSport = sport;
         mLevel =level;
+        mCoach = coach;
     }
 
     @Override
     public List<UserProfile> loadInBackground() {
         String request = null;
+        boolean queryStarted = false;
         try {
-            request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + "?" +
-                    Const.WebServer.COACH_PARAMETER + "=true";
+            request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE;
+
+            if(mCoach){
+                request+= "?" +  Const.WebServer.COACH_PARAMETER + "=true";
+                queryStarted=true;
+            }
             if(!mKeywords.isEmpty()){
-                request += "&" + Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
+                request += (queryStarted ? "&" : "?") + Const.WebServer.KEYWORDS_PARAMETER + "=" + URLEncoder.encode(mKeywords, "UTF-8");
+                queryStarted=true;
             }
             if(mSport != -1){
-                request +=  "&" + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
+                request +=  (queryStarted ? "&" : "?") + Const.WebServer.SPORT_PARAMETER + "=" + mSport;
+                queryStarted = true;
             }
             if(mLevel != -1) {
-                request += "&" + Const.WebServer.LEVEL_PARAMETER + "=" + mLevel;
+                request += (queryStarted ? "&" : "?") + Const.WebServer.LEVEL_PARAMETER + "=" + mLevel;
             }
 
         } catch (UnsupportedEncodingException e) {

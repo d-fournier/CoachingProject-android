@@ -39,8 +39,8 @@ import java.util.Date;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.LevelLoader;
-import fr.sims.coachingproject.loader.SportLoader;
+import fr.sims.coachingproject.loader.network.LevelLoader;
+import fr.sims.coachingproject.loader.network.SportLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;

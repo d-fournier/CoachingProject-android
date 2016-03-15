@@ -8,14 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 // TODO Header ???
@@ -196,7 +195,7 @@ public class RelationsListAdapter extends RecyclerView.Adapter<RelationsListAdap
             CoachingRelation cr = getItem(itemViewType, position);
             UserProfile partner = (itemViewType == LIST_COACH || itemViewType == LIST_PENDING_COACH) ? cr.mCoach : cr.mTrainee;
 
-            Picasso.with(mCtx).load(partner.mPicture).into(cvh.mPictureIV);
+            ImageUtil.loadProfilePicture(mCtx, partner.mPicture, cvh.mPictureIV);
             cvh.mNameTV.setText(partner.mDisplayName);
             cvh.mDescTV.setText(mCtx.getString(R.string.separator_strings, partner.mCity, cr.mSport.mName));
         } else {

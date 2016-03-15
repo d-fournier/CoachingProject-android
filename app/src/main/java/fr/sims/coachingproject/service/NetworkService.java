@@ -227,6 +227,10 @@ public class NetworkService extends IntentService {
         if(res.isSuccessful()) {
             Group[] gList = Group.parseList(res.getBody());
 
+            for(Group g : gList){
+               g.mIsCurrentUserMember = true;
+            }
+
             ActiveAndroid.beginTransaction();
             try {
                 for(Group g : gList) {

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.GroupLoader;
-import fr.sims.coachingproject.loader.InvitationLoader;
+import fr.sims.coachingproject.loader.local.GroupLoader;
+import fr.sims.coachingproject.loader.network.InvitationLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
@@ -74,7 +74,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(getContext());
         inflater.inflate(R.menu.activity_creategroup, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        boolean mVisible = (mCurrentUserId != -1) ?true : false;
+        boolean mVisible = (mCurrentUserId != -1);
         menu.setGroupVisible(0, mVisible);
     }
 
@@ -100,6 +100,12 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override

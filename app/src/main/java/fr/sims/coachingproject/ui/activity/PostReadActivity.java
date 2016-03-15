@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.BlogPostLoader;
+import fr.sims.coachingproject.loader.network.BlogPostLoader;
 import fr.sims.coachingproject.model.BlogPost;
 import fr.sims.coachingproject.ui.view.MarkDownView;
 import fr.sims.coachingproject.util.Const;

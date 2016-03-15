@@ -27,18 +27,18 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.RelationLoader;
+import fr.sims.coachingproject.loader.local.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.RelationPagerAdapter;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -168,7 +168,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         city.setText(mPartner.mCity);
         name.setText(mPartner.mDisplayName);
         sport.setText(mRelation.mSport.mName);
-        Picasso.with(RelationActivity.this).load(mPartner.mPicture).into(picture);
+        ImageUtil.loadProfilePicture(this, mPartner.mPicture, picture);
 
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mPartner.mDisplayName);
     }

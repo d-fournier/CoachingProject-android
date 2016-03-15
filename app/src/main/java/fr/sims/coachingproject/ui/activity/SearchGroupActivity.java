@@ -22,18 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.GroupSearchLoader;
-import fr.sims.coachingproject.loader.SportLoader;
+import fr.sims.coachingproject.loader.network.GroupSearchLoader;
+import fr.sims.coachingproject.loader.network.SportLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.ui.adapter.SearchGroupListAdapter;
 import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.util.Const;
-
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
-
 
 
 /**

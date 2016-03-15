@@ -44,6 +44,7 @@ public class Const {
         public final static String ACCEPT_JOIN = "accept_join";
         public final static String ACCEPT_INVITE = "accept_invite";
         public static final String MY_INVITATIONS = "my_invitations";
+        public static final String IS_MEMBER = "is_member";
 
 
 
@@ -60,6 +61,7 @@ public class Const {
         public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
         public static final int PICK_IMAGE_REQUEST = 1;
         public static final int PICK_IMAGE_AFTER_KITKAT_REQUEST = 2;
+
 
     }
 
@@ -89,6 +91,12 @@ public class Const {
             public static final int COACHING_NEW_ID = 2;
             public static final String COACHING_END = "coaching_end";
             public static final int COACHING_END_ID = 3;
+            public static final String GROUP_JOIN = "group_join";
+            public static final int GROUP_JOIN_ID = 4;
+            public static final String GROUP_INVITE = "group_invite";
+            public static final int GROUP_INVITE_ID = 4;
+            public static final String GROUP_JOIN_ACCEPTED = "group_join_accepted";
+            public static final int GROUP_JOIN_ACCEPTED_ID = 4;
         }
 
         public static class Data {
@@ -96,6 +104,10 @@ public class Const {
             public static final String TYPE = "type";
 
         }
+    }
+
+    public static class Database{
+        public final static String DATABASE_NAME = "coachingproject.db";
     }
 
     public static class BroadcastEvent {

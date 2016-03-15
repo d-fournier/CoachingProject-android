@@ -3,6 +3,7 @@ package fr.sims.coachingproject.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import java.util.List;
@@ -27,6 +28,10 @@ public class UserSportLevel extends Model {
 
     public static List<UserSportLevel> getAllSportLevelByUserId(long id) {
         return new Select().from(UserSportLevel.class).where("userId == ?", id).execute();
+    }
+
+    public static void clear(){
+        new Delete().from(UserSportLevel.class).execute();
     }
 
 }
