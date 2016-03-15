@@ -74,16 +74,6 @@
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/register_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/pick_date"
-            android:onClick="showDatePickerDialog"
-            style="@style/Platform.Widget.AppCompat.Spinner"/>
-
-
-
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -96,6 +86,29 @@
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/register_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_date"
+            android:onClick="showDatePickerDialog"
+            style="@style/Platform.Widget.AppCompat.Spinner"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picture"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/register_profile_image"
+            android:clickable="true"
+            android:onClick="selectImage"
+            android:src="@drawable/upload_image"
+            android:scaleType="centerCrop"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
