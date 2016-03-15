@@ -23,11 +23,21 @@ public class SingleGroupLoader extends GenericLocalLoader<Group> {
     @Override
     public Group loadInBackground() {
             final Group g = Group.getGroupById(mId);
+
             if (g == null) {
-                NetworkUtil.Response res = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mId+ Const.WebServer.SEPARATOR,
+                NetworkUtil.Response response_group = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mId+ Const.WebServer.SEPARATOR,
                         SharedPrefUtil.getConnectedToken(getContext()));
-                if (res.isSuccessful()) {
-                    return Group.parseItem(res.getBody());
+                if (response_group.isSuccessful()) {
+                    Group gr =  Group.parseItem(response_group.getBody());
+                    NetworkUtil.Response response_is_member = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mId
+                                    + Const.WebServer.SEPARATOR + Const.WebServer.IS_MEMBER + Const.WebServer.SEPARATOR,
+                            SharedPrefUtil.getConnectedToken(getContext()));
+                    if(response_is_member.isSuccessful()){
+                        gr.mIsCurrentUserMember = Boolean.valueOf(response_is_member.getBody());
+                        return gr;
+                    }else{
+                        return null;
+                    }
                 }else{
                     return null;
                 }

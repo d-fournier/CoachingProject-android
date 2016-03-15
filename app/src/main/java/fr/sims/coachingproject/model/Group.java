@@ -3,6 +3,7 @@ package fr.sims.coachingproject.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,6 +52,9 @@ public class Group extends Model {
     @Expose
     @SerializedName("city")
     public String mCity;
+
+    @Column(name = "is_member")
+    public boolean mIsCurrentUserMember;
 
     public Group() {
 
@@ -114,5 +118,10 @@ public class Group extends Model {
         this.mName = g.mName;
         this.mDescription = g.mDescription;
         this.mCity = g.mCity;
+        this.mIsCurrentUserMember = g.mIsCurrentUserMember;
+    }
+
+    public static void clear(){
+        new Delete().from(Group.class).execute();
     }
 }

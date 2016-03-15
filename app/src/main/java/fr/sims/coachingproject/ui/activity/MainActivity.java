@@ -1,10 +1,8 @@
 package fr.sims.coachingproject.ui.activity;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,31 +15,28 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 
 import android.content.SharedPreferences.Editor;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.activeandroid.ActiveAndroid;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-
-import fr.sims.coachingproject.model.fakejson.LoginRequest;
-import fr.sims.coachingproject.model.fakejson.LoginResponse;
+import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Group;
+import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
+import fr.sims.coachingproject.model.UserSportLevel;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.ui.adapter.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
-import fr.sims.coachingproject.util.NetworkUtil;
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
@@ -108,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        SearchActivity.startActivity(getApplicationContext(), false, -1);
+                        SearchActivity.startActivity(getApplicationContext(), false, -1, true);
                         break;
                     case 1:
                         break;
@@ -163,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         } else if (id == R.id.nav_disconnect) {
-            Disconnect();
+            disconnect();
             LoginActivity.startActivity(getApplication());
         }
 
@@ -197,13 +192,32 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    protected void Disconnect()
+    protected void disconnect()
     {
         SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
 
         Editor e = settings.edit();
-        e.clear();
-        e.commit();
+        e.remove(Const.SharedPref.CURRENT_TOKEN);
+        e.remove(Const.SharedPref.CURRENT_USER_ID);
+        e.remove(Const.SharedPref.IS_GCM_TOKEN_SENT_TO_SERVER);
+        e.apply();
+
+
+        ActiveAndroid.beginTransaction();
+        try {
+            UserSportLevel.clear();
+            SportLevel.clear();
+            Message.clear();
+            CoachingRelation.clear();
+            Group.clear();
+            Sport.clear();
+            UserProfile.clear();
+             ActiveAndroid.setTransactionSuccessful();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            ActiveAndroid.endTransaction();
+        }
     }
 
 

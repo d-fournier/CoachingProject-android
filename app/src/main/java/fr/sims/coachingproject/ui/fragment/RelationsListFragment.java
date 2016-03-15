@@ -86,6 +86,12 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         getLoaderManager().restartLoader(Const.Loaders.RELATION_LIST_LOADER_ID, null, this);

@@ -42,6 +42,7 @@ public class Const {
         public final static String ACCEPT_JOIN = "accept_join";
         public final static String ACCEPT_INVITE = "accept_invite";
         public static final String MY_INVITATIONS = "my_invitations";
+        public static final String IS_MEMBER = "is_member";
 
 
 
@@ -56,6 +57,7 @@ public class Const {
         public static final String OUT_JSON = "/json";
 
         public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
+
 
     }
 
@@ -96,6 +98,10 @@ public class Const {
             public static final String TYPE = "type";
 
         }
+    }
+
+    public static class Database{
+        public final static String DATABASE_NAME = "coachingproject.db";
     }
 
     public static class BroadcastEvent {

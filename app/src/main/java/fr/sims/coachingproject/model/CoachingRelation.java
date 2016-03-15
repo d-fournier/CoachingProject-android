@@ -3,6 +3,7 @@ package fr.sims.coachingproject.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
@@ -137,12 +138,6 @@ public class CoachingRelation extends Model {
     }
 
     /* Database Request */
-    public static List<CoachingRelation> getAllUserCoachingRelation(long id) {
-        return new Select()
-                .from(CoachingRelation.class)
-                .where("coach == ?", id).or("user == ?", id)
-                .execute();
-    }
     public static List<CoachingRelation> getAllCoachingRelation() {
         return new Select()
                 .from(CoachingRelation.class)
@@ -153,5 +148,9 @@ public class CoachingRelation extends Model {
                 .from(CoachingRelation.class)
                 .where("idDb = ?", id)
                 .executeSingle();
+    }
+
+    public static void clear(){
+        new Delete().from(CoachingRelation.class).execute();
     }
 }

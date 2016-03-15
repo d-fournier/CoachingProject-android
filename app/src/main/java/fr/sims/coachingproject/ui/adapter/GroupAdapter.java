@@ -217,7 +217,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView members;
 
         public GroupViewHolder(View itemView) {
-
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.group_item_name);
             description = (TextView) itemView.findViewById(R.id.group_item_description);
@@ -227,23 +226,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         }
     }
 
-    static class InvitationViewHolder extends ViewHolder {
+    static class InvitationViewHolder extends GroupViewHolder {
         protected ImageButton mAcceptButton;
         protected ImageButton mRefuseButton;
-        TextView name;
-        TextView description;
-        TextView sport;
-        LinearLayout linear_layout;
-        TextView members;
 
         public InvitationViewHolder(View itemView) {
-
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.group_item_name);
-            description = (TextView) itemView.findViewById(R.id.group_item_description);
-            sport = (TextView) itemView.findViewById(R.id.group_item_sport);
-            linear_layout = (LinearLayout) itemView.findViewById(R.id.group_item_linear_layout);
-            members = (TextView) itemView.findViewById(R.id.group_item_members);
             this.mAcceptButton = (ImageButton) itemView.findViewById(R.id.button_accept_invite);
             this.mRefuseButton = (ImageButton) itemView.findViewById(R.id.button_refuse_invite);
         }

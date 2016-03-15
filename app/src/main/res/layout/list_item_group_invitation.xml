@@ -4,54 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/group_item_name"
-            android:textAppearance="@style/TextAppearance.ListPrimaryItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        <include layout="@layout/list_item_group" />
 
-        <TextView
-            android:id="@+id/group_item_sport"
-            android:textAppearance="@style/TextAppearance.ListSecondaryItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin" />
-
-        <TextView
-            android:id="@+id/group_item_description"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:ellipsize="end"
-            android:lines="1" />
-
-
-        <TextView
-            android:id="@+id/group_item_members"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/standard_drawable_height"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:drawableLeft="@drawable/ic_group_24dp"
-            android:drawablePadding="5dp"
-            android:drawableStart="@drawable/ic_group_24dp"
-            android:drawableTint="@color/colorAccent"
-            android:gravity="center_vertical" />
-    </LinearLayout>
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/button_accept_invite"

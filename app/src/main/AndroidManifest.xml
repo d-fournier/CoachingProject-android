@@ -113,7 +113,7 @@
         <activity
             android:name=".ui.activity.CreateGroupActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
 
         <service
