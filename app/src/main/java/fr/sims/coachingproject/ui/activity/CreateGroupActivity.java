@@ -38,6 +38,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     SportLoaderCallbacks mSportLoader;
     AutoCompleteTextView mCityAT;
     private Button mSendBtn;
+    private Button mCancelBtn;
     private EditText mNameET;
     private EditText mDescriptionET;
     private CheckBox mPrivateCB;
@@ -66,7 +67,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
         mSportLoader = new SportLoaderCallbacks();
         mSendBtn = (Button) findViewById(R.id.ok_button);
+        mCancelBtn = (Button) findViewById(R.id.cancel_button);
         mSendBtn.setOnClickListener(this);
+        mCancelBtn.setOnClickListener(this);
 
         mNameET = (EditText) findViewById(R.id.edit_Name);
         mDescriptionET = (EditText) findViewById(R.id.edit_Description);
@@ -77,24 +80,37 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        long ID_sport = ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb();
-        String mName = mNameET.getText().toString();
-        String mDescription = mDescriptionET.getText().toString();
-        String mCity = mCityAT.getText().toString();
-        Boolean mPrivate = mPrivateCB.isChecked();
-        JSONObject json = new JSONObject();
+        if(v.getId()== mSendBtn.getId()){
+            long ID_sport = ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb();
+            String mName = mNameET.getText().toString();
+            String mDescription = mDescriptionET.getText().toString();
+            String mCity = mCityAT.getText().toString();
+            Boolean mPrivate = mPrivateCB.isChecked();
+            JSONObject json = new JSONObject();
+            if( mName.length()==0){
+                Snackbar.make(mSendBtn,"Please enter a name.", Snackbar.LENGTH_LONG).show();
+            }
+            else if( mDescription.length()==0){
+                Snackbar.make(mSendBtn,"Don't forget the description :)", Snackbar.LENGTH_LONG).show();
+            }
+            else if(  mCity.length()==0){
+                Snackbar.make(mSendBtn,"Please choose the city.", Snackbar.LENGTH_LONG).show();
+            }
+            else{
+                try {
+                    json.put("sport", ID_sport);
+                    json.put("name", "" + mName);
+                    json.put("description", "" + mDescription);
+                    json.put("city", "" + mCity);
+                    json.put("private", "" + mPrivate);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-        try {
-            json.put("sport", ID_sport);
-            json.put("name", "" + mName);
-            json.put("description", "" + mDescription);
-            json.put("city", "" + mCity);
-            json.put("private", "" + mPrivate);
-        } catch (JSONException e) {
-            e.printStackTrace();
+                new SendRequestTask().execute(json.toString());
+            }
         }
-
-        new SendRequestTask().execute(json.toString());
+        else{ mActivity.finish();}
     }
 
     private class SendRequestTask extends AsyncTask<String, Void, NetworkUtil.Response> {
