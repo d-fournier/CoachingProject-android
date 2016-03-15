@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Sport;
@@ -24,6 +22,8 @@ import fr.sims.coachingproject.model.SportLevel;
  * Created by Segolene on 08/03/2016.
  */
 public class RegisterLevelsAdapter extends ArrayAdapter {
+
+    //TODO : test more the spinners behavior and/or change the spinners to autocomplete and seekbar
 
     private Context mContext;
 
@@ -58,14 +58,14 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     @Override
     public int getCount() {
         int counter = getNumberItemsSelected();
-        if(counter<mAllSportsList.size()){
+        if (counter < mAllSportsList.size()) {
             // One more item to select a new sport
             counter++;
         }
         return counter;
     }
 
-    public int getNumberItemsSelected(){
+    public int getNumberItemsSelected() {
         int counter = 0; // Number of real levels selected
         for (SportLevel level : mLevelsSelected.values()) {
             if (level.mIdDb != -1) {
@@ -85,8 +85,8 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
         // Sports
         List<Sport> sports = new ArrayList<>();
         sports.addAll(mAllSportsList);
-        for(int i=0; i<mSportSelected.size(); i++){
-            if(i!=position){
+        for (int i = 0; i < mSportSelected.size(); i++) {
+            if (i != position) {
                 sports.remove(mSportSelected.get(i));
             }
         }
@@ -102,7 +102,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
         List<SportLevel> levels = new ArrayList<>();
         if (mLevelMap.containsKey(position)) {
             levels.addAll(mLevelMap.get(position));
-        }else{
+        } else {
             levels.add(mNoSelectionLevel);
             mLevelMap.put(position, levels);
         }
@@ -130,25 +130,25 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
                         mListener.reloadLevels(sport.mIdDb);
                     } else {
                         // No sport selected
-                        int posEmptyItem=globalPos;
-                        int numItemSelected=getNumberItemsSelected();
-                        if(globalPos < numItemSelected){
+                        int posEmptyItem = globalPos;
+                        int numItemSelected = getNumberItemsSelected();
+                        if (globalPos < numItemSelected) {
                             // Item not at the end
-                            for(int i=globalPos+1; i<mAllSportsList.size(); i++){
-                                if(mLevelMap.containsKey(i)){
-                                    mLevelMap.put(i-1, mLevelMap.get(i));
+                            for (int i = globalPos + 1; i < mAllSportsList.size(); i++) {
+                                if (mLevelMap.containsKey(i)) {
+                                    mLevelMap.put(i - 1, mLevelMap.get(i));
                                 }
-                                if(mLevelsSelected.containsKey(i)){
-                                    mLevelsSelected.put(i-1, mLevelsSelected.get(i));
+                                if (mLevelsSelected.containsKey(i)) {
+                                    mLevelsSelected.put(i - 1, mLevelsSelected.get(i));
                                 }
-                                if(mSportSelected.containsKey(i)){
-                                    mSportSelected.put(i-1, mSportSelected.get(i));
+                                if (mSportSelected.containsKey(i)) {
+                                    mSportSelected.put(i - 1, mSportSelected.get(i));
                                 }
-                                if(mViewMap.containsKey(i)){
-                                    mViewMap.put(i-1, mViewMap.get(i));
+                                if (mViewMap.containsKey(i)) {
+                                    mViewMap.put(i - 1, mViewMap.get(i));
                                 }
                             }
-                            posEmptyItem=numItemSelected-1;
+                            posEmptyItem = numItemSelected - 1;
                             mLevelMap.remove(posEmptyItem);
                             mLevelsSelected.remove(posEmptyItem);
                             mSportSelected.remove(posEmptyItem);
@@ -209,7 +209,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
     public void setLevels(long sportId, List<SportLevel> levels) {
         for (int pos : mSportSelected.keySet()) {
             if (mSportSelected.get(pos).mIdDb == sportId) {
-                List<SportLevel> levelsToSave=new ArrayList<>();
+                List<SportLevel> levelsToSave = new ArrayList<>();
                 levelsToSave.add(mNoSelectionLevel);
                 levelsToSave.addAll(levels);
                 mLevelMap.put(pos, levelsToSave);
@@ -221,7 +221,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
         }
     }
 
-    public List<Long> getLevelsSelectedIds(){
+    public List<Long> getLevelsSelectedIds() {
         List<Long> levelsSelected = new ArrayList<>();
         for (SportLevel level : mLevelsSelected.values()) {
             if (level.mIdDb != -1) {
@@ -234,6 +234,7 @@ public class RegisterLevelsAdapter extends ArrayAdapter {
 
     public interface OnDataChangedListener {
         void reloadLevels(long sportId);
+
         void reloadView();
     }
 

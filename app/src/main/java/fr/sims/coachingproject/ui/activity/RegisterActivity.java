@@ -18,6 +18,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -46,6 +47,7 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
+import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.ui.adapter.RegisterLevelsAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.MultipartUtility;
@@ -58,9 +60,8 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
  */
 public class RegisterActivity extends AppCompatActivity implements RegisterLevelsAdapter.OnDataChangedListener {
 
-    private final int SPORT_LOADER_ID=0;
-    private final String ARG_SPORT_ID="sportId";
-    private final String ARG_VIEW_HOLDER="viewHolder";
+    private final int SPORT_LOADER_ID = 0;
+    private final String ARG_SPORT_ID = "sportId";
 
     private DatePickerFragment mDateFragment;
     private LinearLayout mLevelView;
@@ -69,23 +70,25 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
     private SportLoaderCallbacks mSportLoader;
     private LevelsLoaderCallbacks mLevelLoader;
 
-    private List<Sport> mSportList=new ArrayList<>();
+    private List<Sport> mSportList = new ArrayList<>();
     private String mImageUrl;
 
     private UserRegisterTask mRegisterTask = null;
 
-    public static void startActivity(Context ctx){
-        Intent intent = new Intent(ctx,RegisterActivity.class);
+    public static void startActivity(Context ctx) {
+        Intent intent = new Intent(ctx, RegisterActivity.class);
         ctx.startActivity(intent);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mLevelView = (LinearLayout) findViewById(R.id.register_levels_list);
         mLevelAdapter = new RegisterLevelsAdapter(this, this);
-        //mLevelView.setAdapter(mLevelAdapter);
 
+        AutoCompleteTextView cityView = (AutoCompleteTextView) findViewById(R.id.register_city);
+        cityView.setAdapter(new CityAutoCompleteAdapter(this, android.R.layout.simple_list_item_1));
 
         mSportLoader = new SportLoaderCallbacks();
         getLoaderManager().initLoader(SPORT_LOADER_ID, null, mSportLoader);
@@ -93,20 +96,24 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         mDateFragment = new DatePickerFragment();
 
+        mImageUrl = "";
+
+        displayError(false);
+
         reloadView();
 
     }
 
 
-    public void register(View v){
-        EditText usernameView=(EditText)findViewById(R.id.register_username);
-        EditText displaynameView=(EditText)findViewById(R.id.register_display_name);
-        EditText passwordView=(EditText)findViewById(R.id.register_password);
-        EditText repeatPasswordView=(EditText)findViewById(R.id.register_password_repeat);
-        EditText emailView=(EditText)findViewById(R.id.register_email);
-        EditText cityView=(EditText)findViewById(R.id.register_city);
-        CheckBox isCoachView=(CheckBox)findViewById(R.id.register_is_coach);
-        EditText descriptionView=(EditText)findViewById(R.id.register_description);
+    public void register(View v) {
+        EditText usernameView = (EditText) findViewById(R.id.register_username);
+        EditText displaynameView = (EditText) findViewById(R.id.register_display_name);
+        EditText passwordView = (EditText) findViewById(R.id.register_password);
+        EditText repeatPasswordView = (EditText) findViewById(R.id.register_password_repeat);
+        EditText emailView = (EditText) findViewById(R.id.register_email);
+        AutoCompleteTextView cityView = (AutoCompleteTextView) findViewById(R.id.register_city);
+        CheckBox isCoachView = (CheckBox) findViewById(R.id.register_is_coach);
+        EditText descriptionView = (EditText) findViewById(R.id.register_description);
 
         if (mRegisterTask != null) {
             return;
@@ -120,10 +127,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         // Store values at the time of the login attempt.
         String username = usernameView.getText().toString();
-        String displayName= displaynameView.getText().toString();
+        String displayName = displaynameView.getText().toString();
         String password = passwordView.getText().toString();
-        String repeatPassword=repeatPasswordView.getText().toString();
-        String email=emailView.getText().toString();
+        String repeatPassword = repeatPasswordView.getText().toString();
+        String email = emailView.getText().toString();
         String city = cityView.getText().toString();
 
         boolean cancel = false;
@@ -150,10 +157,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             cancel = true;
         }
 
-        if(!TextUtils.equals(password, repeatPassword )){
+        if (!TextUtils.equals(password, repeatPassword)) {
             repeatPasswordView.setError(getString(R.string.passwords_dont_match));
-            focusView=repeatPasswordView;
-            cancel=true;
+            focusView = repeatPasswordView;
+            cancel = true;
         }
 
         // Check for a valid email address.
@@ -176,10 +183,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             focusView.requestFocus();
         } else {
 
-            String date="";
-            if(mDateFragment.mDate!=null){
-                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-                date= sdf.format(mDateFragment.mDate);
+            String date = "";
+            if (mDateFragment.mDate != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                date = sdf.format(mDateFragment.mDate);
             }
 
             mRegisterTask = new UserRegisterTask(username, password, email, displayName,
@@ -188,6 +195,24 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
+    public void displayError(Boolean errorVisible) {
+        LinearLayout content = (LinearLayout) findViewById(R.id.register_content);
+        LinearLayout error = (LinearLayout) findViewById(R.id.register_error);
+
+        if (errorVisible) {
+            content.setVisibility(View.GONE);
+            error.setVisibility(View.VISIBLE);
+        } else {
+            content.setVisibility(View.VISIBLE);
+            error.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void retryToConnect(View view) {
+        getLoaderManager().restartLoader(SPORT_LOADER_ID, null, mSportLoader);
+        reloadView();
+    }
 
     public void showDatePickerDialog(View v) {
         mDateFragment.show(getSupportFragmentManager(), "datePicker");
@@ -207,6 +232,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             startActivityForResult(intent, Const.WebServer.PICK_IMAGE_AFTER_KITKAT_REQUEST);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -221,7 +247,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             // Check for the freshest data.
             getContentResolver().takePersistableUriPermission(originalUri, takeFlags);
         }
-        mImageUrl=originalUri.toString();
+        mImageUrl = originalUri.toString();
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), originalUri);
             ImageView imageView = (ImageView) findViewById(R.id.register_profile_image);
@@ -231,19 +257,18 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
-
     @Override
     public void reloadLevels(long sportId) {
         // Loader id specific to sport and different from SPORT_LOADER_ID
-        int loaderId = (int)sportId + SPORT_LOADER_ID + 1;
+        int loaderId = (int) sportId + SPORT_LOADER_ID + 1;
 
         Bundle args = new Bundle();
         args.putLong(ARG_SPORT_ID, sportId);
 
-        if(getLoaderManager().getLoader(loaderId)!=null){
-            getLoaderManager().restartLoader(loaderId, args,mLevelLoader);
-        }else{
-            getLoaderManager().initLoader(loaderId,args,mLevelLoader);
+        if (getLoaderManager().getLoader(loaderId) != null) {
+            getLoaderManager().restartLoader(loaderId, args, mLevelLoader);
+        } else {
+            getLoaderManager().initLoader(loaderId, args, mLevelLoader);
         }
     }
 
@@ -256,10 +281,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
         }
     }
 
-
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
-        private Date mDate=null;
+        private Date mDate = null;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -275,11 +299,11 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
-            Calendar cal=Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             cal.set(year, month, day);
-            mDate=cal.getTime();
-            Button dateButton = (Button)getActivity().findViewById(R.id.register_date);
-            SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+            mDate = cal.getTime();
+            Button dateButton = (Button) getActivity().findViewById(R.id.register_date);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             dateButton.setText(sdf.format(mDate));
         }
     }
@@ -289,8 +313,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         private JSONObject userInfos;
 
-        UserRegisterTask(String username, String password, String email, String displayName, String birthdate, String city,String description, boolean isCoach, List<Long> sportLevelsIds) {
-            userInfos=new JSONObject();
+        UserRegisterTask(String username, String password, String email, String displayName, String birthdate, String city, String description, boolean isCoach, List<Long> sportLevelsIds) {
+            userInfos = new JSONObject();
             try {
                 userInfos.put("username", username);
                 userInfos.put("password", password);
@@ -299,14 +323,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
                 userInfos.put("isCoach", isCoach);
                 userInfos.put("city", city);
 
-                if(!birthdate.isEmpty())   userInfos.put("birthdate", birthdate);
-                if(!description.isEmpty()) userInfos.put("description", description);
+                if (!birthdate.isEmpty()) userInfos.put("birthdate", birthdate);
+                if (!description.isEmpty()) userInfos.put("description", description);
 
-                JSONArray levelsArray=new JSONArray();
-                for(Long levelId : sportLevelsIds){
+                JSONArray levelsArray = new JSONArray();
+                for (Long levelId : sportLevelsIds) {
                     levelsArray.put(levelId);
                 }
-                if (levelsArray.length()>0) userInfos.put("levels", levelsArray);
+                if (levelsArray.length() > 0) userInfos.put("levels", levelsArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -314,7 +338,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
+            // Register
             NetworkUtil.Response response_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.REGISTER, null, userInfos.toString());
             if (!response_token.isSuccessful())
                 return false;
@@ -329,7 +353,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
                 return false;
             }
 
-            NetworkUtil.Response login_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(username,password)).toJson());
+            // Log in
+            NetworkUtil.Response login_token = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.AUTH + Const.WebServer.LOGIN, null, (new LoginRequest(username, password)).toJson());
             if (!login_token.isSuccessful())
                 return false;
 
@@ -346,24 +371,26 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
             SharedPrefUtil.putConnectedToken(getApplicationContext(), lResponse.token);
             SharedPrefUtil.putConnectedUserId(getApplicationContext(), up.mIdDb);
 
-            int indexLastSlash=mImageUrl.lastIndexOf("/");
-            String filename = indexLastSlash==-1 ? mImageUrl+".png" : mImageUrl.substring(indexLastSlash) + ".png";
-            Uri imageUri=Uri.parse(mImageUrl);
-            if(uploadImage(imageUri, filename, up.mIdDb)){
-                up.mPicture=imageUri.getPath();
-                up.save();
-            }else{
-                return false;
+            // Upload profile picture
+            if (!mImageUrl.isEmpty()) {
+                int indexLastSlash = mImageUrl.lastIndexOf("/");
+                String filename = indexLastSlash == -1 ? mImageUrl + ".png" : mImageUrl.substring(indexLastSlash) + ".png";
+                Uri imageUri = Uri.parse(mImageUrl);
+                if (uploadImage(imageUri, filename, up.mIdDb)) {
+                    up.mPicture = imageUri.getPath();
+                    up.save();
+                } else {
+                    return false;
+                }
             }
-
             return true;
         }
 
         protected Boolean uploadImage(Uri uploadFileUri, String filename, long userId) {
 
-            String url=Const.WebServer.DOMAIN_NAME+Const.WebServer.API+Const.WebServer.USER_PROFILE+userId+"/";
+            String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + userId + "/";
             try {
-                MultipartUtility multipart= new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()));
+                MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()));
                 InputStream in = getContentResolver().openInputStream(uploadFileUri);
                 multipart.addFilePart("picture", in, filename);
                 multipart.finish();
@@ -396,8 +423,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
     }
 
 
-
-
     class SportLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sport>> {
 
         @Override
@@ -407,10 +432,12 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         @Override
         public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
-            if(data!=null){
+            if (data != null) {
                 mSportList = data;
-            }else{
+                displayError(false);
+            } else {
                 mSportList.clear();
+                displayError(true);
             }
             mLevelAdapter.setSports(mSportList);
         }
@@ -430,8 +457,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
         @Override
         public void onLoadFinished(Loader<List<SportLevel>> loader, List<SportLevel> data) {
-            LevelLoader levelLoader=(LevelLoader)loader;
+            LevelLoader levelLoader = (LevelLoader) loader;
             mLevelAdapter.setLevels(levelLoader.mSport, data);
+            displayError(data == null);
         }
 
         @Override
