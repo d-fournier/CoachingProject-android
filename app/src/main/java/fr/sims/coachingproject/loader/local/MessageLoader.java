@@ -1,10 +1,11 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.local;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.sims.coachingproject.loader.local.GenericLocalLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.util.Const;
 

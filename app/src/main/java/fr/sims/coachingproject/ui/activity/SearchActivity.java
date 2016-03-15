@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.CoachLoader;
-import fr.sims.coachingproject.loader.GroupLoader;
-import fr.sims.coachingproject.loader.LevelLoader;
-import fr.sims.coachingproject.loader.SportLoader;
-import fr.sims.coachingproject.model.Group;
+import fr.sims.coachingproject.loader.network.CoachLoader;
+import fr.sims.coachingproject.loader.network.LevelLoader;
+import fr.sims.coachingproject.loader.network.SportLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;

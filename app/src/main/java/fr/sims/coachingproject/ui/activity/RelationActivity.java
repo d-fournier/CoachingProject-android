@@ -32,7 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.RelationLoader;
+import fr.sims.coachingproject.loader.local.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;

@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.UserLoader;
+import fr.sims.coachingproject.loader.local.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;

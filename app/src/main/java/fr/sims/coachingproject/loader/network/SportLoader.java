@@ -1,4 +1,4 @@
-package fr.sims.coachingproject.loader;
+package fr.sims.coachingproject.loader.network;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -27,10 +27,10 @@ public class SportLoader extends AsyncTaskLoader<List<Sport>> {
     public List<Sport> loadInBackground() {
         String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
         NetworkUtil.Response response = NetworkUtil.get(request,null);
-        if(response.getReturnCode()==NetworkUtil.Response.UNKNOWN_HOST_ERROR){
-            return null;
-        }else {
+        if(response.isSuccessful()){
             return Arrays.asList(Sport.parseList(response.getBody()));
+        }else {
+            return null;
         }
     }
 

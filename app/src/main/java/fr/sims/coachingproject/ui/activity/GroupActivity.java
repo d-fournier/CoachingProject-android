@@ -25,7 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.SingleGroupLoader;
+import fr.sims.coachingproject.loader.network.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;

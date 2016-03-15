@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.UserLoader;
+import fr.sims.coachingproject.loader.local.UserLoader;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.adapter.ProfileSportListAdapter;
 import fr.sims.coachingproject.util.Const;
