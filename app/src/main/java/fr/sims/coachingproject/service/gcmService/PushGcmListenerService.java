@@ -13,6 +13,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.ui.activity.GroupActivity;
@@ -49,7 +50,55 @@ public class PushGcmListenerService extends GcmListenerService {
             case Const.Notification.Type.MESSAGE_NEW:
                 handleMessageNew(data);
                 break;
+            case Const.Notification.Type.GROUP_JOIN:
+            case Const.Notification.Type.GROUP_INVITE:
+            case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
+                handleGroupEvent(messageType,data);
+                break;
         }
+    }
+
+    private void handleGroupEvent(String messageType, Bundle data) {
+        String groupString = data.getString(Const.Notification.Data.CONTENT, "");
+        Group group = Group.parseItem(groupString);
+
+        if(group==null){
+            return;
+        }
+
+        group.saveOrUpdate();
+
+        int notifId = 0;
+        int titleId = -1;
+        String tag = String.valueOf(group.mIdDb);
+        switch (messageType) {
+            case Const.Notification.Type.GROUP_JOIN:
+                notifId = Const.Notification.Type.GROUP_JOIN_ID;
+                titleId = R.string.notif_group_join;
+                break;
+            case Const.Notification.Type.GROUP_INVITE:
+                notifId = Const.Notification.Type.GROUP_INVITE_ID;
+                titleId = R.string.notif_group_invite;
+                break;
+            case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
+                notifId = Const.Notification.Type.GROUP_JOIN_ACCEPTED_ID;
+                titleId = R.string.notif_group_join_accepted;
+                break;
+        }
+        String title = getString(titleId, group.mName);
+
+        Intent intent = GroupActivity.getIntent(this, group.mIdDb);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
+        notifBuilder
+                .setContentTitle(title);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(tag, notifId, notifBuilder.build());
+
     }
 
     private void handleMessageNew(Bundle data) {
@@ -79,7 +128,7 @@ public class PushGcmListenerService extends GcmListenerService {
 
         NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
         notifBuilder
-                .setContentTitle("You received new messages from " + message.mSender.mDisplayName)
+                .setContentTitle("New messages from " + message.mSender.mDisplayName)
                 .setContentText(message.mContent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -110,7 +159,7 @@ public class PushGcmListenerService extends GcmListenerService {
 
         int notifId = 0;
         int titleId = -1;
-        String tag = "" + relation.mIdDb;
+        String tag = String.valueOf(relation.mIdDb);
         switch (messageType) {
             case Const.Notification.Type.COACHING_RESPONSE:
                 notifId = Const.Notification.Type.COACHING_RESPONSE_ID;

@@ -176,4 +176,8 @@ public class UserProfile extends Model{
         }
         return false;
     }
+
+    public static void clear(){
+        new Delete().from(UserProfile.class).execute();
+    }
 }

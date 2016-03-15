@@ -163,9 +163,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public int getItemViewType(int position) {
         if (position == 0)
             return HEADER_MEMBERS;
-        else if (position > 0 && position <= mMembersList.size())
+        else if (position <= mMembersList.size())
             return LIST_MEMBERS;
-        else if (position == mMembersList.size() + 1)
+        else if ((position == mMembersList.size() + 1) && !mPendingMembersList.isEmpty())
             return HEADER_PENDING_MEMBERS;
         else
             return LIST_PENDING_MEMBERS;
@@ -173,7 +173,11 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
 
     @Override
     public int getItemCount() {
-        return mMembersList.size() + mPendingMembersList.size() + 2;//2 Headers
+        if(mPendingMembersList.isEmpty()){
+            return mMembersList.size() + 1;
+        }else{
+            return mMembersList.size() + mPendingMembersList.size() + 2;//2 Headers
+        }
     }
 
     public void clearMembers() {

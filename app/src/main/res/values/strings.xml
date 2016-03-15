@@ -75,6 +75,9 @@
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
+    <string name="notif_group_join">Someone asked to join %1$s</string>
+    <string name="notif_group_invite">You have been invited in %1$s</string>
+    <string name="notif_group_join_accepted">You have been accepted in %1$s</string>
 
     <string name="user_profile_picture">User profile picture</string>
     <string name="message_pinned">Message pinned</string>
@@ -118,4 +121,5 @@
     <string name="post_create">Create Post</string>
     <string name="activity_blog_post_new">New Blog Post</string>
     <string name="activity_send_request">Send Request</string>
+
 </resources>

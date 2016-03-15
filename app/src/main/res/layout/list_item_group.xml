@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/group_item_linear_layout">
 
 
     <TextView
         android:id="@+id/group_item_name"
-        style="@style/TextAppearance.AppCompat.Body2"
+        android:textAppearance="@style/TextAppearance.ListPrimaryItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/group_item_sport"
-        style="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.ListSecondaryItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"

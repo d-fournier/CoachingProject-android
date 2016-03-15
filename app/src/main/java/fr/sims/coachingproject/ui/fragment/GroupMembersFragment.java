@@ -28,6 +28,8 @@ import fr.sims.coachingproject.util.Const;
 public class GroupMembersFragment extends GenericFragment implements GenericBroadcastReceiver.BroadcastReceiverListener {
 
     public static final String MEMBERS_TITLE = "Members";
+    public static final String GROUP_ID = "groupId";
+
     GroupMembersLoaderCallbacks mGroupMembersLoader;
     GroupPendingMembersLoaderCallbacks mGroupPendingMembersLoader;
     GenericBroadcastReceiver mBroadcastReceiver;
@@ -38,7 +40,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     public static GroupMembersFragment newInstance(long groupId) {
         GroupMembersFragment fragment = new GroupMembersFragment();
         Bundle args = new Bundle();
-        fragment.mGroupId = groupId;
+        args.putLong(GROUP_ID, groupId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +60,18 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         super.onCreate(savedInstanceState);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    protected void bindArguments(Bundle args) {
+        super.bindArguments(args);
+        mGroupId = args.getLong(GROUP_ID,-1);
     }
 
     @Override
@@ -105,7 +119,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
                 mGroupMembersAdapter.setPendingMembers(data);
             } else {
                 mGroupMembersAdapter.setPendingMembers(new ArrayList<UserProfile>());
-                //TODO Don't display this section if not admin
             }
         }
 

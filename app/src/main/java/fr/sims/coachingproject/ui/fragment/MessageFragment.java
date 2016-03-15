@@ -103,6 +103,12 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_relation_chat;
     }

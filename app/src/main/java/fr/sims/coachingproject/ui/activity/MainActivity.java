@@ -3,6 +3,7 @@ package fr.sims.coachingproject.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,15 +21,24 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.activeandroid.ActiveAndroid;
+
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.local.UserLoader;
+import fr.sims.coachingproject.model.CoachingRelation;
+import fr.sims.coachingproject.model.Group;
+import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
+import fr.sims.coachingproject.model.UserSportLevel;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<UserProfile>, View.OnClickListener {
@@ -90,7 +100,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        SearchActivity.startActivity(getApplicationContext(), false, -1);
+                        SearchActivity.startActivity(getApplicationContext(), false, -1, true);
                         break;
                     case 1:
                         break;
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         } else if (id == R.id.nav_disconnect) {
-            Disconnect();
+            disconnect();
             LoginActivity.startActivity(getApplication());
         }
 
@@ -173,13 +183,32 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    protected void Disconnect()
+    protected void disconnect()
     {
         SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
 
-        SharedPreferences.Editor e = settings.edit();
-        e.clear();
-        e.commit();
+        Editor e = settings.edit();
+        e.remove(Const.SharedPref.CURRENT_TOKEN);
+        e.remove(Const.SharedPref.CURRENT_USER_ID);
+        e.remove(Const.SharedPref.IS_GCM_TOKEN_SENT_TO_SERVER);
+        e.apply();
+
+
+        ActiveAndroid.beginTransaction();
+        try {
+            UserSportLevel.clear();
+            SportLevel.clear();
+            Message.clear();
+            CoachingRelation.clear();
+            Group.clear();
+            Sport.clear();
+            UserProfile.clear();
+             ActiveAndroid.setTransactionSuccessful();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            ActiveAndroid.endTransaction();
+        }
     }
 
 
@@ -190,10 +219,6 @@ public class MainActivity extends AppCompatActivity
         else
             LoginActivity.startActivity(this);
     }
-
-
-
-
 }
 
 

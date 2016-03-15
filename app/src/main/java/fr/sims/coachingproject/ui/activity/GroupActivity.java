@@ -49,9 +49,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private TextView mGroupSport;
     private TextView mGroupCity;
     private long mGroupIdDb;
-    private long mCurrentUserId;
-
-    private GroupLoaderCallbacks mGroupLoader;
+    private Group mGroup;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -100,9 +98,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mGroupSport = (TextView) findViewById(R.id.group_sport);
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
-        mGroupLoader = new GroupLoaderCallbacks();
-        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
-
+        GroupLoaderCallbacks mGroupLoader = new GroupLoaderCallbacks();
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.groupMembersPager);
@@ -118,6 +114,8 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
+
+        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
     }
 
     @Override
@@ -133,14 +131,15 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getApplication());
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_group, menu);
-        boolean mVisible = (mCurrentUserId != -1) ?true : false;
-        menu.setGroupVisible(0, mVisible);
-        menu.setGroupVisible(1, mVisible);
-        return true;
-
+        boolean res = super.onCreateOptionsMenu(menu);
+        if(mGroup!=null){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_group, menu);
+            menu.findItem(R.id.invite_group).setVisible(mGroup.mIsCurrentUserMember);
+            menu.findItem(R.id.join_group).setVisible(!mGroup.mIsCurrentUserMember);
+            return true;
+        }
+        return res;
     }
 
     @Override
@@ -151,7 +150,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 new SendJoinTask().execute();
                 return true;
             case R.id.invite_group:
-                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb);
+                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb,false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -187,15 +186,18 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onLoadFinished(Loader<Group> loader, Group data) {
-            try {
+            if(data!=null) {
                 mGroupName.setText(data.mName);
                 mGroupDescription.setText(data.mDescription);
                 mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
                 mGroupSport.setText(data.mSport.mName);
                 mGroupCity.setText(data.mCity);
-            } catch (NullPointerException e) {
-                //TODO rajouter le catch de l'erreur
+                mGroup = data;
+                invalidateOptionsMenu();
+            }else{
+                //TODO Error
             }
+
         }
 
         @Override

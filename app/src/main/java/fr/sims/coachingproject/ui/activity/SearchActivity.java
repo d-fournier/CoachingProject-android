@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.network.CoachLoader;
+import fr.sims.coachingproject.loader.network.UserListLoader;
 import fr.sims.coachingproject.loader.network.LevelLoader;
 import fr.sims.coachingproject.loader.network.SportLoader;
 import fr.sims.coachingproject.model.Sport;
@@ -47,6 +47,9 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 public class SearchActivity extends AppCompatActivity implements UserProfileAdapter.OnItemClickListener {
 
     private final static String ID_SPORT = "idSport";
+    private final static String INVITE = "invite";
+    private final static String COACH = "coach";
+    private final static String ID_GROUP = "idGroup";
     private final static String ID_LEVEL = "idLevel";
     private final static String SEARCH_TEXT = "searchText";
 
@@ -69,9 +72,19 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
     LevelsLoaderCallbacks mLevelLoader;
     private SearchActivity mActivity;
 
-    private boolean inviteInGroup;
+    private boolean mInviteInGroup;
     private long mInviteGroupIdDb;
+    private boolean mCoach;
 
+
+    public static void startActivity(Context ctx, boolean invite, long groupId, boolean coach) {
+        Intent startIntent = new Intent(ctx, SearchActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.putExtra(INVITE, invite);
+        startIntent.putExtra(COACH, coach);
+        startIntent.putExtra(ID_GROUP,groupId);
+        ctx.startActivity(startIntent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +95,9 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
         mLoadingBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
 
         mSearchArgs = new Bundle();
-        inviteInGroup = getIntent().getBooleanExtra("invite",false);
-        mInviteGroupIdDb = getIntent().getLongExtra("groupId",-1);
+        mInviteInGroup = getIntent().getBooleanExtra(INVITE,false);
+        mInviteGroupIdDb = getIntent().getLongExtra(ID_GROUP, -1);
+        mCoach = getIntent().getBooleanExtra(COACH,false);
 
         mUserList = new ArrayList<>();
         mSportList = new ArrayList<>();
@@ -163,14 +177,6 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
         getLoaderManager().initLoader(Const.Loaders.COACH_LOADER_ID, mSearchArgs, mCoachLoader);
     }
 
-    public static void startActivity(Context ctx, boolean invite, long groupId) {
-        Intent startIntent = new Intent(ctx, SearchActivity.class);
-        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startIntent.putExtra("invite", invite);
-        startIntent.putExtra("groupId",groupId);
-        ctx.startActivity(startIntent);
-    }
-
     @Override
     public void onItemClick(View view, int position) {
         ProfileActivity.startActivity(this, mUserList.get(position).mIdDb,mSportsSpinner.getSelectedItemId());
@@ -178,7 +184,7 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
 
     @Override
     public void onItemLongClick(View view, int position) {
-        if(inviteInGroup){
+        if(mInviteInGroup){
             new InviteTask().execute(mUserList.get(position).mIdDb);
         }
     }
@@ -194,7 +200,7 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
             mLoadingBar.setVisibility(View.VISIBLE);
             mRecycleView.setVisibility(View.GONE);
             mEmptyCoachListText.setVisibility(View.GONE);
-            return new CoachLoader(getApplicationContext(), mSearchArgs.getString(SEARCH_TEXT, ""), mSearchArgs.getLong(ID_SPORT, -1), mSearchArgs.getLong(ID_LEVEL, -1));
+            return new UserListLoader(getApplicationContext(), mSearchArgs.getString(SEARCH_TEXT, ""), mSearchArgs.getLong(ID_SPORT, -1), mSearchArgs.getLong(ID_LEVEL, -1), mCoach);
         }
 
         @Override
