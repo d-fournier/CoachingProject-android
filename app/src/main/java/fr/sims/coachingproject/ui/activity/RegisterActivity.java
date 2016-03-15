@@ -393,6 +393,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
             if (success) {
                 RegistrationGCMIntentService.startActionRegistrationGCM(getApplicationContext());
+                SharedPrefUtil.putIsFirstLaunch(getApplicationContext(), false);
                 MainActivity.startActivity(getApplicationContext());
             } else {
                 Snackbar snackbar = Snackbar.make(findViewById(R.id.register_layout), R.string.register_failed, Snackbar.LENGTH_LONG);

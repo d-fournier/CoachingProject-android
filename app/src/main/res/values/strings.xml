@@ -108,4 +108,5 @@
     <string name="invite_group">Invite in group</string>
     <string name="groups">My groups</string>
     <string name="invitations">My invitations</string>
+    <string name="picture">Picture</string>
 </resources>
