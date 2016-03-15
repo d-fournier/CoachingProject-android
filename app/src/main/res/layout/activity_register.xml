@@ -164,12 +164,13 @@
                 android:text="@string/agree_to_coach"/>
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/register"
                 android:onClick="register"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                style="@style/Base.Widget.AppCompat.Button.Colored"/>
 
         </LinearLayout>
 
