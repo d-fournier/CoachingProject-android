@@ -56,6 +56,8 @@ public class Const {
         public static final String OUT_JSON = "/json";
 
         public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
+        public static final int PICK_IMAGE_REQUEST = 1;
+        public static final int PICK_IMAGE_AFTER_KITKAT_REQUEST = 2;
 
     }
 
