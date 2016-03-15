@@ -131,9 +131,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     }
 
     // TODO Debug Will be remove
-    private void fillCoachingRequestLayout(UserProfile profile){
+    private void fillCoachingRequestLayout(UserProfile profile) {
         // fill sport list
-        Map<Long,Sport> sports = new HashMap<>();
+        Map<Long, Sport> sports = new HashMap<>();
         for (SportLevel level : profile.mSportsList) {
             // TODO Main Thread + BDD
             Sport s = level.mSport;
@@ -142,6 +142,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
             }
         }
 
+        mSportsList.clear();
         mSportsList.addAll(sports.values());
         if (sports.isEmpty())
             mSendRequestBtn.hide();

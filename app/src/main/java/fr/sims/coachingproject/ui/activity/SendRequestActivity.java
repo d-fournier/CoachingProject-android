@@ -81,7 +81,7 @@ public class SendRequestActivity extends AppCompatActivity implements View.OnCli
         try {
             JSONObject parent = new JSONObject();
             parent.put("coach", mCoachId);
-            parent.put("sport", mSportsList.get(mSportSpinner.getSelectedItemPosition()));
+            parent.put("sport", mSportsList.get(mSportSpinner.getSelectedItemPosition()).mIdDb);
             parent.put("comment", mRequestText.getText());
             String text = parent.toString();
 
@@ -120,7 +120,7 @@ public class SendRequestActivity extends AppCompatActivity implements View.OnCli
                 Snackbar.make(mMainLayout, R.string.request_sent, Snackbar.LENGTH_SHORT).show();
             } else {
                 Snackbar.make(mMainLayout, R.string.request_error, Snackbar.LENGTH_SHORT).show();
-                mSendRequestBt.setEnabled(false);
+                mSendRequestBt.setEnabled(true);
             }
         }
     }

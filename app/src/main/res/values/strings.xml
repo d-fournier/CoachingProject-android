@@ -116,4 +116,5 @@
     <string name="prompt_content">Content</string>
     <string name="post_create">Create Post</string>
     <string name="activity_blog_post_new">New Blog Post</string>
+    <string name="activity_send_request">Send Request</string>
 </resources>

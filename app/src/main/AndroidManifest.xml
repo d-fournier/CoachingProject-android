@@ -97,6 +97,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"
             android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".ui.activity.SendRequestActivity"
+            android:label="@string/activity_send_request"/>
         <activity
             android:name=".ui.activity.CreateGroupActivity"
             android:screenOrientation="portrait"
@@ -146,7 +148,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.activity.SendRequestActivity"></activity>
     </application>
 
 </manifest>
