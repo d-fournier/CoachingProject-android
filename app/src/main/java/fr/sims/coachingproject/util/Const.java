@@ -31,8 +31,10 @@ public class Const {
         public final static String COACHING_RELATION = "relations/";
         public final static String MESSAGES = "messages/";
         public static final String DEVICES = "devices/";
+        public static final String BLOG = "blog/";
         public final static String SEPARATOR = "/";
 
+        public final static String BLOG_EXTENSION = "blog";
         public final static String USER_GROUPS = "my_groups";
         public final static String MEMBERS = "members";
         public final static String IS_ADMIN = "is_admin";
@@ -73,6 +75,8 @@ public class Const {
         public final static int GROUP_MEMBERS_LOADER_ID = 8;
         public static final int GROUP_PENDING_MEMBERS_LOADER_ID = 9;
         public static final int INVITATION_LOADER_ID = 10;
+        public final static int BLOG_POSTS_LOADER_ID = 11;
+        public final static int BLOG_POST_LOADER_ID = 12;
     }
 
     public static class Notification {

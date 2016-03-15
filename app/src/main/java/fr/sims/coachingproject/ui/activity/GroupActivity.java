@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -29,11 +28,10 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.ui.adapter.GroupPagerAdapter;
+import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
-
 
 /**
  * Created by Zhenjie CEN on 2016/3/6.
@@ -51,6 +49,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private TextView mGroupSport;
     private TextView mGroupCity;
     private long mGroupIdDb;
+    private long mCurrentUserId;
 
     private GroupLoaderCallbacks mGroupLoader;
 
@@ -134,9 +133,14 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getApplication());
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_group, menu);
+        boolean mVisible = (mCurrentUserId != -1) ?true : false;
+        menu.setGroupVisible(0, mVisible);
+        menu.setGroupVisible(1, mVisible);
         return true;
+
     }
 
     @Override

@@ -60,6 +60,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonVi
 
     public void setData(List<Message> dataset){
         mMessageList.clear();
+        if(mCurrentUserId!=-1)
         mMessageList.addAll(dataset);
         this.notifyDataSetChanged();
     }

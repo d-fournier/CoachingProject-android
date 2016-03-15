@@ -109,4 +109,12 @@
     <string name="groups">My groups</string>
     <string name="invitations">My invitations</string>
     <string name="picture">Picture</string>
+    <string name="nav_blog_post_new">New blog post</string>
+
+    <string name="post_preview">Preview</string>
+    <string name="prompt_title">Title</string>
+    <string name="prompt_description">Short description</string>
+    <string name="prompt_content">Content</string>
+    <string name="post_create">Create Post</string>
+    <string name="activity_blog_post_new">New Blog Post</string>
 </resources>
