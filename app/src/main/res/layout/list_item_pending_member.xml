@@ -48,7 +48,7 @@
         android:layout_gravity="center_vertical"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:src="@drawable/ic_accept_36dp"
-        android:contentDescription="@string/refuse" />
+        android:contentDescription="@string/accept" />
 
     <ImageButton
         android:id="@+id/button_refuse_pending"
@@ -57,6 +57,6 @@
         android:layout_gravity="center_vertical"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:src="@drawable/ic_refuse_36dp"
-        android:contentDescription="@string/accept" />
+        android:contentDescription="@string/refuse" />
 
 </LinearLayout>
