@@ -122,4 +122,6 @@
     <string name="activity_blog_post_new">New Blog Post</string>
     <string name="cannot_connect_server">Impossible d\'accéder au serveur, veuillez vérifier votre connexion internet</string>
     <string name="activity_send_request">Send Request</string>
+    <string name="relations_list_empty_title">You don\'t have coaching relations.</string>
+    <string name="relations_list_empty_desc">Search potentials coaches or wait requests from trainees to improve their skills !\n You need to be connected to send a request or receive one.</string>
 </resources>

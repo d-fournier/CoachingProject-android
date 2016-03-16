@@ -31,7 +31,8 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     public static final String TABS_TITLE = "Coaching";
 
-    private RecyclerView mCoachList;
+    private View mEmptyView;
+    private RecyclerView mRelationList;
     private SwipeRefreshLayout mRefreshLayout;
 
     private RelationsListAdapter mRecyclerAdapter;
@@ -49,17 +50,20 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_coaching_relations;
+        return R.layout.fragment_relations_list;
     }
 
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        mCoachList = (RecyclerView) view.findViewById(R.id.coach_list);
-        mCoachList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mEmptyView = view.findViewById(R.id.relations_list_empty);
+
+        mRelationList = (RecyclerView) view.findViewById(R.id.relations_list);
+        mRelationList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerAdapter = new RelationsListAdapter(getContext());
         mRecyclerAdapter.setOnRelationClickListener(this);
-        mCoachList.setAdapter(mRecyclerAdapter);
+        mRelationList.setAdapter(mRecyclerAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh);
         mRefreshLayout.setOnRefreshListener(this);
@@ -106,6 +110,13 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
     @Override
     public void onLoadFinished(Loader<List<CoachingRelation>> loader, List<CoachingRelation> data) {
         mRecyclerAdapter.setData(data);
+        if(mRecyclerAdapter.getItemCount() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mRelationList.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            mRelationList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

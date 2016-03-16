@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,8 +84,6 @@ public class RelationsListAdapter extends SectionedRecyclerViewAdapter<Relations
         mTraineeList = new ArrayList<>();
         mRequestFromTraineeList = new ArrayList<>();
         mRequestToCoachList = new ArrayList<>();
-
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
     }
 
     @Override
@@ -194,7 +190,11 @@ public class RelationsListAdapter extends SectionedRecyclerViewAdapter<Relations
         Data Management
      */
     public void setData(List<CoachingRelation> dataset) {
-        clearData();
+        mCoachList.clear();
+        mTraineeList.clear();
+        mRequestFromTraineeList.clear();
+        mRequestToCoachList.clear();
+
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
 
         if(mCurrentUserId!=-1) {
