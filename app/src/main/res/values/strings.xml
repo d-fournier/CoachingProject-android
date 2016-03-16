@@ -125,4 +125,5 @@
     <string name="private_group">This group is private</string>
     <string name="name">Name</string>
     <string name="search_place">Search place...</string>
+    <string name="description_group">Describe your group</string>
 </resources>

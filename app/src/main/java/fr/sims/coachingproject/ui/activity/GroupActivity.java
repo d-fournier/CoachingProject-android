@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
@@ -13,12 +14,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -43,6 +42,8 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     // Send message views
     private Button mSendBtn;
     private EditText mMessageET;
+    private Toolbar mMessageToolbar;
+
     private TextView mGroupName;
     private TextView mGroupDescription;
     private TextView mGroupCreationDate;
@@ -50,6 +51,8 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private TextView mGroupCity;
     private long mGroupIdDb;
     private Group mGroup;
+
+    private FloatingActionButton mButtonJoin;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -98,7 +101,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mGroupSport = (TextView) findViewById(R.id.group_sport);
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
-        GroupLoaderCallbacks mGroupLoader = new GroupLoaderCallbacks();
+        SingleGroupLoaderCallbacks mGroupLoader = new SingleGroupLoaderCallbacks();
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.groupMembersPager);
@@ -107,10 +110,14 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
         mTabLayout.setupWithViewPager(mPager);
 
+        mButtonJoin = (FloatingActionButton)findViewById(R.id.group_send_join);
+        mButtonJoin.setOnClickListener(this);
+
         // Send Message View
         mSendBtn = (Button) findViewById(R.id.message_send);
         mSendBtn.setOnClickListener(this);
         mMessageET = (EditText) findViewById(R.id.message_content);
+        mMessageToolbar = (Toolbar)findViewById(R.id.message_send_group_toolbar);
 
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
@@ -124,38 +131,43 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         switch (viewId) {
             case R.id.message_send:
                 sendMessage();
-            default:
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean res = super.onCreateOptionsMenu(menu);
-        if(mGroup!=null){
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.activity_group, menu);
-            menu.findItem(R.id.invite_group).setVisible(mGroup.mIsCurrentUserMember);
-            menu.findItem(R.id.join_group).setVisible(!mGroup.mIsCurrentUserMember);
-            return true;
-        }
-        return res;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.join_group:
+                break;
+            case R.id.group_send_join:
                 new SendJoinTask().execute();
-                return true;
-            case R.id.invite_group:
-                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb,false);
-                return true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        boolean res = super.onCreateOptionsMenu(menu);
+//        if(mGroup!=null){
+//            MenuInflater inflater = getMenuInflater();
+//            inflater.inflate(R.menu.activity_group, menu);
+//            menu.findItem(R.id.invite_group).setVisible(mGroup.mIsCurrentUserMember);
+//            menu.findItem(R.id.join_group).setVisible(!mGroup.mIsCurrentUserMember);
+//            return true;
+//        }
+//        return res;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle item selection
+//        switch (item.getItemId()) {
+//            case R.id.join_group:
+//                new SendJoinTask().execute();
+//                return true;
+//            case R.id.invite_group:
+//                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb,false);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     private void sendMessage() {
         String message = mMessageET.getText().toString();
@@ -177,7 +189,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
+    class SingleGroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
 
         @Override
         public Loader<Group> onCreateLoader(int id, Bundle args) {
@@ -193,7 +205,16 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 mGroupSport.setText(data.mSport.mName);
                 mGroupCity.setText(data.mCity);
                 mGroup = data;
-                invalidateOptionsMenu();
+                if(mGroup.mIsCurrentUserMember){
+                    mButtonJoin.setVisibility(View.GONE);
+                    mButtonJoin.setEnabled(false);
+                    mMessageToolbar.setVisibility(View.VISIBLE);
+                }else{
+                    mButtonJoin.setEnabled(true);
+                    mButtonJoin.show();
+                    mMessageToolbar.setVisibility(View.GONE);
+                }
+//                invalidateOptionsMenu();
             }else{
                 //TODO Error
             }

@@ -166,7 +166,13 @@ public class UserProfile extends Model{
     }
 
     public boolean isCoachingUser(long userId, long sportId){
-        List<CoachingRelation> relationsList=new Select().from(CoachingRelation.class).where("coach = ?", getId()).execute();
+        List<CoachingRelation> relationsList;
+        try{
+            relationsList=new Select().from(CoachingRelation.class).where("coach = ?", getId()).execute();
+        }catch(NullPointerException e){
+            return false;
+        }
+
         if(relationsList == null)
             return false;
         for(CoachingRelation r : relationsList) {
@@ -175,6 +181,7 @@ public class UserProfile extends Model{
             }
         }
         return false;
+
     }
 
     public static void clear(){
