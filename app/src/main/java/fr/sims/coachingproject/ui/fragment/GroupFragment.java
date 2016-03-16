@@ -30,7 +30,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener {
+public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupAdapter.OnGroupClickListener {
 
     private long mCurrentUserId;
 
@@ -126,12 +126,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         });
 
         // set onItemClick event
-        mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                GroupActivity.startActivity(getContext(), mGroupAdapter.getGroupId(position));
-            }
-        });
+        mGroupAdapter.setOnGroupClickListener(this);
     }
 
     @Override
@@ -166,6 +161,11 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         CreateGroupActivity.startActivity(getActivity());
+    }
+
+    @Override
+    public void onGroupClick(View view, long groupDbId) {
+        GroupActivity.startActivity(getContext(), groupDbId);
     }
 
 

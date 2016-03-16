@@ -15,94 +15,87 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
- * Created by Benjamin on 01/03/2016.
+ * Created by Donovan on 16/03/2016.
  */
-public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
-
-    private long mCurrentUserId;
+public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.ViewHolder> {
 
 
-    private static final int HEADER_GROUP = 0;
-    private static final int LIST_GROUP = 1;
-    private static final int HEADER_INVITATIONS = 2;
-    private static final int LIST_INVITATIONS = 3;
-
-    private List<Group> mGroupList;
+    private static final int LIST_INVITATIONS = 0;
     private List<Group> mInvitationsList;
-    private OnItemClickListener mOnItemClickListener = null;
+
+    private static final int LIST_GROUP = 1;
+    private List<Group> mGroupList;
+
+    private OnGroupClickListener mListener = null;
+    private long mCurrentUserId;
     private Context mCtx;
 
     public GroupAdapter(Context ctx) {
         mCtx = ctx;
         mGroupList = new ArrayList<>();
         mInvitationsList = new ArrayList<>();
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;
-        switch (viewType) {
+    public int getSectionCount() {
+        return 2;
+    }
 
-            case LIST_GROUP:
-            default:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_group, parent, false);
-                final GroupViewHolder gvh = new GroupViewHolder(v);
-                gvh.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int pos = gvh.getAdapterPosition();
-                            mOnItemClickListener.onItemClick(v, pos);
-                        }
-                    }
-                });
-                return gvh;
+    @Override
+    public int getItemCount(int section) {
+        int total = 0;
+        switch (section) {
             case LIST_INVITATIONS:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_group_invitation, parent, false);
-                final InvitationViewHolder ivh = new InvitationViewHolder(v);
-                ivh.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int pos = ivh.getAdapterPosition();
-                            mOnItemClickListener.onItemClick(v, pos);
-                        }
-                    }
-                });
-                return ivh;
-            case HEADER_GROUP:
-            case HEADER_INVITATIONS:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.group_header_item, parent, false);
-                return new HeaderViewHolder(v);
+                total = mInvitationsList.size();
+                break;
+            case LIST_GROUP:
+                total = mGroupList.size();
+                break;
         }
+        return total;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public int getItemViewType(int section, int relativePosition, int absolutePosition) {
+        return (section == LIST_INVITATIONS ? LIST_INVITATIONS : LIST_GROUP);
+    }
 
-        int itemViewType = holder.getItemViewType();
+    @Override
+    public void onBindHeaderViewHolder(GroupAdapter.ViewHolder holder, int section) {
+        HeaderViewHolder vh = (HeaderViewHolder) holder;
+        int resId = -1;
+        switch (section) {
+            case LIST_GROUP:
+                resId = R.string.groups;
+                break;
+            case LIST_INVITATIONS:
+                resId = R.string.invitations;
+                break;
+        }
+        vh.mTitle.setText(resId);
+    }
 
-        if (itemViewType == LIST_GROUP) {//Liste des groupes
-            final GroupViewHolder gvh = (GroupViewHolder) holder;
-            final Group g = getItem(itemViewType, position);
-            gvh.name.setText(g.mName);
-            gvh.description.setText(g.mDescription);
-            gvh.sport.setText(g.mSport.mName);
-            gvh.members.setText(String.valueOf(g.mMembers));
-        } else if (itemViewType == LIST_INVITATIONS) {//Liste des invitations
+    @Override
+    public void onBindViewHolder(GroupAdapter.ViewHolder holder, int section, int relativePosition, int absolutePosition) {
+        GroupViewHolder gvh = (GroupViewHolder) holder;
+        final Group g = getItem(section, relativePosition);
+        gvh.name.setText(g.mName);
+        gvh.description.setText(g.mDescription);
+        gvh.sport.setText(g.mSport.mName);
+        gvh.members.setText(String.valueOf(g.mMembers));
+        gvh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onGroupClick(v, g.mIdDb);
+                }
+            }
+        });
+
+        if(section == LIST_INVITATIONS) {
             final InvitationViewHolder ivh = (InvitationViewHolder) holder;
-            final Group g = getItem(itemViewType, position);
-            ivh.name.setText(g.mName);
-            ivh.description.setText(g.mDescription);
-            ivh.sport.setText(g.mSport.mName);
-            ivh.members.setText(String.valueOf(g.mMembers));
             ivh.mAcceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,7 +104,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                     NetworkService.startActionInvitationUserGroups(mCtx, g.mIdDb, true);
                 }
             });
-
             ivh.mRefuseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -120,34 +112,48 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                     NetworkService.startActionInvitationUserGroups(mCtx, g.mIdDb, false);
                 }
             });
-
-        } else {//Headers
-            HeaderViewHolder hvh = (HeaderViewHolder) holder;
-            int resId;
-            switch (itemViewType) {
-                case HEADER_GROUP:
-                    resId = R.string.groups;
-                    break;
-                default:
-                case HEADER_INVITATIONS:
-                    resId = R.string.invitations;
-                    break;
-            }
-            hvh.mTitle.setText(resId);
         }
-
     }
 
     @Override
-    public int getItemCount() {
-        return mGroupList.size() + mInvitationsList.size() + 2;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder vh = null;
+        View v;
+        if(viewType == VIEW_TYPE_HEADER) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.group_header_item, parent, false);
+            vh = new HeaderViewHolder(v);
+        } else if(viewType == LIST_INVITATIONS){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_group_invitation, parent, false);
+            vh = new InvitationViewHolder(v);
+        } else if(viewType == LIST_GROUP){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_group, parent, false);
+            vh = new GroupViewHolder(v);
+        }
+        return vh;
     }
 
+    private Group getItem(int section, int relativePosition) {
+        Group gr = null;
+        switch (section) {
+            case LIST_INVITATIONS:
+                gr = mInvitationsList.get(relativePosition);
+                break;
+            case LIST_GROUP:
+                gr = mGroupList.get(relativePosition);
+                break;
+        }
+        return gr;
+    }
 
+    /*
+        Data management
+     */
     public void setGroups(List<Group> gList) {
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(mCtx);
-        if (mCurrentUserId != -1)
-            mGroupList.addAll(gList);
+        mGroupList.clear();
+        mGroupList.addAll(gList);
         notifyDataSetChanged();
     }
 
@@ -157,6 +163,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     }
 
     public void setInvitations(List<Group> gList) {
+        mInvitationsList.clear();
         mInvitationsList.addAll(gList);
         notifyDataSetChanged();
     }
@@ -166,56 +173,35 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    private Group getItem(int type, int position) {
-        Group g;
-        switch (type) {
-            case LIST_INVITATIONS:
-                g = mInvitationsList.get(position - 1);
-                break;
-            case LIST_GROUP:
-                g = mGroupList.get(position - (mInvitationsList.size() + 2));
-                break;
-            default:
-                g = null;
+
+
+    /*
+        Listener
+     */
+    public void setOnGroupClickListener(OnGroupClickListener listener){
+        mListener = listener;
+    }
+
+    public interface OnGroupClickListener {
+        void onGroupClick(View view, long groupDbId);
+    }
+
+
+    /*
+        ViewHolder
+     */
+
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
+        public ViewHolder(View v) {
+            super(v);
         }
-        return g;
     }
-
-    public long getGroupId(int position) {
-        if (position <= mInvitationsList.size())
-            return mInvitationsList.get(position - 1).mIdDb;
-        else if (position <= (mInvitationsList.size() + mGroupList.size() + 1)) {
-            return mGroupList.get(position - mInvitationsList.size() - 2).mIdDb;
-        }
-        return -1;
-    }
-
-    public int getItemViewType(int position) {
-        if (position == 0)
-            return HEADER_INVITATIONS;
-        else if (position > 0 && position <= mInvitationsList.size())
-            return LIST_INVITATIONS;
-        else if (position == mInvitationsList.size() + 1)
-            return HEADER_GROUP;
-        else
-            return LIST_GROUP;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
     static class GroupViewHolder extends ViewHolder {
         TextView name;
         TextView description;
         TextView sport;
         LinearLayout linear_layout;
         TextView members;
-
         public GroupViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.group_item_name);
@@ -229,27 +215,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     static class InvitationViewHolder extends GroupViewHolder {
         protected ImageButton mAcceptButton;
         protected ImageButton mRefuseButton;
-
         public InvitationViewHolder(View itemView) {
             super(itemView);
             this.mAcceptButton = (ImageButton) itemView.findViewById(R.id.button_accept_invite);
             this.mRefuseButton = (ImageButton) itemView.findViewById(R.id.button_refuse_invite);
         }
     }
-
-    protected static class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View v) {
-            super(v);
-        }
-    }
-
     protected class HeaderViewHolder extends ViewHolder {
         protected TextView mTitle;
-
         public HeaderViewHolder(View v) {
             super(v);
             this.mTitle = (TextView) v.findViewById(R.id.header);
         }
     }
-
 }
