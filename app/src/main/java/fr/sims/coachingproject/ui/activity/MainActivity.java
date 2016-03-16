@@ -36,6 +36,7 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     HomePagerAdapter mHomePagerAdapter;
     ViewPager mViewPager;
     View mDrawerHeader;
+    NavigationView mNavigationView;
 
     private long mConnectedUserId;
 
@@ -83,9 +85,9 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         // Drawer Items
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerHeader = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawerHeader = mNavigationView.getHeaderView(0);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
@@ -136,20 +138,24 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.nav_blog_post_new:
+                PostCreationActivity.startActivity(this);
+                break;
+            case R.id.nav_settings:
 
-        if (id == R.id.nav_blog_post_new) {
-            PostCreationActivity.startActivity(this);
-        } else if (id == R.id.nav_manage) {
+                break;
+            case R.id.nav_share:
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        } else if (id == R.id.nav_disconnect) {
-            disconnect();
-            LoginActivity.startActivity(getApplication());
+                break;
+            case R.id.nav_disconnect:
+                disconnect();
+                LoginActivity.startActivity(getApplication());
+                break;
+            case R.id.nav_about:
+                // TODO
+                break;
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -170,22 +176,23 @@ public class MainActivity extends AppCompatActivity
             header.setText(user.mDisplayName);
             ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
             profilePicture.setVisibility(View.VISIBLE);
+            mNavigationView.getMenu().findItem(R.id.nav_disconnect).setVisible(true);
+
         } else {
             mConnectedUserId = -1;
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
+            mNavigationView.getMenu().findItem(R.id.nav_disconnect).setVisible(false);
         }
         mDrawerHeader.setOnClickListener(this);
     }
 
     @Override
     public void onLoaderReset(Loader<UserProfile> loader) {
-
     }
 
-    protected void disconnect()
-    {
-        SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+    protected void disconnect() {
+        SharedPreferences settings = getSharedPreferences(Const.SharedPref.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
         Editor e = settings.edit();
         e.remove(Const.SharedPref.CURRENT_TOKEN);
@@ -203,18 +210,19 @@ public class MainActivity extends AppCompatActivity
             Group.clear();
             Sport.clear();
             UserProfile.clear();
-             ActiveAndroid.setTransactionSuccessful();
+            ActiveAndroid.setTransactionSuccessful();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             ActiveAndroid.endTransaction();
         }
+        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
 
     @Override
     public void onClick(View v) {
-        if(mConnectedUserId != -1)
+        if (mConnectedUserId != -1)
             ProfileActivity.startActivity(this, mConnectedUserId);
         else
             LoginActivity.startActivity(this);
