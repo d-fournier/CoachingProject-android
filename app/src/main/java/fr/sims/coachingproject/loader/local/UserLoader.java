@@ -54,8 +54,10 @@ public class UserLoader extends GenericLocalLoader<UserProfile> {
         if(up == null) {
             String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + mId + Const.WebServer.SEPARATOR;
             NetworkUtil.Response response = NetworkUtil.get(request, SharedPrefUtil.getConnectedToken(getContext()));
-            if(!response.getBody().isEmpty()){
+            if(response.isSuccessful()){
                 up = UserProfile.parseItem(response.getBody());
+            }else{
+                return null;
             }
         }
 

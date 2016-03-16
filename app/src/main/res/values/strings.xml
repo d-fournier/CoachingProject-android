@@ -132,4 +132,14 @@
     <string name="private_group">This group is private</string>
     <string name="name">Name</string>
     <string name="search_place">Search place...</string>
+    <string name="description_group">Describe your group</string>
+    <string name="leave_group">Leave group</string>
+    <string name="demand_sent">Demand successfully sent to the group</string>
+    <string name="leave_group_success">You left the group with success</string>
+    <string name="not_connected">You are not connected</string>
+    <string name="group_private">This group is private</string>
+    <string name="already_in_group">You are already in the group or asked to join it</string>
+    <string name="unknown_error">An error occured</string>
+    <string name="not_in_group">You are not in the group</string>
+    <string name="leave_admin">An admin cannot leave the group</string>
 </resources>

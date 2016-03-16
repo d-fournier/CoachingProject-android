@@ -47,7 +47,7 @@ public class NetworkUtil {
             urlConnection.setRequestMethod(method);
 
             urlConnection.setRequestProperty("Content-Type", "application/json");
-            if (token != null) {
+            if (token != null && !token.isEmpty()) {
                 urlConnection.setRequestProperty("Authorization", "Token " + token);
             }
 

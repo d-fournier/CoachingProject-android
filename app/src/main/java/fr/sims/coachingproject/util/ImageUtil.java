@@ -16,7 +16,7 @@ public class ImageUtil {
         if(url == null || url.isEmpty()) {
             iv.setImageResource(R.drawable.ic_person_96dp_accent);
         } else {
-            Picasso.with(ctx).load(url).placeholder(R.drawable.ic_person_loading_96dp).error(R.drawable.ic_person_96dp_accent).into(iv);
+            Picasso.with(ctx).load(url).placeholder(R.drawable.ic_person_96dp_accent).error(R.drawable.ic_person_96dp_accent).into(iv);
         }
     }
 

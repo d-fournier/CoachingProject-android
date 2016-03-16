@@ -56,6 +56,9 @@ public class Group extends Model {
     @Column(name = "is_member")
     public boolean mIsCurrentUserMember;
 
+    @Column(name = "is_pending")
+    public boolean mIsCurrentUserPending;
+
     public Group() {
 
     }
@@ -119,6 +122,7 @@ public class Group extends Model {
         this.mDescription = g.mDescription;
         this.mCity = g.mCity;
         this.mIsCurrentUserMember = g.mIsCurrentUserMember;
+        this.mIsCurrentUserPending = g.mIsCurrentUserPending;
     }
 
     public static void clear(){

@@ -44,7 +44,8 @@ public class Const {
         public final static String ACCEPT_JOIN = "accept_join";
         public final static String ACCEPT_INVITE = "accept_invite";
         public static final String MY_INVITATIONS = "my_invitations";
-        public static final String IS_MEMBER = "is_member";
+        public static final String USER_STATUS = "user_status";
+        public static final String LEAVE = "leave";
 
 
 
@@ -61,6 +62,7 @@ public class Const {
         public static final String GOOGLE_API_KEY = "AIzaSyA_p6pnmI9pQ13LIRiTaqtIiLxyJuBdFNg";
         public static final int PICK_IMAGE_REQUEST = 1;
         public static final int PICK_IMAGE_AFTER_KITKAT_REQUEST = 2;
+
 
 
     }

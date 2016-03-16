@@ -25,9 +25,9 @@
                 android:id="@+id/group_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?android:attr/actionBarSize"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="?android:attr/actionBarSize"
                 android:orientation="vertical">
 
                 <TextView
@@ -89,23 +89,37 @@
         android:id="@+id/groupMembersPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:paddingBottom="?attr/actionBarSize"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/group_send_join_invite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginRight="@dimen/standard_margin"
+        android:src="@drawable/ic_person_add_24dp_white"
+        android:visibility="gone"
+        app:layout_anchor="@id/groupMembersPager"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_behavior="fr.sims.coachingproject.ui.view.FABScrollBehavior" />
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/message_send_layout"
+        android:id="@+id/message_send_group_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
         android:background="@color/white"
+        android:visibility="gone"
         app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
         <LinearLayout
+            android:id="@+id/layout_message_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:id="@+id/layout_message_group"
             android:orientation="horizontal">
 
             <EditText
