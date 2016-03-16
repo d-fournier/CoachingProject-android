@@ -14,10 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -28,6 +29,7 @@ import fr.sims.coachingproject.loader.network.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;
+import fr.sims.coachingproject.ui.fragment.MessageFragment;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -35,7 +37,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Zhenjie CEN on 2016/3/6.
  */
-public class GroupActivity extends AppCompatActivity implements View.OnClickListener {
+public class GroupActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
@@ -63,7 +65,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
-    private PagerAdapter mPagerAdapter;
+    private GroupPagerAdapter mPagerAdapter;
     private TabLayout mTabLayout;
 
     public static void startActivity(Context ctx, long id) {
@@ -109,20 +111,65 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mPager.setAdapter(mPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
         mTabLayout.setupWithViewPager(mPager);
+        mPager.addOnPageChangeListener(this);
 
-        mButtonJoin = (FloatingActionButton)findViewById(R.id.group_send_join);
+        mButtonJoin = (FloatingActionButton) findViewById(R.id.group_send_join_invite);
         mButtonJoin.setOnClickListener(this);
 
         // Send Message View
         mSendBtn = (Button) findViewById(R.id.message_send);
         mSendBtn.setOnClickListener(this);
         mMessageET = (EditText) findViewById(R.id.message_content);
-        mMessageToolbar = (Toolbar)findViewById(R.id.message_send_group_toolbar);
+        mMessageToolbar = (Toolbar) findViewById(R.id.message_send_group_toolbar);
 
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
 
         getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+        if (mPagerAdapter.getItem(position) instanceof MessageFragment) {
+            setDefaultElementsVisibility();
+        }else{
+            if (mGroup.mIsCurrentUserPending) {
+                mButtonJoin.setVisibility(View.GONE);
+                mButtonJoin.setEnabled(false);
+                mMessageToolbar.setVisibility(View.GONE);
+            } else {
+                mButtonJoin.setEnabled(true);
+                mButtonJoin.show();
+                mMessageToolbar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    public void setDefaultElementsVisibility(){
+        if (mGroup.mIsCurrentUserMember) {
+            mButtonJoin.setVisibility(View.GONE);
+            mButtonJoin.setEnabled(false);
+            mMessageToolbar.setVisibility(View.VISIBLE);
+        } else if (mGroup.mIsCurrentUserPending) {
+            mButtonJoin.setVisibility(View.GONE);
+            mButtonJoin.setEnabled(false);
+            mMessageToolbar.setVisibility(View.GONE);
+        } else {
+            mButtonJoin.setEnabled(true);
+            mButtonJoin.show();
+            mMessageToolbar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -132,42 +179,30 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             case R.id.message_send:
                 sendMessage();
                 break;
-            case R.id.group_send_join:
-                new SendJoinTask().execute();
+            case R.id.group_send_join_invite:
+                if (mGroup.mIsCurrentUserMember) {//We invite people
+                    SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb, false);
+                } else if (!mGroup.mIsCurrentUserPending) {//We are not member and not pending, so we join
+                    new SendJoinTask().execute();
+                }
                 break;
-            default:
+            case R.id.leave_group:
                 break;
         }
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        boolean res = super.onCreateOptionsMenu(menu);
-//        if(mGroup!=null){
-//            MenuInflater inflater = getMenuInflater();
-//            inflater.inflate(R.menu.activity_group, menu);
-//            menu.findItem(R.id.invite_group).setVisible(mGroup.mIsCurrentUserMember);
-//            menu.findItem(R.id.join_group).setVisible(!mGroup.mIsCurrentUserMember);
-//            return true;
-//        }
-//        return res;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        switch (item.getItemId()) {
-//            case R.id.join_group:
-//                new SendJoinTask().execute();
-//                return true;
-//            case R.id.invite_group:
-//                SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb,false);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean res = super.onCreateOptionsMenu(menu);
+        if (mGroup != null) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_group, menu);
+            menu.findItem(R.id.leave_group).setVisible(mGroup.mIsCurrentUserMember);
+            return true;
+        }
+        return res;
+    }
 
     private void sendMessage() {
         String message = mMessageET.getText().toString();
@@ -180,7 +215,6 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
         new SendMessageTask().execute(json.toString());
-
     }
 
     @Override
@@ -198,24 +232,15 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onLoadFinished(Loader<Group> loader, Group data) {
-            if(data!=null) {
+            if (data != null) {
                 mGroupName.setText(data.mName);
                 mGroupDescription.setText(data.mDescription);
                 mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
                 mGroupSport.setText(data.mSport.mName);
                 mGroupCity.setText(data.mCity);
                 mGroup = data;
-                if(mGroup.mIsCurrentUserMember){
-                    mButtonJoin.setVisibility(View.GONE);
-                    mButtonJoin.setEnabled(false);
-                    mMessageToolbar.setVisibility(View.VISIBLE);
-                }else{
-                    mButtonJoin.setEnabled(true);
-                    mButtonJoin.show();
-                    mMessageToolbar.setVisibility(View.GONE);
-                }
-//                invalidateOptionsMenu();
-            }else{
+                setDefaultElementsVisibility();
+            } else {
                 //TODO Error
             }
 
@@ -239,7 +264,13 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
-            Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
+            if(response.isSuccessful()){
+                Snackbar.make(mGroupName, R.string.demand_sent, Snackbar.LENGTH_LONG).show();
+                mButtonJoin.setVisibility(View.GONE);
+            }else{
+                Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
+            }
+
         }
     }
 

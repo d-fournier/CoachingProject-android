@@ -66,8 +66,6 @@ public class PushGcmListenerService extends GcmListenerService {
             return;
         }
 
-        group.saveOrUpdate();
-
         int notifId = 0;
         int titleId = -1;
         String tag = String.valueOf(group.mIdDb);
@@ -75,16 +73,25 @@ public class PushGcmListenerService extends GcmListenerService {
             case Const.Notification.Type.GROUP_JOIN:
                 notifId = Const.Notification.Type.GROUP_JOIN_ID;
                 titleId = R.string.notif_group_join;
+                group.mIsCurrentUserMember=true;
+                group.mIsCurrentUserPending=false;
                 break;
             case Const.Notification.Type.GROUP_INVITE:
                 notifId = Const.Notification.Type.GROUP_INVITE_ID;
                 titleId = R.string.notif_group_invite;
+                group.mIsCurrentUserMember=false;
+                group.mIsCurrentUserPending=true;
                 break;
             case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
                 notifId = Const.Notification.Type.GROUP_JOIN_ACCEPTED_ID;
                 titleId = R.string.notif_group_join_accepted;
+                group.mIsCurrentUserMember=true;
+                group.mIsCurrentUserPending=false;
                 break;
         }
+
+        group.saveOrUpdate();
+
         String title = getString(titleId, group.mName);
 
         Intent intent = GroupActivity.getIntent(this, group.mIdDb);

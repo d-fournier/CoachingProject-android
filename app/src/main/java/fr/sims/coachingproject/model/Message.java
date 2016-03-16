@@ -118,6 +118,8 @@ public class Message extends Model {
 
     public Message saveOrUpdate(){
         if(mGroup!=null){
+            mGroup.mIsCurrentUserMember=true;
+            mGroup.mIsCurrentUserPending=false;
             mGroup=mGroup.saveOrUpdate();
         }
         if(mRelation!=null){

@@ -126,4 +126,6 @@
     <string name="name">Name</string>
     <string name="search_place">Search place...</string>
     <string name="description_group">Describe your group</string>
+    <string name="leave_group">Leave group</string>
+    <string name="demand_sent">Demand successfully sent to the group</string>
 </resources>

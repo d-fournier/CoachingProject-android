@@ -44,7 +44,7 @@ public class Const {
         public final static String ACCEPT_JOIN = "accept_join";
         public final static String ACCEPT_INVITE = "accept_invite";
         public static final String MY_INVITATIONS = "my_invitations";
-        public static final String IS_MEMBER = "is_member";
+        public static final String USER_STATUS = "user_status";
 
 
 
