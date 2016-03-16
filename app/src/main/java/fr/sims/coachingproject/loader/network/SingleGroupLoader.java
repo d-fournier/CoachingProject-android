@@ -67,7 +67,7 @@ public class SingleGroupLoader extends GenericLocalLoader<Group> {
         NetworkUtil.Response response_user_status = NetworkUtil.get(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mId
                         + Const.WebServer.SEPARATOR + Const.WebServer.USER_STATUS + Const.WebServer.SEPARATOR,
                 SharedPrefUtil.getConnectedToken(getContext()));
-        if (response_user_status.isSuccessful()) {
+        if (response_user_status.isSuccessful() || response_user_status.getReturnCode()==401) { //401 User Not Connected -> Normal behavior
             String user_status = response_user_status.getBody().replace("\"", "");
             g.mIsCurrentUserMember = user_status.equals(MEMBER) || user_status.equals(ADMIN);
             g.mIsCurrentUserPending = user_status.equals(PENDING) || user_status.equals(INVITED);

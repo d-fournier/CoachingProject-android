@@ -13,8 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +105,6 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, final UserProfile data) {
-        UserProfile profile = data;
 
         // Get components
         TextView nameTV = (TextView) findViewById(R.id.profile_name);
@@ -113,24 +112,27 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         TextView isCoachTV = (TextView) findViewById(R.id.profile_isCoach);
         ImageView pictureIV = (ImageView) findViewById(R.id.profile_picture);
 
+        if (data != null) {
+            // Set values
+            String age = getResources().getQuantityString(R.plurals.user_age, data.getAge(), data.getAge());
+            nameTV.setText(data.mDisplayName);
+            ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mDisplayName);
+            infoTV.setText(getString(R.string.separator_strings, data.mCity, age));
+            ImageUtil.loadProfilePicture(this, data.mPicture, pictureIV);
 
-        // Set values
-        String age = getResources().getQuantityString(R.plurals.user_age, profile.getAge(), profile.getAge());
-        nameTV.setText(profile.mDisplayName);
-        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(profile.mDisplayName);
-        infoTV.setText(getString(R.string.separator_strings, profile.mCity, age));
-        ImageUtil.loadProfilePicture(this, data.mPicture, pictureIV);
-
-        if (profile.mIsCoach && mUserId != mConnectedUserId) {
-            isCoachTV.setText(getString(R.string.profile_accept_coaching, profile.mDisplayName));
-            fillCoachingRequestLayout(profile);
+            if (data.mIsCoach && mUserId != mConnectedUserId) {
+                isCoachTV.setText(getString(R.string.profile_accept_coaching, data.mDisplayName));
+                fillCoachingRequestLayout(data);
+            } else {
+                isCoachTV.setText(getString(R.string.profile_not_accept_coaching, data.mDisplayName));
+                mSendRequestBtn.hide();
+            }
         } else {
-            isCoachTV.setText(getString(R.string.profile_not_accept_coaching, profile.mDisplayName));
-            mSendRequestBtn.hide();
+            //Todo ERROR
+            Toast.makeText(getApplicationContext(), "User unknown", Toast.LENGTH_LONG).show();
         }
     }
 
-    // TODO Debug Will be remove
     private void fillCoachingRequestLayout(UserProfile profile) {
         // fill sport list
         Map<Long, Sport> sports = new HashMap<>();
@@ -163,71 +165,4 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
                 break;
         }
     }
-
-    /*
-    private void displayCoachingRequest() {
-        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View popupView = layoutInflater.inflate(R.layout.popup_send_request_coaching, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // Send Button
-        Button btn_confirm_send_request = (Button) popupView.findViewById(R.id.confirm_send_request);
-        btn_confirm_send_request.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                // Get the token of connected user
-                mConnectedToken = getConnectedToken(ProfileActivity.this);
-                // Get the trainee id
-                mConnectedUserId = getConnectedUserId(ProfileActivity.this);
-                // Get the coach id
-                mCoachUserId = mProfile.mIdDb;
-                // Get checked sport id
-                Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
-                Sport checked_sport = (Sport) lv.getSelectedItem();
-                long check_sport_id = checked_sport.mIdDb;
-                // Get request comment
-                EditText et = (EditText) popupView.findViewById(R.id.request_comment);
-                String request_comment = et.getText().toString();
-                // Only keep the first 200 characters
-                if (request_comment.length() > 200) {
-                    request_comment = request_comment.substring(0, 200);
-                }
-                // Create request to post
-                try {
-                    JSONObject parent = new JSONObject();
-                    parent.put("coach", Long.toString(mCoachUserId));
-                    parent.put("sport", Long.toString(check_sport_id));
-                    parent.put("comment", request_comment);
-                    Log.d("output", parent.toString(2));
-                    mRequest_Body = parent.toString(2);
-
-                    new SendRequest().execute("");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    popupWindow.dismiss();
-                }
-            }
-        });
-
-        // Cancel Button
-        Button btn_cancel_send_request = (Button) popupView.findViewById(R.id.cancel_send_request);
-        btn_cancel_send_request.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        // No selected sport, no pop-up window
-        Spinner lv = (Spinner) findViewById(R.id.spinner_profile_sports);
-        if (lv.getSelectedItem() != null) {
-            popupWindow.showAtLocation(mMainLayout, Gravity.CENTER, 0, 0);
-            // Set focus to popup window
-            popupWindow.setFocusable(true);
-            popupWindow.update();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "You should choose a sport first !", Toast.LENGTH_LONG).show();
-        }
-    }
-    */
 }

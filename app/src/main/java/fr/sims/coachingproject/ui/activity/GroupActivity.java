@@ -184,7 +184,9 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 mMessageToolbar.setVisibility(View.GONE);
             }
         } else {
-            hideAllElements();
+            mButtonJoin.setEnabled(false);
+            mButtonJoin.hide();
+            mMessageToolbar.setVisibility(View.GONE);
         }
 
     }

@@ -83,7 +83,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
+        if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Get the transferred id
@@ -115,9 +115,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public boolean onPrepareOptionsMenu (Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         boolean res = super.onPrepareOptionsMenu(menu);
-        if(mRelation != null && mRelation.mIsAccepted && mRelation.mActive) {
+        if (mRelation != null && mRelation.mIsAccepted && mRelation.mActive) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.activity_relation, menu);
             return true;
@@ -232,9 +232,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    private void sendMessage(){
+    private void sendMessage() {
         InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        in.hideSoftInputFromWindow( mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        in.hideSoftInputFromWindow(mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         String message = mMessageET.getText().toString();
 
@@ -242,8 +242,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         try {
             JSONObject parent = new JSONObject();
-            parent.put("content",message);
-            parent.put("to_relation", ""+mRelationId);
+            parent.put("content", message);
+            parent.put("to_relation", "" + mRelationId);
             parent.put("is_pinned", false);
 
             body = parent.toString(2);
@@ -256,6 +256,28 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     }
 
     private class PutEndRelationTask extends AsyncTask<Boolean, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            if (params.length > 0) {
+
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mRelationId + "/";
+                String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
+                String body = new EndRelation(false).toJson();
+
+                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
+
+                if (res.isSuccessful()) {
+                    mRelation.mActive = false;
+                    mRelation.save();
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
 
         private class EndRelation {
             @Expose
@@ -270,45 +292,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 return new Gson().toJson(this);
             }
         }
-
-        @Override
-        protected Boolean doInBackground(Boolean... params) {
-            if (params.length > 0) {
-
-                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mRelationId + "/";
-                String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
-                String body = new EndRelation(false).toJson();
-
-                NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
-
-                if (!res.getBody().isEmpty()) {
-                    mRelation.mActive = false;
-                    mRelation.save();
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
     }
 
     private class AnswerInvitationTask extends AsyncTask<Boolean, Void, Boolean> {
-
-        private class Answer {
-            @Expose
-            @SerializedName("requestStatus")
-            public Boolean mRequestStatus;
-
-            public Answer(boolean requestStatus) {
-                mRequestStatus = requestStatus;
-            }
-
-            public String toJson() {
-                return new Gson().toJson(this);
-            }
-        }
 
         @Override
         protected void onPreExecute() {
@@ -321,8 +307,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         protected Boolean doInBackground(Boolean... params) {
             if (params.length > 0) {
                 boolean isAccepted = params[0];
-
-
                 String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.COACHING_RELATION + mRelationId + Const.WebServer.SEPARATOR;
 
                 String token = SharedPrefUtil.getConnectedToken(getApplicationContext());
@@ -330,7 +314,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
                 NetworkUtil.Response res = NetworkUtil.patch(url, token, body);
 
-                if(!res.getBody().isEmpty()) {
+                if (res.isSuccessful()) {
                     mRelation.mIsPending = false;
                     mRelation.mIsAccepted = isAccepted;
                     mRelation.save();
@@ -352,6 +336,20 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             bindRelationContent();
 
             super.onPostExecute(isRequestSuccessful);
+        }
+
+        private class Answer {
+            @Expose
+            @SerializedName("requestStatus")
+            public Boolean mRequestStatus;
+
+            public Answer(boolean requestStatus) {
+                mRequestStatus = requestStatus;
+            }
+
+            public String toJson() {
+                return new Gson().toJson(this);
+            }
         }
 
     }
