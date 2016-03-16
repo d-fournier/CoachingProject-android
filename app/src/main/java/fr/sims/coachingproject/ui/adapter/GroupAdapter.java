@@ -24,12 +24,10 @@ public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.View
 
     private static final int LIST_INVITATIONS = 0;
     private List<Group> mInvitationsList;
-
     private static final int LIST_GROUP = 1;
     private List<Group> mGroupList;
 
     private OnGroupClickListener mListener = null;
-    private long mCurrentUserId;
     private Context mCtx;
 
     public GroupAdapter(Context ctx) {

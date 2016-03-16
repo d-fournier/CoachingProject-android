@@ -122,6 +122,10 @@
     <string name="activity_blog_post_new">New Blog Post</string>
     <string name="cannot_connect_server">Impossible d\'accéder au serveur, veuillez vérifier votre connexion internet</string>
     <string name="activity_send_request">Send Request</string>
+
+    <!-- Empty list placeholder -->
     <string name="relations_list_empty_title">You don\'t have coaching relations.</string>
     <string name="relations_list_empty_desc">Search potentials coaches or wait requests from trainees to improve their skills !\n You need to be connected to send a request or receive one.</string>
+    <string name="group_list_empty_title">You are not part of any group.</string>
+    <string name="group_list_empty_desc">Search groups or create yours to share your skills and your training sessions with others !\n You need to be connected to join or create a group.</string>
 </resources>
