@@ -5,8 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import fr.sims.coachingproject.ui.fragment.RelationsListFragment;
-import fr.sims.coachingproject.ui.fragment.GroupFragment;
-import fr.sims.coachingproject.ui.fragment.QuestionsAnswersFragment;
+import fr.sims.coachingproject.ui.fragment.GroupListFragment;
 
 /**
  * Created by abarbosa on 10/02/2016.
@@ -26,10 +25,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         
         switch(i) {
             case 1:
-                fragment = QuestionsAnswersFragment.newInstance();
-                break;
-            case 2:
-                fragment = GroupFragment.newInstance();
+                fragment = GroupListFragment.newInstance();
                 break;
             case 0:
             default:
@@ -41,7 +37,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -49,10 +45,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         String title;
         switch(position) {
             case 1:
-                title = QuestionsAnswersFragment.TABS_TITLE;
-                break;
-            case 2:
-                title = GroupFragment.TABS_TITLE;
+                title = GroupListFragment.TABS_TITLE;
                 break;
             case 0:
             default:
