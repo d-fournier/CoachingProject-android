@@ -297,7 +297,21 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 Snackbar.make(mGroupName, R.string.demand_sent, Snackbar.LENGTH_LONG).show();
                 mButtonJoin.setVisibility(View.GONE);
             } else {
-                Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
+                switch(response.getReturnCode()){
+                    case 400:
+                        Snackbar.make(mGroupName, R.string.already_in_group, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case 401:
+                        Snackbar.make(mGroupName, R.string.not_connected, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case 403:
+                        Snackbar.make(mGroupName, R.string.group_private, Snackbar.LENGTH_LONG).show();
+                        break;
+                    default:
+                        Snackbar.make(mGroupName, R.string.unknown_error, Snackbar.LENGTH_LONG).show();
+
+                }
+
             }
 
         }
@@ -323,7 +337,20 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(getApplicationContext(), R.string.leave_group_success, Toast.LENGTH_LONG).show();
                 GroupActivity.this.finish();
             } else {
-                Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
+                switch(response.getReturnCode()){
+                    case 400:
+                        Snackbar.make(mGroupName, R.string.not_in_group, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case 401:
+                        Snackbar.make(mGroupName, R.string.not_connected, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case 403:
+                        Snackbar.make(mGroupName, R.string.leave_admin, Snackbar.LENGTH_LONG).show();
+                        break;
+                    default:
+                        Snackbar.make(mGroupName, R.string.unknown_error, Snackbar.LENGTH_LONG).show();
+
+                }
             }
 
         }
