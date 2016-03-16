@@ -128,4 +128,5 @@
     <string name="description_group">Describe your group</string>
     <string name="leave_group">Leave group</string>
     <string name="demand_sent">Demand successfully sent to the group</string>
+    <string name="leave_group_success">You left the group with success</string>
 </resources>

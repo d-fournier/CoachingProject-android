@@ -4,22 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,7 @@ import org.json.JSONObject;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.network.SingleGroupLoader;
 import fr.sims.coachingproject.model.Group;
+import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;
 import fr.sims.coachingproject.ui.fragment.MessageFragment;
@@ -135,19 +138,10 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onPageSelected(int position) {
-
         if (mPagerAdapter.getItem(position) instanceof MessageFragment) {
-            setDefaultElementsVisibility();
-        }else{
-            if (mGroup.mIsCurrentUserPending) {
-                mButtonJoin.setVisibility(View.GONE);
-                mButtonJoin.setEnabled(false);
-                mMessageToolbar.setVisibility(View.GONE);
-            } else {
-                mButtonJoin.setEnabled(true);
-                mButtonJoin.show();
-                mMessageToolbar.setVisibility(View.GONE);
-            }
+            setMessageFragmentElementsVisibility();
+        } else {
+            setMembersFragmentElementsVisibility();
         }
     }
 
@@ -156,20 +150,43 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void setDefaultElementsVisibility(){
-        if (mGroup.mIsCurrentUserMember) {
-            mButtonJoin.setVisibility(View.GONE);
-            mButtonJoin.setEnabled(false);
-            mMessageToolbar.setVisibility(View.VISIBLE);
-        } else if (mGroup.mIsCurrentUserPending) {
-            mButtonJoin.setVisibility(View.GONE);
-            mButtonJoin.setEnabled(false);
-            mMessageToolbar.setVisibility(View.GONE);
+    public void hideAllElements(){
+        mButtonJoin.setVisibility(View.GONE);
+        mButtonJoin.setEnabled(false);
+        mMessageToolbar.setVisibility(View.GONE);
+    }
+
+    public void setMembersFragmentElementsVisibility() {
+        if (mGroup != null) {
+            if (mGroup.mIsCurrentUserPending) {
+                hideAllElements();
+            } else {
+                mButtonJoin.setEnabled(true);
+                mButtonJoin.show();
+                mMessageToolbar.setVisibility(View.GONE);
+            }
         } else {
-            mButtonJoin.setEnabled(true);
-            mButtonJoin.show();
-            mMessageToolbar.setVisibility(View.GONE);
+            hideAllElements();
         }
+    }
+
+    public void setMessageFragmentElementsVisibility() {
+        if (mGroup != null) {
+            if (mGroup.mIsCurrentUserMember) {
+                mButtonJoin.setVisibility(View.GONE);
+                mButtonJoin.setEnabled(false);
+                mMessageToolbar.setVisibility(View.VISIBLE);
+            } else if (mGroup.mIsCurrentUserPending) {
+                hideAllElements();
+            } else {
+                mButtonJoin.setEnabled(true);
+                mButtonJoin.show();
+                mMessageToolbar.setVisibility(View.GONE);
+            }
+        } else {
+            hideAllElements();
+        }
+
     }
 
     @Override
@@ -186,8 +203,6 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                     new SendJoinTask().execute();
                 }
                 break;
-            case R.id.leave_group:
-                break;
         }
     }
 
@@ -202,6 +217,17 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             return true;
         }
         return res;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.leave_group:
+                new LeaveGroupTask().execute();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void sendMessage() {
@@ -238,8 +264,9 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
                 mGroupSport.setText(data.mSport.mName);
                 mGroupCity.setText(data.mCity);
+                ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mName);
                 mGroup = data;
-                setDefaultElementsVisibility();
+                setMessageFragmentElementsVisibility();
             } else {
                 //TODO Error
             }
@@ -264,10 +291,36 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
-            if(response.isSuccessful()){
+            if (response.isSuccessful()) {
                 Snackbar.make(mGroupName, R.string.demand_sent, Snackbar.LENGTH_LONG).show();
                 mButtonJoin.setVisibility(View.GONE);
-            }else{
+            } else {
+                Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    private class LeaveGroupTask extends AsyncTask<Void, Void, NetworkUtil.Response> {
+
+        @Override
+        protected NetworkUtil.Response doInBackground(Void... params) {
+            NetworkUtil.Response res = NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS + mGroupIdDb + Const.WebServer.SEPARATOR
+                            + Const.WebServer.LEAVE + Const.WebServer.SEPARATOR,
+                    SharedPrefUtil.getConnectedToken(getApplicationContext()), "");
+            if (res.isSuccessful()) {
+                Message.deleteAllMessagesByGroup(mGroup);
+                mGroup.delete();
+            }
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(NetworkUtil.Response response) {
+            if (response.isSuccessful()) {
+                Toast.makeText(getApplicationContext(), R.string.leave_group_success, Toast.LENGTH_LONG).show();
+                GroupActivity.this.finish();
+            } else {
                 Snackbar.make(mGroupName, response.getBody().replace("\"", ""), Snackbar.LENGTH_LONG).show();
             }
 
