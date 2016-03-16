@@ -19,7 +19,7 @@ import fr.sims.coachingproject.model.BlogPost;
 /**
  * Created by dfour on 13/03/2016.
  */
-public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
+public class BlogListAdapter extends RecyclerView.Adapter<BlogListAdapter.ViewHolder> {
 
     private static final int POST_TYPE = 0;
     private static final int HEADER_TYPE = 1;
@@ -36,7 +36,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
         }
     }
 
-    private class BlogPostViewHolder extends BlogAdapter.ViewHolder {
+    private class BlogPostViewHolder extends BlogListAdapter.ViewHolder {
         private ImageView mPicture;
         private TextView mTitle;
         private TextView mShortDescription;
@@ -49,13 +49,13 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
         }
     }
 
-    public BlogAdapter(Context ctx) {
+    public BlogListAdapter(Context ctx) {
         mBlogPostList = new ArrayList<>();
         mCtx = ctx;
     }
 
     @Override
-    public BlogAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BlogListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder vh;
         switch (viewType) {
             case HEADER_TYPE:
@@ -72,7 +72,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final BlogAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final BlogListAdapter.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         switch (viewType) {
             case POST_TYPE:

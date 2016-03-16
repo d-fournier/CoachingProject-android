@@ -23,7 +23,7 @@ import fr.sims.coachingproject.loader.local.MessageLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.ui.adapter.MessageAdapter;
+import fr.sims.coachingproject.ui.adapter.MessageListAdapter;
 import fr.sims.coachingproject.ui.view.ContextMenuRecyclerView;
 import fr.sims.coachingproject.util.Const;
 
@@ -44,7 +44,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     private TextView mNoMessageText;
     private RecyclerView mMessagesRV;
 
-    private MessageAdapter mMessageAdapter;
+    private MessageListAdapter mMessageAdapter;
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private long mRelationId;
@@ -119,7 +119,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
         mMessagesRV = (RecyclerView) view.findViewById(R.id.message_list);
         mMessagesRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mMessageAdapter = new MessageAdapter(getContext(), mIsPinned);
+        mMessageAdapter = new MessageListAdapter(getContext(), mIsPinned);
         mMessagesRV.setAdapter(mMessageAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
