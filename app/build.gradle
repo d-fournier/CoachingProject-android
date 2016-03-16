@@ -39,6 +39,10 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.3.0'
 
     compile 'org.markdownj:markdownj-core:0.4'
+
+    compile('com.github.afollestad:sectioned-recyclerview:0.2.0') {
+        transitive = true
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

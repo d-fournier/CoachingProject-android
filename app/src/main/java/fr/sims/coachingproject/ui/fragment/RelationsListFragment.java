@@ -27,7 +27,7 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by abarbosa on 10/02/2016.
  */
-public class RelationsListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, RelationsListAdapter.OnItemClickListener {
+public class RelationsListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<CoachingRelation>>, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, RelationsListAdapter.OnRelationClickListener {
 
     public static final String TABS_TITLE = "Coaching";
 
@@ -58,7 +58,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
         mCoachList = (RecyclerView) view.findViewById(R.id.coach_list);
         mCoachList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerAdapter = new RelationsListAdapter(getContext());
-        mRecyclerAdapter.setOnItemClickListener(this);
+        mRecyclerAdapter.setOnRelationClickListener(this);
         mCoachList.setAdapter(mRecyclerAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh);
@@ -126,9 +126,8 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        long id = mRecyclerAdapter.getRelationId(position);
-        Intent intent = RelationActivity.getIntent(getContext(), id);
+    public void onRelationClick(View view, long relationIdDb) {
+        Intent intent = RelationActivity.getIntent(getContext(), relationIdDb);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
@@ -137,12 +136,5 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
         } else {
             startActivity(intent);
         }
-
-
     }
-
-    @Override
-    public void onItemLongClick(View view, int position) {
-    }
-
 }
