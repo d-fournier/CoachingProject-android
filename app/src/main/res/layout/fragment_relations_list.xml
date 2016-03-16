@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout 
+        android:id="@+id/pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/relations_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:visibility="gone"/>
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/relations_list_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/large_margin"
+                        android:paddingBottom="@dimen/standard_margin"
+                        android:paddingLeft="@dimen/standard_margin"
+                        android:paddingRight="@dimen/standard_margin">
+                        <ImageView
+                            android:src="@drawable/img_runner_timer"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp" />
+                        <TextView
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:text="@string/relations_list_empty_title"/>
+                        <TextView
+                            android:layout_marginTop="@dimen/standard_margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            style="@style/TextAppearance.AppCompat.Caption"
+                            android:text="@string/relations_list_empty_desc"/>
+                    </LinearLayout>
+                </ScrollView>
+
+            </android.support.v4.widget.NestedScrollView>
+        </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>

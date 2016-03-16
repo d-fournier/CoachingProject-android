@@ -30,7 +30,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-public class GroupFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener {
+public class GroupListFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupAdapter.OnGroupClickListener {
 
     private long mCurrentUserId;
 
@@ -39,12 +39,14 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
     private GroupAdapter mGroupAdapter;
     private RecyclerView mGroupList;
     private SwipeRefreshLayout mRefreshLayout;
+    private View mEmptyView;
+
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private GroupLoaderCallbacks mGroupLoader;
     private InvitationLoaderCallbacks mInvitationLoader;
 
-    public GroupFragment() {
+    public GroupListFragment() {
     }
 
     /**
@@ -53,8 +55,8 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
      *
      * @return A new instance of fragment GroupFragment.
      */
-    public static GroupFragment newInstance() {
-        GroupFragment fragment = new GroupFragment();
+    public static GroupListFragment newInstance() {
+        GroupListFragment fragment = new GroupListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -115,6 +117,7 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         mGroupList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupList.setAdapter(mGroupAdapter);
 
+        mEmptyView = view.findViewById(R.id.group_list_empty);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.pull_refresh_group);
         mRefreshLayout.setOnRefreshListener(this);
@@ -126,17 +129,12 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         });
 
         // set onItemClick event
-        mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                GroupActivity.startActivity(getContext(), mGroupAdapter.getGroupId(position));
-            }
-        });
+        mGroupAdapter.setOnGroupClickListener(this);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_group;
+        return R.layout.fragment_group_list;
     }
 
     @Override
@@ -168,6 +166,20 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         CreateGroupActivity.startActivity(getActivity());
     }
 
+    @Override
+    public void onGroupClick(View view, long groupDbId) {
+        GroupActivity.startActivity(getContext(), groupDbId);
+    }
+
+    private void updateEmptyList(){
+        if(mGroupAdapter.getItemCount() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mGroupList.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            mGroupList.setVisibility(View.VISIBLE);
+        }
+    }
 
     public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
@@ -178,18 +190,15 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         @Override
         public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
             if (data != null) {
-                mGroupAdapter.clearGroups();
                 mGroupAdapter.setGroups(data);
-
             } else {
-                mGroupAdapter.setGroups(new ArrayList<Group>());
+                mGroupAdapter.clearGroups();
             }
+            updateEmptyList();
         }
 
         @Override
-        public void onLoaderReset(Loader<List<Group>> loader) {
-
-        }
+        public void onLoaderReset(Loader<List<Group>> loader) { }
     }
 
     public class InvitationLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
@@ -201,18 +210,15 @@ public class GroupFragment extends GenericFragment implements View.OnClickListen
         @Override
         public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
             if (data != null) {
-                mGroupAdapter.clearInvitations();
                 mGroupAdapter.setInvitations(data);
-
             } else {
-                mGroupAdapter.setInvitations(new ArrayList<Group>());
+                mGroupAdapter.clearInvitations();
             }
+            updateEmptyList();
         }
 
         @Override
-        public void onLoaderReset(Loader<List<Group>> loader) {
-
-        }
+        public void onLoaderReset(Loader<List<Group>> loader) { }
     }
 
 
