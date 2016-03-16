@@ -39,7 +39,7 @@
                         android:paddingLeft="@dimen/standard_margin"
                         android:paddingRight="@dimen/standard_margin">
                         <ImageView
-                            android:src="@drawable/ic_app"
+                            android:src="@drawable/img_runners"
                             android:layout_width="200dp"
                             android:layout_height="200dp" />
                         <TextView
