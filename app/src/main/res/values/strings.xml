@@ -23,8 +23,8 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect">Incorrect credentials</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">Contacts permissions are needed for providing email
+        completions
     </string>
     <string name="display_name">Display Name</string>
     <string name="connect">Connect</string>
@@ -120,7 +120,7 @@
     <string name="prompt_content">Content</string>
     <string name="post_create">Create Post</string>
     <string name="activity_blog_post_new">New Blog Post</string>
-    <string name="cannot_connect_server">Impossible d\'accéder au serveur, veuillez vérifier votre connexion internet</string>
+    <string name="cannot_connect_server">Server not reachable, please check you network connection</string>
     <string name="activity_send_request">Send Request</string>
 
     <!-- Empty list placeholder -->
@@ -128,4 +128,8 @@
     <string name="relations_list_empty_desc">Search potentials coaches or wait requests from trainees to improve their skills !\n You need to be connected to send a request or receive one.</string>
     <string name="group_list_empty_title">You are not part of any group.</string>
     <string name="group_list_empty_desc">Search groups or create yours to share your skills and your training sessions with others !\n You need to be connected to join or create a group.</string>
+
+    <string name="private_group">This group is private</string>
+    <string name="name">Name</string>
+    <string name="search_place">Search place...</string>
 </resources>
