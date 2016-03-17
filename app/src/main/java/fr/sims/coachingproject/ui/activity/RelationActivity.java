@@ -1,6 +1,8 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +58,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     Button mSendBtn;
     EditText mMessageET;
 
+    AlertDialog.Builder alertDialog;
 
     CoachingRelation mRelation;
     UserProfile mPartner;
@@ -86,6 +89,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
+
         // Get the transferred id
         Intent mIntent = getIntent();
         mRelationId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
@@ -112,6 +116,25 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mMessageET = (EditText) findViewById(R.id.message_content);
 
         getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        new PutEndRelationTask().execute(false);
+                        MainActivity.startActivity(getBaseContext());
+                        dialog.dismiss();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+        alertDialog= new AlertDialog.Builder(this);
+        alertDialog.setPositiveButton(R.string.button_confirm, dialogClickListener)
+                .setNegativeButton(R.string.button_cancel, dialogClickListener);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
@@ -155,8 +178,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.relation_cancel:
-                new PutEndRelationTask().execute(false);
-                MainActivity.startActivity(getBaseContext());
+                alertDialog.setMessage("Are you sure you want to remove " + mPartner.mDisplayName + " as your relation ?").show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
