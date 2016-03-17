@@ -16,7 +16,6 @@
 
     <dimen name="profile_picture_size">96dp</dimen>
 
-    <dimen name="chat_min_message_width">200dp</dimen>
     <dimen name="chat_profile_picture_size">24dp</dimen>
 
     <!-- List -->
@@ -25,8 +24,6 @@
     <dimen name="list_padding_top_bottom">10dp</dimen>
     <dimen name="list_padding_left_right">16dp</dimen>
     <dimen name="list_picture_size">40dp</dimen>
-
-    <dimen name="relation_list_profile_picture_size">64dp</dimen>
 
     <dimen name="standard_drawable_height">24dp</dimen>
 

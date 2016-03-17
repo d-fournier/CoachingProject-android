@@ -9,7 +9,6 @@
     <color name="black">@android:color/black</color>
 
     <color name="firstLaunchBkgTint">#be8ce4cb</color>
-    <color name="firstLaunchBtnTint">@color/colorPrimary</color>
 
     <color name="colorBackgroundDark">#EFEFEF</color>
 
