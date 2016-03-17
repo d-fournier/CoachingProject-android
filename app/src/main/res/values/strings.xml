@@ -58,13 +58,26 @@
     <string name="activity_relation_name">Relation</string>
     <string name="first_launch_bkg_cd">First launch tutorial background</string>
     <string name="send_message">Send</string>
+
+    <!-- Notification -->
     <string name="notif_coaching_accept">%1$s has accepted your coaching request</string>
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
-    <string name="notif_group_join">Someone asked to join %1$s</string>
+    <string name="notif_group_join">%2$s asked to join %1$s</string>
     <string name="notif_group_invite">You have been invited in %1$s</string>
     <string name="notif_group_join_accepted">You have been accepted in %1$s</string>
+    <string name="notif_content_event">%1$d new events</string>
+    <plurals name="notif_summary_event">
+        <item quantity="one">+ %1$d event …</item>
+        <item quantity="other">+ %1$d events …</item>
+    </plurals>
+    <string name="notif_content_message">%1$d new messages</string>
+    <plurals name="notif_summary_message">
+        <item quantity="one">+ %1$d message …</item>
+        <item quantity="other">+ %1$d messages …</item>
+    </plurals>
+    <!-- END Notification -->
 
     <string name="user_profile_picture">User profile picture</string>
     <string name="message_pinned">Message pinned</string>

@@ -14,6 +14,8 @@ public class Const {
         public final static String CURRENT_USER_ID = "CURRENT_USER_ID";
         // TODO Move out from SharedPref
         public final static String CURRENT_TOKEN = "CURRENT_TOKEN";
+
+        public final static String NOTIFICATION_CONTENT = "NOTIFICATION_CONTENT_";
     }
 
     public static class WebServer {
@@ -86,24 +88,31 @@ public class Const {
     public static class Notification {
         public static class Type {
             public static final String MESSAGE_NEW = "message_new";
-            public static final int MESSAGE_NEW_ID = 0;
             public static final String COACHING_RESPONSE = "coaching_response";
-            public static final int COACHING_RESPONSE_ID = 1;
             public static final String COACHING_NEW = "coaching_new";
-            public static final int COACHING_NEW_ID = 2;
             public static final String COACHING_END = "coaching_end";
-            public static final int COACHING_END_ID = 3;
             public static final String GROUP_JOIN = "group_join";
-            public static final int GROUP_JOIN_ID = 4;
             public static final String GROUP_INVITE = "group_invite";
-            public static final int GROUP_INVITE_ID = 4;
             public static final String GROUP_JOIN_ACCEPTED = "group_join_accepted";
-            public static final int GROUP_JOIN_ACCEPTED_ID = 4;
+
+
         }
 
         public static class Data {
             public static final String CONTENT = "content";
             public static final String TYPE = "type";
+            public static final String DISPLAY_NAME = "username";
+        }
+
+        public static class Tag {
+            public static final String RELATION = "RELATION_";
+            public static final String GROUP = "GROUP_";
+        }
+
+        public static class Id {
+            public static final int MESSAGE = 0;
+            public static final int RELATION = 1;
+            public static final int GROUP = 2;
 
         }
     }
