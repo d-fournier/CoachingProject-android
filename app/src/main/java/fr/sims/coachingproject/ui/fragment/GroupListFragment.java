@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     private RecyclerView mGroupList;
     private SwipeRefreshLayout mRefreshLayout;
     private View mEmptyView;
+    private Button mCreateButton;
 
     private GenericBroadcastReceiver mBroadcastReceiver;
 
@@ -69,29 +71,6 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
         getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
         getLoaderManager().initLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getContext());
-        inflater.inflate(R.menu.activity_creategroup, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        boolean mVisible = (mCurrentUserId != -1);
-        menu.setGroupVisible(0, mVisible);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_group:
-                CreateGroupActivity.startActivity(getActivity());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +108,19 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
 
         // set onItemClick event
         mGroupAdapter.setOnGroupClickListener(this);
+
+        mCreateButton= (Button) view.findViewById(R.id.createGroupButton);
+        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+            mCreateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CreateGroupActivity.startActivity(getActivity());
+                }
+            });
+        }else{
+            mCreateButton.setVisibility(View.GONE);
+        }
+        
     }
 
     @Override
@@ -145,6 +137,16 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         NetworkService.startActionUserGroups(getContext());
+        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+            mCreateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CreateGroupActivity.startActivity(getActivity());
+                }
+            });
+        }else{
+            mCreateButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
