@@ -1,9 +1,14 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,17 +19,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.network.SingleGroupLoader;
@@ -34,6 +44,7 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.GroupPagerAdapter;
 import fr.sims.coachingproject.ui.fragment.MessageFragment;
 import fr.sims.coachingproject.util.Const;
+import fr.sims.coachingproject.util.MultipartUtility;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -45,9 +56,12 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
     // Send message views
-    private Button mSendBtn;
+    private ImageButton mSendBtn;
+    private ImageButton mAttachFileButton;
     private EditText mMessageET;
     private Toolbar mMessageToolbar;
+    private Uri mUploadFileUri;
+    private String mFileName;
 
     private TextView mGroupName;
     private TextView mGroupDescription;
@@ -120,10 +134,13 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mButtonJoin.setOnClickListener(this);
 
         // Send Message View
-        mSendBtn = (Button) findViewById(R.id.message_send);
+        mSendBtn = (ImageButton) findViewById(R.id.message_send);
         mSendBtn.setOnClickListener(this);
+        mAttachFileButton = (ImageButton) findViewById(R.id.button_attach_file);
+        mAttachFileButton.setOnClickListener(this);
         mMessageET = (EditText) findViewById(R.id.message_content);
         mMessageToolbar = (Toolbar) findViewById(R.id.message_send_group_toolbar);
+        mUploadFileUri = null;
 
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
@@ -154,7 +171,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void hideAllElements(){
+    public void hideAllElements() {
         mButtonJoin.setVisibility(View.GONE);
         mButtonJoin.setEnabled(false);
         mMessageToolbar.setVisibility(View.GONE);
@@ -202,6 +219,9 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             case R.id.message_send:
                 sendMessage();
                 break;
+            case R.id.button_attach_file:
+                selectFile();
+                break;
             case R.id.group_send_join_invite:
                 if (mGroup.mIsCurrentUserMember) {//We invite people
                     SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb, false);
@@ -238,15 +258,56 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     private void sendMessage() {
         String message = mMessageET.getText().toString();
-        JSONObject json = new JSONObject();
-        try {
-            json.put("content", message);
-            json.put("to_group", String.valueOf(mGroupIdDb));
-            json.put("is_pinned", false);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        new SendMessageTask().execute(message, String.valueOf(mGroupIdDb));
+    }
+
+    private void selectFile() {
+        if (Build.VERSION.SDK_INT < 19) {
+            Intent intent = new Intent();
+            intent.setType("*/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), Const.WebServer.PICK_IMAGE_REQUEST);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            startActivityForResult(intent, Const.WebServer.PICK_IMAGE_AFTER_KITKAT_REQUEST);
         }
-        new SendMessageTask().execute(json.toString());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        if (data == null) return;
+        if (requestCode == Const.WebServer.PICK_IMAGE_REQUEST) {
+            mUploadFileUri = data.getData();
+        } else if (requestCode == Const.WebServer.PICK_IMAGE_AFTER_KITKAT_REQUEST) {
+            mUploadFileUri = data.getData();
+            final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            // Check for the freshest data.
+            getContentResolver().takePersistableUriPermission(mUploadFileUri, takeFlags);
+        }
+
+        // The query, since it only applies to a single document, will only return
+        // one row. There's no need to filter, sort, or select fields, since we want
+        // all fields for one document.
+        Cursor cursor = this.getContentResolver()
+                .query(mUploadFileUri, null, null, null, null, null);
+
+        try {
+            // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
+            // "if there's anything to look at, look at it" conditionals.
+            if (cursor != null && cursor.moveToFirst()) {
+                // Note it's called "Display Name".  This is
+                // provider-specific, and might not necessarily be the file name.
+                mFileName = cursor.getString(
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
     @Override
@@ -301,7 +362,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 Snackbar.make(mGroupName, R.string.demand_sent, Snackbar.LENGTH_LONG).show();
                 mButtonJoin.setVisibility(View.GONE);
             } else {
-                switch(response.getReturnCode()){
+                switch (response.getReturnCode()) {
                     case 400:
                         Snackbar.make(mGroupName, R.string.already_in_group, Snackbar.LENGTH_LONG).show();
                         break;
@@ -341,7 +402,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(getApplicationContext(), R.string.leave_group_success, Toast.LENGTH_LONG).show();
                 GroupActivity.this.finish();
             } else {
-                switch(response.getReturnCode()){
+                switch (response.getReturnCode()) {
                     case 400:
                         Snackbar.make(mGroupName, R.string.not_in_group, Snackbar.LENGTH_LONG).show();
                         break;
@@ -363,18 +424,36 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private class SendMessageTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
         protected NetworkUtil.Response doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
             String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
-            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES, connectedToken, params[0]);
+            String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES;
+
+            try {
+                MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + connectedToken, "POST");
+                multipart.addFormField("content", params[0]);
+                multipart.addFormField("to_group",params[1]);
+                if (mUploadFileUri != null) {
+                    InputStream in = getContentResolver().openInputStream(mUploadFileUri);
+                    multipart.addFilePart("associated_file", in, mFileName);
+                }
+                return multipart.finish();
+            } catch (IOException e) {
+                return null;
+            }
+
         }
+
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
             mSendBtn.setEnabled(true);
             mMessageET.setText("");
-            if (response.isSuccessful()) {
+            if (response != null && response.isSuccessful()) {
                 NetworkService.startActionGroupMessages(getApplicationContext(), mGroupIdDb);
             } else {
-                Snackbar.make(mPager, response.getBody(), Snackbar.LENGTH_LONG);
+                Snackbar.make(mPager, "Error", Snackbar.LENGTH_LONG);
             }
         }
 
