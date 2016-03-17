@@ -33,17 +33,25 @@
                     android:paddingLeft="@dimen/standard_margin"
                     android:paddingRight="@dimen/standard_margin">
                     <ImageView
-                        android:src="@drawable/ic_email_100dp"
+                        android:id="@+id/message_list_empty_picture"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:tint="#9e9e9e"/>
                     <TextView
+                        android:id="@+id/message_list_empty_title"
                         android:layout_marginTop="@dimen/standard_margin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/TextAppearance.AppCompat.Medium"
-                        android:text="@string/message_list_empty_title"/>
+                        style="@style/TextAppearance.AppCompat.Medium"/>
+                    <TextView
+                        android:id="@+id/message_list_empty_desc"
+                        android:layout_marginTop="@dimen/standard_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        style="@style/TextAppearance.AppCompat.Caption"/>
+
                 </LinearLayout>
             </ScrollView>
         </android.support.v4.widget.NestedScrollView>

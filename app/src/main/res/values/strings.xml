@@ -129,10 +129,12 @@
     <string name="group_list_empty_title">You are not part of any group.</string>
     <string name="group_list_empty_desc">Search groups or create yours to share your skills and your training sessions with others !\n You need to be connected to join or create a group.</string>
     <string name="message_list_empty_title">No messages to display</string>
+    <string name="message_pinned_list_empty_title">No messages pinned</string>
+    <string name="message_pinned_list_empty_desc">To pin a message, long click on the message and select the pin option.</string>
 
     <string name="private_group">This group is private</string>
     <string name="name">Name</string>
-    <string name="search_place">Search place...</string>
+    <string name="search_place">Search place…</string>
     <string name="nav_share">Share</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_disconnect">Disconnect</string>

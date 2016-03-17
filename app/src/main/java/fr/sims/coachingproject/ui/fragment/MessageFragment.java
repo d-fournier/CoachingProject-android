@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -123,6 +124,18 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
     protected void bindView(View view) {
         mMessageListEmpty = view.findViewById(R.id.message_list_empty);
+
+        if(mIsPinned) {
+            ((ImageView) view.findViewById(R.id.message_list_empty_picture)).setImageResource(R.drawable.ic_star_100dp);
+            ((TextView) view.findViewById(R.id.message_list_empty_title)).setText(R.string.message_pinned_list_empty_title);
+            View v = view.findViewById(R.id.message_list_empty_desc);
+            v.setVisibility(View.VISIBLE);
+            ((TextView) v).setText(R.string.message_pinned_list_empty_desc);
+        } else {
+            ((ImageView) view.findViewById(R.id.message_list_empty_picture)).setImageResource(R.drawable.ic_email_100dp);
+            ((TextView) view.findViewById(R.id.message_list_empty_title)).setText(R.string.message_list_empty_title);
+            view.findViewById(R.id.message_list_empty_desc).setVisibility(View.GONE);
+        }
 
         mMessagesRV = (RecyclerView) view.findViewById(R.id.message_list);
         mMessagesRV.setLayoutManager(new LinearLayoutManager(getContext()));
