@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
     // Send message views
-    private Button mSendBtn;
+    private ImageButton mSendBtn;
     private EditText mMessageET;
     private Toolbar mMessageToolbar;
 
@@ -120,7 +121,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mButtonJoin.setOnClickListener(this);
 
         // Send Message View
-        mSendBtn = (Button) findViewById(R.id.message_send);
+        mSendBtn = (ImageButton) findViewById(R.id.message_send);
         mSendBtn.setOnClickListener(this);
         mMessageET = (EditText) findViewById(R.id.message_content);
         mMessageToolbar = (Toolbar) findViewById(R.id.message_send_group_toolbar);
