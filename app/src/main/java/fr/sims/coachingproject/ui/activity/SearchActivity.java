@@ -35,7 +35,7 @@ import fr.sims.coachingproject.loader.network.SportLoader;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.ui.adapter.UserProfileAdapter;
+import fr.sims.coachingproject.ui.adapter.UsersListAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
@@ -44,7 +44,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
  * Created by Anthony Barbosa on 16/02/2016.
  */
 
-public class SearchActivity extends AppCompatActivity implements UserProfileAdapter.OnItemClickListener {
+public class SearchActivity extends AppCompatActivity implements UsersListAdapter.OnItemClickListener {
 
     private final static String ID_SPORT = "idSport";
     private final static String INVITE = "invite";
@@ -59,7 +59,7 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
     List<UserProfile> mUserList;
     List<Sport> mSportList;
     List<SportLevel> mLevelList;
-    UserProfileAdapter mUserProfileAdapter;
+    UsersListAdapter mUserProfileAdapter;
     Bundle mSearchArgs;
     Spinner mSportsSpinner;
     ProgressBar mLoadingBar;
@@ -105,7 +105,7 @@ public class SearchActivity extends AppCompatActivity implements UserProfileAdap
 
         mRecycleView = (RecyclerView) findViewById(R.id.Search_List);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mUserProfileAdapter = new UserProfileAdapter(getApplicationContext());
+        mUserProfileAdapter = new UsersListAdapter(getApplicationContext());
         mUserProfileAdapter.setOnItemClickListener(this);
         mRecycleView.setAdapter(mUserProfileAdapter);
 

@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import fr.sims.coachingproject.ui.activity.GroupActivity;
 import fr.sims.coachingproject.ui.fragment.GroupMembersFragment;
 import fr.sims.coachingproject.ui.fragment.MessageFragment;
 

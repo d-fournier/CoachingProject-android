@@ -28,11 +28,11 @@ public class ProfilePagerAdapter  extends FragmentPagerAdapter {
 
         switch (position){
             case 1:
-                fragment = ProfileAboutFragment.newInstance(mUserId);
+                fragment = BlogListFragment.newInstance(mUserId);
                 break;
             case 0:
             default:
-                fragment = BlogListFragment.newInstance(mUserId);
+                fragment = ProfileAboutFragment.newInstance(mUserId);
                 break;
         }
         return fragment;
@@ -48,11 +48,11 @@ public class ProfilePagerAdapter  extends FragmentPagerAdapter {
         String title;
         switch(position) {
             case 1:
-                title = ProfileAboutFragment.TITLE;
+                title = BlogListFragment.TITLE;
                 break;
             case 0:
             default:
-                title = BlogListFragment.TITLE;
+                title = ProfileAboutFragment.TITLE;
                 break;
         }
         return title;

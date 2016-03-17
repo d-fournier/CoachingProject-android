@@ -1,7 +1,5 @@
 package fr.sims.coachingproject.model;
 
-import android.database.sqlite.SQLiteConstraintException;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -11,8 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by dfour on 15/02/2016.
@@ -40,6 +36,21 @@ public class SportLevel extends Model {
     @SerializedName("sport")
     public Sport mSport;
 
+    public static SportLevel[] parseList(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        SportLevel[] res = null;
+        try {
+            res = gson.fromJson(json, SportLevel[].class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static void clear(){
+        new Delete().from(SportLevel.class).execute();
+    }
+
     public SportLevel saveOrUpdate(){
         mSport = mSport.saveOrUpdate();
         SportLevel res = new Select().from(SportLevel.class).where("idDb = ?", mIdDb).executeSingle();
@@ -59,17 +70,6 @@ public class SportLevel extends Model {
         this.mRank = sl.mRank;
     }
 
-    public static SportLevel[] parseList(String json) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        SportLevel[] res = null;
-        try {
-            res = gson.fromJson(json, SportLevel[].class);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return res;
-    }
-
     @Override
     public String toString() {
         return this.mTitle;
@@ -77,10 +77,6 @@ public class SportLevel extends Model {
 
     public long getmIdDb() {
         return mIdDb;
-    }
-
-    public static void clear(){
-        new Delete().from(SportLevel.class).execute();
     }
 
 }

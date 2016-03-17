@@ -19,7 +19,7 @@ import fr.sims.coachingproject.service.NetworkService;
 /**
  * Created by Donovan on 16/03/2016.
  */
-public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.ViewHolder> {
+public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdapter.ViewHolder> {
 
 
     private static final int LIST_INVITATIONS = 0;
@@ -30,7 +30,7 @@ public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.View
     private OnGroupClickListener mListener = null;
     private Context mCtx;
 
-    public GroupAdapter(Context ctx) {
+    public GroupListAdapter(Context ctx) {
         mCtx = ctx;
         mGroupList = new ArrayList<>();
         mInvitationsList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.View
     }
 
     @Override
-    public void onBindHeaderViewHolder(GroupAdapter.ViewHolder holder, int section) {
+    public void onBindHeaderViewHolder(GroupListAdapter.ViewHolder holder, int section) {
         HeaderViewHolder vh = (HeaderViewHolder) holder;
         int resId = -1;
         switch (section) {
@@ -76,7 +76,7 @@ public class GroupAdapter extends SectionedRecyclerViewAdapter<GroupAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(GroupAdapter.ViewHolder holder, int section, int relativePosition, int absolutePosition) {
+    public void onBindViewHolder(GroupListAdapter.ViewHolder holder, int section, int relativePosition, int absolutePosition) {
         GroupViewHolder gvh = (GroupViewHolder) holder;
         final Group g = getItem(section, relativePosition);
         gvh.name.setText(g.mName);

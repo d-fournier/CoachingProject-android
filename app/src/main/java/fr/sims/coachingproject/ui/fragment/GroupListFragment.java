@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
@@ -25,18 +24,18 @@ import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
 import fr.sims.coachingproject.ui.activity.GroupActivity;
-import fr.sims.coachingproject.ui.adapter.GroupAdapter;
+import fr.sims.coachingproject.ui.adapter.GroupListAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-public class GroupListFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupAdapter.OnGroupClickListener {
+public class GroupListFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupListAdapter.OnGroupClickListener {
 
     private long mCurrentUserId;
 
     public static final String TABS_TITLE = "Groups";
 
-    private GroupAdapter mGroupAdapter;
+    private GroupListAdapter mGroupAdapter;
     private RecyclerView mGroupList;
     private SwipeRefreshLayout mRefreshLayout;
     private View mEmptyView;
@@ -98,7 +97,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mGroupAdapter = new GroupAdapter(getContext());
+        mGroupAdapter = new GroupListAdapter(getContext());
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));

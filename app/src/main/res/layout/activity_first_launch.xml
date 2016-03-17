@@ -50,7 +50,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="Continue"
+            android:text="@string/first_launch_continue"
             android:textColor="@android:color/secondary_text_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
