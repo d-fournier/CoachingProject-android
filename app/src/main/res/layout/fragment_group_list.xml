@@ -10,9 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/create_group"
+                android:id="@+id/createGroupButton"
+                style="@style/Widget.AppCompat.Button.Colored"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/group_list"
@@ -60,7 +68,7 @@
                 </ScrollView>
 
             </android.support.v4.widget.NestedScrollView>
-        </FrameLayout>
+        </LinearLayout>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
