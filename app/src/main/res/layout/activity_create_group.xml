@@ -32,14 +32,17 @@
         android:id="@+id/description_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description"
+        android:text="@string/description_group"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
         android:id="@+id/edit_Description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:minLines="2"
+        android:inputType="textMultiLine" />
 
     <Spinner
         android:id="@+id/spinner_sports"
@@ -68,8 +71,9 @@
     <Button
         android:id="@+id/ok_button"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_group" />
+
 
 </LinearLayout>

@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity
                         SearchActivity.startActivity(getApplicationContext(), false, -1, true);
                         break;
                     case 1:
-                        break;
-                    case 2:
                         SearchGroupActivity.startActivity(getApplicationContext());
                         break;
                 }
