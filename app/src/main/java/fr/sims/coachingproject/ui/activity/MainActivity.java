@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
+import fr.sims.coachingproject.util.SharedPrefUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
@@ -76,6 +78,12 @@ public class MainActivity extends AppCompatActivity
                     startActionCoachingRelations(getApplicationContext());
                 } else if (slideOffset != 0) {
                     // started opening
+                    if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
+                        Menu menu=mNavigationView.getMenu();
+                        menu.removeItem(R.id.nav_settings);
+                        menu.removeItem(R.id.nav_disconnect);
+                        menu.removeItem(R.id.nav_blog_post_new);
+                    }
                 }
                 super.onDrawerSlide(drawerView, slideOffset);
             }
@@ -179,7 +187,6 @@ public class MainActivity extends AppCompatActivity
             mConnectedUserId = -1;
             header.setText(R.string.connect);
             profilePicture.setVisibility(View.GONE);
-            mNavigationView.getMenu().findItem(R.id.nav_disconnect).setVisible(false);
         }
         mDrawerHeader.setOnClickListener(this);
     }
