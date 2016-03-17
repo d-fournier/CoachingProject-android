@@ -1,6 +1,5 @@
 package fr.sims.coachingproject.model;
 
-import com.activeandroid.annotation.Column;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;

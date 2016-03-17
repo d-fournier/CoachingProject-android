@@ -112,6 +112,10 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mMessageET = (EditText) findViewById(R.id.message_content);
 
         getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
+
+        // Remove Notification pending content
+        SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
+        SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.MESSAGE + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
     }
 
     @Override

@@ -13,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
@@ -25,21 +25,22 @@ import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.activity.CreateGroupActivity;
 import fr.sims.coachingproject.ui.activity.GroupActivity;
-import fr.sims.coachingproject.ui.adapter.GroupAdapter;
+import fr.sims.coachingproject.ui.adapter.GroupListAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-public class GroupListFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupAdapter.OnGroupClickListener {
+public class GroupListFragment extends GenericFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, GenericBroadcastReceiver.BroadcastReceiverListener, GroupListAdapter.OnGroupClickListener {
 
     private long mCurrentUserId;
 
     public static final String TABS_TITLE = "Groups";
 
-    private GroupAdapter mGroupAdapter;
+    private GroupListAdapter mGroupAdapter;
     private RecyclerView mGroupList;
     private SwipeRefreshLayout mRefreshLayout;
     private View mEmptyView;
+    private Button mCreateButton;
 
     private GenericBroadcastReceiver mBroadcastReceiver;
 
@@ -72,33 +73,10 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        mCurrentUserId = SharedPrefUtil.getConnectedUserId(getContext());
-        inflater.inflate(R.menu.activity_creategroup, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        boolean mVisible = (mCurrentUserId != -1);
-        menu.setGroupVisible(0, mVisible);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_group:
-                CreateGroupActivity.startActivity(getActivity());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mGroupAdapter = new GroupAdapter(getContext());
+        mGroupAdapter = new GroupListAdapter(getContext());
         NetworkService.startActionUserGroups(getContext());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
@@ -130,6 +108,19 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
 
         // set onItemClick event
         mGroupAdapter.setOnGroupClickListener(this);
+
+        mCreateButton= (Button) view.findViewById(R.id.createGroupButton);
+        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+            mCreateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CreateGroupActivity.startActivity(getActivity());
+                }
+            });
+        }else{
+            mCreateButton.setVisibility(View.GONE);
+        }
+        
     }
 
     @Override
@@ -146,6 +137,16 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         NetworkService.startActionUserGroups(getContext());
+        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+            mCreateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CreateGroupActivity.startActivity(getActivity());
+                }
+            });
+        }else{
+            mCreateButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

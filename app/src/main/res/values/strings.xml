@@ -4,14 +4,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-
     <string name="my_coachs">My coaches</string>
     <string name="my_trainees">My trainees</string>
     <string name="pending_coach_request">Pending requests to new coaches</string>
     <string name="pending_trainee_request">Pending requests from new trainees</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Login</string>
 
     <!-- Strings related to login -->
@@ -23,17 +19,13 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect">Incorrect credentials</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">Contacts permissions are needed for providing email
-        completions
-    </string>
     <string name="display_name">Display Name</string>
     <string name="connect">Connect</string>
     <string name="search_hint">Search trainer..</string>
-    <string name="search_group_hint">Search group..</string>
+    <string name="search_group_hint">Search group…</string>
     <string name="search_text">Search</string>
     <string name="all_sports">All sports</string>
     <string name="all_levels">All levels </string>
-    <string name="no_message">No message</string>
     <string name="no_coach_found">No coach found</string>
 
     <string name="no_group_found">No group found</string>
@@ -57,27 +49,35 @@
     <string name="accept">Accept</string>
     <string name="end_relation">End relation</string>
     <string name="add_group">Add group</string>
-    <string name="no_group">No group found</string>
     <string name="create_group">Create group</string>
     <string name="request_sent">Your request has been sent successfully!</string>
     <string name="request_error">An error occurred while processing your request!</string>
     <string name="request_refused">You request has been refused by the coach.</string>
     <string name="send_request">Send request</string>
-    <string name="ask_for_coaching_in">Ask for coaching in</string>
     <string name="title_activity_first_launch">FirstLaunchActivity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="activity_relation_name">Relation</string>
     <string name="first_launch_bkg_cd">First launch tutorial background</string>
-    <string name="first_launch_next_cd">Next tutorial</string>
-    <string name="first_launch_previous_cd">Previous tutorial</string>
     <string name="send_message">Send</string>
+
+    <!-- Notification -->
     <string name="notif_coaching_accept">%1$s has accepted your coaching request</string>
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
     <string name="notif_coaching_end">%1$s has canceled your coaching request</string>
     <string name="notif_coaching_new">%1$s sent you a coaching request</string>
-    <string name="notif_group_join">Someone asked to join %1$s</string>
+    <string name="notif_group_join">%2$s asked to join %1$s</string>
     <string name="notif_group_invite">You have been invited in %1$s</string>
     <string name="notif_group_join_accepted">You have been accepted in %1$s</string>
+    <string name="notif_content_event">%1$d new events</string>
+    <plurals name="notif_summary_event">
+        <item quantity="one">+ %1$d event …</item>
+        <item quantity="other">+ %1$d events …</item>
+    </plurals>
+    <string name="notif_content_message">%1$d new messages</string>
+    <plurals name="notif_summary_message">
+        <item quantity="one">+ %1$d message …</item>
+        <item quantity="other">+ %1$d messages …</item>
+    </plurals>
+    <!-- END Notification -->
 
     <string name="user_profile_picture">User profile picture</string>
     <string name="message_pinned">Message pinned</string>
@@ -105,10 +105,8 @@
     <string name="profile_sports">Sports</string>
     <string name="title_activity_group">Group</string>
     <string name="created_on">"Created on %1$s"</string>
-    <string name="join_group">Join group</string>
     <string name="members">Members</string>
     <string name="pending_members">Pending members</string>
-    <string name="invite_group">Invite in group</string>
     <string name="groups">My groups</string>
     <string name="invitations">My invitations</string>
     <string name="picture">Picture</string>
@@ -128,10 +126,19 @@
     <string name="relations_list_empty_desc">Search potentials coaches or wait requests from trainees to improve their skills !\n You need to be connected to send a request or receive one.</string>
     <string name="group_list_empty_title">You are not part of any group.</string>
     <string name="group_list_empty_desc">Search groups or create yours to share your skills and your training sessions with others !\n You need to be connected to join or create a group.</string>
+    <string name="message_list_empty_title">No messages to display</string>
+    <string name="message_pinned_list_empty_title">No messages pinned</string>
+    <string name="message_pinned_list_empty_desc">To pin a message, long click on the message and select the pin option.</string>
 
     <string name="private_group">This group is private</string>
     <string name="name">Name</string>
-    <string name="search_place">Search place...</string>
+
+    <string name="search_place">Search place…</string>
+    <string name="nav_share">Share</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_disconnect">Disconnect</string>
+    <string name="nav_about">About</string>
+
     <string name="description_group">Describe your group</string>
     <string name="leave_group">Leave group</string>
     <string name="demand_sent">Demand successfully sent to the group</string>
@@ -139,9 +146,13 @@
     <string name="not_connected">You are not connected</string>
     <string name="group_private">This group is private</string>
     <string name="already_in_group">You are already in the group or asked to join it</string>
-    <string name="unknown_error">An error occured</string>
+    <string name="unknown_error">An error occurred</string>
     <string name="not_in_group">You are not in the group</string>
     <string name="leave_admin">An admin cannot leave the group</string>
+
     <string name="attach_file">Attach file</string>
     <string name="message_image">Message image</string>
+
+    <string name="first_launch_continue">Continue</string>
+
 </resources>

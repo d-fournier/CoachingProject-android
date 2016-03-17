@@ -12,20 +12,20 @@ import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.network.BlogPostListLoader;
 import fr.sims.coachingproject.model.BlogPost;
 import fr.sims.coachingproject.ui.activity.PostReadActivity;
-import fr.sims.coachingproject.ui.adapter.BlogAdapter;
+import fr.sims.coachingproject.ui.adapter.BlogListAdapter;
 import fr.sims.coachingproject.util.Const;
 
 /**
  * Created by dfour on 14/03/2016.
  */
-public class BlogListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<BlogPost>>,BlogAdapter.OnItemClickListener {
+public class BlogListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<BlogPost>>,BlogListAdapter.OnItemClickListener {
 
     // TODO Put it in resources
     public static final String TITLE = "Blog";
     private static final String EXTRA_USER_ID = "fr.sims.coachingproject.extra.USER_ID";
 
     private RecyclerView mBlogPostRV;
-    private BlogAdapter mAdapter;
+    private BlogListAdapter mAdapter;
     private long mUserId;
 
     public static BlogListFragment newInstance(long userId){
@@ -52,7 +52,7 @@ public class BlogListFragment extends GenericFragment implements LoaderManager.L
         super.bindView(view);
         mBlogPostRV = (RecyclerView) view.findViewById(R.id.blog_list);
         mBlogPostRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new BlogAdapter(getContext());
+        mAdapter = new BlogListAdapter(getContext());
         mAdapter.setOnItemClickListener(this);
         mBlogPostRV.setAdapter(mAdapter);
     }

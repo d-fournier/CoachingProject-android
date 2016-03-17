@@ -21,7 +21,7 @@ import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonViewHolder> {
+public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.CommonViewHolder> {
     private List<Message> mMessageList;
     private Context mContext;
     private long mCurrentUserId;
@@ -54,7 +54,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonVi
         }
     }
 
-    public MessageAdapter(Context context, boolean isPinned) {
+    public MessageListAdapter(Context context, boolean isPinned) {
         mMessageList=new ArrayList<>();
         this.mContext = context;
         mCurrentUserId = SharedPrefUtil.getConnectedUserId(context);

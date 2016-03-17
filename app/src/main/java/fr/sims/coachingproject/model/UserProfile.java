@@ -1,8 +1,5 @@
 package fr.sims.coachingproject.model;
 
-import android.util.Log;
-
-import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -18,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by dfour on 10/02/2016.

@@ -4,12 +4,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.gcm.GcmListenerService;
+
+import java.util.ArrayList;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -42,108 +44,87 @@ public class PushGcmListenerService extends GcmListenerService {
         String messageType = data.getString(Const.Notification.Data.TYPE, "");
 
         switch (messageType) {
+            case Const.Notification.Type.MESSAGE_NEW:
+                handleMessageNew(data);
+                break;
             case Const.Notification.Type.COACHING_RESPONSE:
             case Const.Notification.Type.COACHING_END:
             case Const.Notification.Type.COACHING_NEW:
                 handleCoachingEvent(messageType, data);
                 break;
-            case Const.Notification.Type.MESSAGE_NEW:
-                handleMessageNew(data);
-                break;
             case Const.Notification.Type.GROUP_JOIN:
             case Const.Notification.Type.GROUP_INVITE:
             case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
-                handleGroupEvent(messageType,data);
+                handleGroupEvent(messageType, data);
                 break;
         }
-    }
-
-    private void handleGroupEvent(String messageType, Bundle data) {
-        String groupString = data.getString(Const.Notification.Data.CONTENT, "");
-        Group group = Group.parseItem(groupString);
-
-        if(group==null){
-            return;
-        }
-
-        int notifId = 0;
-        int titleId = -1;
-        String tag = String.valueOf(group.mIdDb);
-        switch (messageType) {
-            case Const.Notification.Type.GROUP_JOIN:
-                notifId = Const.Notification.Type.GROUP_JOIN_ID;
-                titleId = R.string.notif_group_join;
-                group.mIsCurrentUserMember=true;
-                group.mIsCurrentUserPending=false;
-                break;
-            case Const.Notification.Type.GROUP_INVITE:
-                notifId = Const.Notification.Type.GROUP_INVITE_ID;
-                titleId = R.string.notif_group_invite;
-                group.mIsCurrentUserMember=false;
-                group.mIsCurrentUserPending=true;
-                break;
-            case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
-                notifId = Const.Notification.Type.GROUP_JOIN_ACCEPTED_ID;
-                titleId = R.string.notif_group_join_accepted;
-                group.mIsCurrentUserMember=true;
-                group.mIsCurrentUserPending=false;
-                break;
-        }
-
-        group.saveOrUpdate();
-
-        String title = getString(titleId, group.mName);
-
-        Intent intent = GroupActivity.getIntent(this, group.mIdDb);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
-        notifBuilder
-                .setContentTitle(title);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(tag, notifId, notifBuilder.build());
-
     }
 
     private void handleMessageNew(Bundle data) {
         String messageString = data.getString(Const.Notification.Data.CONTENT, "");
         Message message = Message.parseItem(messageString);
-
         if (message == null)
             return;
-
         message.saveOrUpdate();
-        long id;
-        Intent intent;
-        if(message.mRelation!=null){
-            id = message.mRelation.mIdDb;
-            intent = RelationActivity.getIntent(this, id);
-        }else{
-            id = message.mGroup.mIdDb;
-            intent = GroupActivity.getIntent(this, id);
+
+        String tag = Const.Notification.Id.MESSAGE + "_";
+        NotificationCompat.Builder notifBuilder;
+        if (message.mRelation != null) {
+            notifBuilder = getRelationNotification(message.mRelation);
+            tag += Const.Notification.Tag.RELATION + String.valueOf(message.mRelation.mIdDb);
+        } else {
+            notifBuilder = getGroupNotification(message.mGroup);
+            tag += Const.Notification.Tag.GROUP + String.valueOf(message.mGroup.mIdDb);
         }
 
-        String tag = String.valueOf(id);
-        // TODO Retrieve unread messages from the relation to update notif
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
-        notifBuilder
-                .setContentTitle("New messages from " + message.mSender.mDisplayName)
-                .setContentText(message.mContent);
+        String newMsgContent = message.mSender.mDisplayName + ": " + message.mContent;
+        setContent(notifBuilder, tag, newMsgContent, R.string.notif_content_message, R.plurals.notif_summary_message);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(tag, Const.Notification.Type.MESSAGE_NEW_ID, notifBuilder.build());
+        notificationManager.notify(tag, Const.Notification.Id.MESSAGE, notifBuilder.build());
 
         Intent broadcast = new Intent(Const.BroadcastEvent.EVENT_MESSAGES_UPDATED);
-        intent.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, id);
+        broadcast.putExtra(Const.BroadcastEvent.EXTRA_ITEM_ID, message.mIdDb);
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+    }
+
+    private void handleGroupEvent(String messageType, Bundle data) {
+        String groupString = data.getString(Const.Notification.Data.CONTENT, "");
+        String joinName = data.getString(Const.Notification.Data.DISPLAY_NAME);
+        Group group = Group.parseItem(groupString);
+        if (group == null) {
+            return;
+        }
+
+        int contentId = -1;
+        switch (messageType) {
+            case Const.Notification.Type.GROUP_JOIN:
+                contentId = R.string.notif_group_join;
+                group.mIsCurrentUserMember = true;
+                group.mIsCurrentUserPending = false;
+                break;
+            case Const.Notification.Type.GROUP_INVITE:
+                contentId = R.string.notif_group_invite;
+                group.mIsCurrentUserMember = false;
+                group.mIsCurrentUserPending = true;
+                break;
+            case Const.Notification.Type.GROUP_JOIN_ACCEPTED:
+                contentId = R.string.notif_group_join_accepted;
+                group.mIsCurrentUserMember = true;
+                group.mIsCurrentUserPending = false;
+                break;
+        }
+        group.saveOrUpdate();
+
+        String tag = Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(group.mIdDb);
+        NotificationCompat.Builder notifBuilder = getGroupNotification(group);
+        String newMsgContent = getString(contentId, group.mName, joinName);
+        setContent(notifBuilder, tag, newMsgContent, R.string.notif_content_event, R.plurals.notif_summary_event);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(tag, Const.Notification.Id.GROUP, notifBuilder.build());
+
     }
 
     private void handleCoachingEvent(String messageType, Bundle data) {
@@ -152,9 +133,7 @@ public class PushGcmListenerService extends GcmListenerService {
 
         if (relation == null)
             return;
-
         relation.saveOrUpdate();
-
         // Retrieve partner
         UserProfile partner;
         boolean isCurrentUserCoach = (relation.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this));
@@ -164,47 +143,100 @@ public class PushGcmListenerService extends GcmListenerService {
             partner = relation.mCoach;
         }
 
-        int notifId = 0;
-        int titleId = -1;
-        String tag = String.valueOf(relation.mIdDb);
+        int contentId = -1;
         switch (messageType) {
             case Const.Notification.Type.COACHING_RESPONSE:
-                notifId = Const.Notification.Type.COACHING_RESPONSE_ID;
-                if(relation.mIsAccepted){
-                    titleId = R.string.notif_coaching_accept;
+                if (relation.mIsAccepted) {
+                    contentId = R.string.notif_coaching_accept;
                 } else {
-                    titleId = R.string.notif_coaching_refuse;
+                    contentId = R.string.notif_coaching_refuse;
                 }
                 break;
             case Const.Notification.Type.COACHING_END:
-                notifId = Const.Notification.Type.COACHING_END_ID;
-                titleId = R.string.notif_coaching_end;
+                contentId = R.string.notif_coaching_end;
                 break;
             case Const.Notification.Type.COACHING_NEW:
-                notifId = Const.Notification.Type.COACHING_NEW_ID;
-                titleId = R.string.notif_coaching_new;
+                contentId = R.string.notif_coaching_new;
                 break;
         }
-        String title = getString(titleId, partner.mDisplayName);
 
-        Intent intent = RelationActivity.getIntent(this, relation.mIdDb);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        String tag = Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(relation.mIdDb);
+        NotificationCompat.Builder notifBuilder = getRelationNotification(relation);
 
-        NotificationCompat.Builder notifBuilder = getBasicNotification(pendingIntent);
-        notifBuilder
-                .setContentTitle(title);
+        String newMsgContent = getString(contentId, partner.mDisplayName);
+        setContent(notifBuilder, tag, newMsgContent, R.string.notif_content_event, R.plurals.notif_summary_event);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(tag, notifId, notifBuilder.build());
+        notificationManager.notify(tag, Const.Notification.Id.RELATION, notifBuilder.build());
     }
 
+    private void setContent(NotificationCompat.Builder notifBuilder, String tag, String newEventMessage, int contentResourceId, int summaryResourceId) {
+        ArrayList<String> historyList = SharedPrefUtil.getNotificationContent(this, tag);
+        historyList.add(0, newEventMessage);
+        int msgNumber = historyList.size();
+        if (msgNumber > 1) {
+            notifBuilder.setContentText(getString(contentResourceId, msgNumber));
+            NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
+            int index = 0;
+            for (String s : historyList) {
+                style.addLine(s);
+                if (index >= 2)
+                    break;
+                else
+                    index++;
+            }
+            if (index + 1 < msgNumber)
+                style.setSummaryText(getResources().getQuantityString(summaryResourceId, (msgNumber - 3), (msgNumber - 3)));
+            notifBuilder.setStyle(style);
+        } else {
+            notifBuilder.setContentText(newEventMessage);
+        }
+        SharedPrefUtil.putNotificationContent(this, tag, historyList);
+    }
 
-    private NotificationCompat.Builder getBasicNotification(PendingIntent pendingIntent){
+    private NotificationCompat.Builder getGroupNotification(Group gr) {
+        Intent intent = GroupActivity.getIntent(this, gr.mIdDb);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder builder = getBasicNotification();
+        builder
+                .setContentIntent(pendingIntent)
+                .setContentTitle("Group " + gr.mName);
+
+        return builder;
+    }
+
+    private NotificationCompat.Builder getRelationNotification(CoachingRelation cr) {
+        Intent intent = RelationActivity.getIntent(this, cr.mIdDb);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        UserProfile partner;
+        if (cr.mCoach.mIdDb == SharedPrefUtil.getConnectedUserId(this)) {
+            partner = cr.mTrainee;
+        } else {
+            partner = cr.mCoach;
+        }
+
+        NotificationCompat.Builder builder = getBasicNotification();
+        builder
+                .setContentIntent(pendingIntent)
+                .setContentTitle("Relation with " + partner.mDisplayName);
+
+        return builder;
+    }
+
+    private NotificationCompat.Builder getBasicNotification() {
+        int color;
+        if (Build.VERSION.SDK_INT > 23)
+            color = getResources().getColor(R.color.colorPrimary, null);
+        else
+            color = getResources().getColor(R.color.colorPrimary);
+
         return new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_send_24dp)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
+                .setSmallIcon(R.drawable.img_runners_white)
+                .setColor(color)
+                .setAutoCancel(true);
     }
 }

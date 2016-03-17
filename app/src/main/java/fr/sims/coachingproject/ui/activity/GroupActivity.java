@@ -146,6 +146,10 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mPager.setVisibility(View.VISIBLE);
 
         getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
+
+        // Remove Notification pending content
+        SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
+        SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.MESSAGE + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
     }
 
     @Override

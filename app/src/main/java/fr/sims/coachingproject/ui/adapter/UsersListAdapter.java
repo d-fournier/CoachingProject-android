@@ -19,13 +19,13 @@ import fr.sims.coachingproject.util.ImageUtil;
  * Created by Anthony Barbosa on 17/02/2016.
  */
 
-public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.ViewHolder> {
+public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.ViewHolder> {
 
     private List<UserProfile> userList;
     private OnItemClickListener mOnItemClickListener;
     private Context mCtx;
 
-    public UserProfileAdapter(Context context) {
+    public UsersListAdapter(Context context) {
         mCtx=context;
         this.userList = new ArrayList<>();
     }
@@ -109,9 +109,9 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
 
-        public void onItemLongClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
 
 }

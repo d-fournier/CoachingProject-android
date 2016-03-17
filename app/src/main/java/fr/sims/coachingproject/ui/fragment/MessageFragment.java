@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import fr.sims.coachingproject.loader.local.MessageLoader;
 import fr.sims.coachingproject.model.Message;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
-import fr.sims.coachingproject.ui.adapter.MessageAdapter;
+import fr.sims.coachingproject.ui.adapter.MessageListAdapter;
 import fr.sims.coachingproject.ui.view.ContextMenuRecyclerView;
 import fr.sims.coachingproject.util.Const;
 
@@ -33,6 +34,9 @@ import fr.sims.coachingproject.util.Const;
 
 public class MessageFragment extends GenericFragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Message>>, GenericBroadcastReceiver.BroadcastReceiverListener {
 
+    private static final String EXTRA_RELATION_ID = "fr.sims.coachingproject.extra.RELATION_ID";
+    private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
+    private static final String EXTRA_IS_PINNED = "fr.sims.coachingproject.extra.IS_PINNED";
 
     public static final String MESSAGES_TITLE = "Messages";
     public static final String PINNED_TITLE = "Favoris";
@@ -41,10 +45,10 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
     private SwipeRefreshLayout mRefreshLayout;
 
-    private TextView mNoMessageText;
+    private View mMessageListEmpty;
     private RecyclerView mMessagesRV;
 
-    private MessageAdapter mMessageAdapter;
+    private MessageListAdapter mMessageAdapter;
     private GenericBroadcastReceiver mBroadcastReceiver;
 
     private long mRelationId;
@@ -58,11 +62,9 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      */
     public static MessageFragment newRelationInstance(long relationId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
-// TODO Refactor
-        fragment.mRelationId = relationId;
-        fragment.mGroupId = -1;
-        fragment.mIsPinned = pinnedMessages;
         Bundle args = new Bundle();
+        args.putLong(EXTRA_RELATION_ID, relationId);
+        args.putBoolean(EXTRA_IS_PINNED, pinnedMessages);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,10 +76,9 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
      */
     public static MessageFragment newGroupInstance(long groupId, boolean pinnedMessages) {
         MessageFragment fragment = new MessageFragment();
-        fragment.mGroupId = groupId;
-        fragment.mRelationId = -1;
-        fragment.mIsPinned = pinnedMessages;
         Bundle args = new Bundle();
+        args.putLong(EXTRA_GROUP_ID, groupId);
+        args.putBoolean(EXTRA_IS_PINNED, pinnedMessages);
         fragment.setArguments(args);
         return fragment;
     }
@@ -110,16 +111,35 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_relation_chat;
+        return R.layout.fragment_message;
     }
 
+    @Override
+    protected void bindArguments(Bundle args) {
+        super.bindArguments(args);
+        mRelationId = args.getLong(EXTRA_RELATION_ID, -1);
+        mGroupId = args.getLong(EXTRA_GROUP_ID, -1);
+        mIsPinned = args.getBoolean(EXTRA_IS_PINNED, false);
+    }
 
     protected void bindView(View view) {
-        mNoMessageText = (TextView) view.findViewById(R.id.emptyList);
+        mMessageListEmpty = view.findViewById(R.id.message_list_empty);
+
+        if(mIsPinned) {
+            ((ImageView) view.findViewById(R.id.message_list_empty_picture)).setImageResource(R.drawable.ic_star_100dp);
+            ((TextView) view.findViewById(R.id.message_list_empty_title)).setText(R.string.message_pinned_list_empty_title);
+            View v = view.findViewById(R.id.message_list_empty_desc);
+            v.setVisibility(View.VISIBLE);
+            ((TextView) v).setText(R.string.message_pinned_list_empty_desc);
+        } else {
+            ((ImageView) view.findViewById(R.id.message_list_empty_picture)).setImageResource(R.drawable.ic_email_100dp);
+            ((TextView) view.findViewById(R.id.message_list_empty_title)).setText(R.string.message_list_empty_title);
+            view.findViewById(R.id.message_list_empty_desc).setVisibility(View.GONE);
+        }
 
         mMessagesRV = (RecyclerView) view.findViewById(R.id.message_list);
         mMessagesRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mMessageAdapter = new MessageAdapter(getContext(), mIsPinned);
+        mMessageAdapter = new MessageListAdapter(getContext(), mIsPinned);
         mMessagesRV.setAdapter(mMessageAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_relation_chat);
@@ -137,7 +157,6 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
         } else if (mGroupId != -1) {
             NetworkService.startActionGroupMessages(getContext(), mGroupId);
         }
-
     }
 
     @Override
@@ -151,8 +170,8 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
-        if (mNoMessageText != null) {
-            mNoMessageText.setVisibility(View.GONE);
+        if (mMessageListEmpty != null) {
+            mMessageListEmpty.setVisibility(View.GONE);
         }
         return new MessageLoader(getContext(), mRelationId, mGroupId);
     }
@@ -172,9 +191,11 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
 
         mMessageAdapter.setData(filteredData);
         if (mMessageAdapter.getItemCount() == 0) {
-            mNoMessageText.setVisibility(View.VISIBLE);
+            mMessagesRV.setVisibility(View.GONE);
+            mMessageListEmpty.setVisibility(View.VISIBLE);
         } else {
-            mNoMessageText.setVisibility(View.GONE);
+            mMessagesRV.setVisibility(View.VISIBLE);
+            mMessageListEmpty.setVisibility(View.GONE);
         }
     }
 

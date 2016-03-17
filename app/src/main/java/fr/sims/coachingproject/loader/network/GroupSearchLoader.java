@@ -11,7 +11,6 @@ import java.util.List;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 /**
  * Created by Benjamin on 01/03/2016.

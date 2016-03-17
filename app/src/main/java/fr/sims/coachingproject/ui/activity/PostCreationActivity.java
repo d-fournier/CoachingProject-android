@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_post_creation);
 
         ActionBar ab = getSupportActionBar();
-        if(ab != null)
+        if (ab != null)
             ab.setDisplayHomeAsUpEnabled(true);
 
         mTitleET = (EditText) findViewById(R.id.post_title);
@@ -106,6 +107,7 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
         mTitleET.setEnabled(false);
         mShortDescription.setEnabled(false);
         mContentET.setEnabled(false);
+        mSportsSpinner.setEnabled(false);
 
         JSONObject json = new JSONObject();
         try {
@@ -113,7 +115,8 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
             json.put("description", mShortDescription.getText());
             json.put("content", mContentET.getText());
             json.put("sport", ((Sport) mSportsSpinner.getSelectedItem()).mIdDb);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
         String body = json.toString();
 
         new CreateBlogPostTask().execute(body);
@@ -137,10 +140,10 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private class CreateBlogPostTask extends AsyncTask<String, Void, NetworkUtil.Response>{
+    private class CreateBlogPostTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
         protected NetworkUtil.Response doInBackground(String... params) {
-            if(params.length == 0)
+            if (params.length == 0)
                 return null;
             String body = params[0];
             String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.BLOG;
@@ -152,13 +155,23 @@ public class PostCreationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
-            if(response != null && response.isSuccessful()) {
+            if (response != null && response.isSuccessful()) {
+                int id = -1;
+                try {
+                    JSONObject json = new JSONObject(response.getBody());
+                    id = json.getInt("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (id != -1)
+                    PostReadActivity.startActivity(PostCreationActivity.this, id);
                 finish();
             } else {
                 mCreateBt.setEnabled(true);
                 mTitleET.setEnabled(true);
                 mShortDescription.setEnabled(true);
                 mContentET.setEnabled(true);
+                mSportsSpinner.setEnabled(true);
             }
         }
     }
