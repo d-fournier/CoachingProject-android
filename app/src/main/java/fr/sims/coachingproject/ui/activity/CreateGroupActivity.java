@@ -24,6 +24,7 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.network.SportLoader;
+import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.util.Const;
@@ -41,7 +42,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private EditText mNameET;
     private EditText mDescriptionET;
     private CheckBox mPrivateCB;
-    private CreateGroupActivity mActivity;
 
     public static void startActivity(Context ctx) {
         Intent intent = new Intent(ctx, CreateGroupActivity.class);
@@ -52,7 +52,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
-        mActivity = this;
+
         mCityAT = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
 
         mCityAT.setAdapter(new CityAutoCompleteAdapter(this, R.layout.list_item_city));
@@ -84,11 +84,11 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         Boolean mPrivate = mPrivateCB.isChecked();
         JSONObject json = new JSONObject();
         if (mName.length() == 0) {
-            Snackbar.make(mSendBtn, "Please enter a name.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mSendBtn, "Please enter a name", Snackbar.LENGTH_LONG).show();
         } else if (mDescription.length() == 0) {
-            Snackbar.make(mSendBtn, "Don't forget the description :)", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mSendBtn, "Don't forget the description", Snackbar.LENGTH_LONG).show();
         } else if (mCity.length() == 0) {
-            Snackbar.make(mSendBtn, "Please choose the city.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mSendBtn, "Please choose the city", Snackbar.LENGTH_LONG).show();
         } else {
             try {
                 json.put("sport", ID_sport);
@@ -110,13 +110,26 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         protected NetworkUtil.Response doInBackground(String... params) {
             String body = params[0];
             String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
-            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, connectedToken, body);
+            NetworkUtil.Response creation_response =  NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS, connectedToken, body);
+            NetworkUtil.Response group_response = new NetworkUtil.Response("", NetworkUtil.Response.UNKNOWN_ERROR);
+            if (creation_response.isSuccessful()) {
+                JSONObject json = null;
+                try {
+                    json = new JSONObject(creation_response.getBody());
+                    group_response =  NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.GROUPS+json.getInt("id"), connectedToken, body);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return group_response;
         }
 
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
             if (response.isSuccessful()) {
-                mActivity.finish();
+                Group g = Group.parseItem(response.getBody());
+                GroupActivity.startActivity(getApplicationContext(),g.mIdDb);
+                CreateGroupActivity.this.finish();
             } else {
                 Snackbar.make(mSendBtn, response.getBody(), Snackbar.LENGTH_LONG).show();
                 //TODO voir quoi afficher, là je mets juste le body de la réponse
@@ -145,8 +158,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
             //Add all sports got from server
             mSportsAdapter.addAll(mSportList);
-
-
         }
 
         @Override

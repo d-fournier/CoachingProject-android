@@ -129,12 +129,23 @@
                 android:layout_weight="1"
                 android:inputType="text" />
 
-            <Button
-                android:id="@+id/message_send"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/button_attach_file"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/standard_image_button_width"
                 android:layout_height="wrap_content"
-                android:text="@string/send_message" />
+                android:tint="@color/colorAccent"
+                android:contentDescription="@string/attach_file"
+                android:src="@drawable/ic_attach_file_24dp" />
+
+            <ImageButton
+                android:id="@+id/message_send"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/standard_image_button_width"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/send_message"
+                android:tint="@color/colorAccent"
+                android:src="@drawable/ic_send_24dp"/>
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
