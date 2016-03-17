@@ -118,7 +118,7 @@ public class MessageFragment extends GenericFragment implements SwipeRefreshLayo
     protected void bindArguments(Bundle args) {
         super.bindArguments(args);
         mRelationId = args.getLong(EXTRA_RELATION_ID, -1);
-        mGroupId = args.getLong(EXTRA_GROUP_ID, -1);;
+        mGroupId = args.getLong(EXTRA_GROUP_ID, -1);
         mIsPinned = args.getBoolean(EXTRA_IS_PINNED, false);
     }
 
