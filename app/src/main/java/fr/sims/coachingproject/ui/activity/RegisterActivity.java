@@ -390,7 +390,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterLevel
 
             String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + userId + "/";
             try {
-                MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()));
+                MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()),"PATCH");
                 InputStream in = getContentResolver().openInputStream(uploadFileUri);
                 multipart.addFilePart("picture", in, filename);
                 multipart.finish();

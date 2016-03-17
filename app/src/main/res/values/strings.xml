@@ -143,4 +143,5 @@
     <string name="not_in_group">You are not in the group</string>
     <string name="leave_admin">An admin cannot leave the group</string>
     <string name="attach_file">Attach file</string>
+    <string name="message_image">Message image</string>
 </resources>

@@ -52,6 +52,11 @@ public class Message extends Model {
     @SerializedName("is_pinned")
     public boolean mIsPinned;
 
+    @Column(name = "associated_file")
+    @Expose
+    @SerializedName("associated_file")
+    public String mAssociatedFile;
+
     public static Message[] parseList(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Message[] res = null;
@@ -158,6 +163,7 @@ public class Message extends Model {
         this.mGroup = message.mGroup;
         this.mTime = message.mTime;
         this.mIsPinned = message.mIsPinned;
+        this.mAssociatedFile = message.mAssociatedFile;
     }
 
     public Message saveOrUpdate() {

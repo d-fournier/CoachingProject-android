@@ -1,12 +1,15 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,11 +34,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonVi
 
         protected TextView mContent;
         protected TextView mDateTV;
+        private ImageView mImageView;
 
         public CommonViewHolder(View v) {
             super(v);
             this.mContent = (TextView) v.findViewById(R.id.message_content);
             this.mDateTV = (TextView) v.findViewById(R.id.message_time);
+            this.mImageView = (ImageView) v.findViewById(R.id.message_image);
             v.setLongClickable(true);
         }
     }
@@ -105,6 +110,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CommonVi
 
         vh.mContent.setText(message.mContent);
         vh.mDateTV.setText(mDateFormat.format(message.mTime));
+
+        if(message.mAssociatedFile != null && !message.mAssociatedFile.isEmpty()){
+            Picasso.with(mContext).load(message.mAssociatedFile).into(vh.mImageView);
+            vh.mImageView.setVisibility(View.VISIBLE);
+        }
 
         if(getItemViewType(position) == MESSAGE_ITEM)
             ImageUtil.loadProfilePicture(mContext, message.mSender.mPicture, ((OtherUserViewHolder) vh).mPictureIV);
