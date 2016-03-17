@@ -128,6 +128,7 @@
     <string name="relations_list_empty_desc">Search potentials coaches or wait requests from trainees to improve their skills !\n You need to be connected to send a request or receive one.</string>
     <string name="group_list_empty_title">You are not part of any group.</string>
     <string name="group_list_empty_desc">Search groups or create yours to share your skills and your training sessions with others !\n You need to be connected to join or create a group.</string>
+    <string name="message_list_empty_title">No messages to display</string>
 
     <string name="private_group">This group is private</string>
     <string name="name">Name</string>
