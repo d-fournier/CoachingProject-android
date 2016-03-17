@@ -36,7 +36,6 @@ import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.HomePagerAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
-import fr.sims.coachingproject.util.SharedPrefUtil;
 
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 

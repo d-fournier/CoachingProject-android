@@ -3,8 +3,6 @@ package fr.sims.coachingproject.loader.network;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.util.List;
-
 import fr.sims.coachingproject.model.BlogPost;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
