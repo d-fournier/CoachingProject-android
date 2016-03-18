@@ -95,11 +95,10 @@
                 android:hint="@string/city" />
 
             <Button
-                android:id="@+id/register_date"
+                android:id="@+id/register_date_button"
                 style="@style/Platform.Widget.AppCompat.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="showDatePickerDialog"
                 android:text="@string/pick_date" />
 
             <TextView
@@ -114,7 +113,6 @@
                 android:layout_height="80dp"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:clickable="true"
-                android:onClick="selectImage"
                 android:scaleType="centerCrop"
                 android:src="@drawable/upload_image" />
 
@@ -178,12 +176,12 @@
                 android:text="@string/agree_to_coach" />
 
             <Button
+                android:id="@+id/register_button"
                 style="@style/Base.Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:onClick="register"
                 android:text="@string/register" />
 
         </LinearLayout>
