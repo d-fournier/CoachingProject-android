@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_send_group_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/layout_message_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/message_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/button_attach_file"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="@dimen/standard_image_button_width"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorAccent"
+            android:contentDescription="@string/attach_file"
+            android:src="@drawable/ic_attach_file_24dp" />
+
+        <ImageButton
+            android:id="@+id/message_send"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="@dimen/standard_image_button_width"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/send_message"
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_send_24dp"/>
+    </LinearLayout>
+
+</android.support.v7.widget.Toolbar>
