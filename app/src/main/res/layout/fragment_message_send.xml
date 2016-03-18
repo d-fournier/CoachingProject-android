@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/message_send_group_toolbar"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_send_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:background="@drawable/media_bkg"
+        android:id="@+id/message_picture_preview"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:padding="@dimen/small_margin"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/message_picture_remove"
+        android:src="@drawable/ic_clear_48dp"
+        android:layout_alignRight="@id/message_picture_preview"
+        android:layout_alignEnd="@id/message_picture_preview"
+        android:layout_alignTop="@id/message_picture_preview"
+        android:layout_width="@dimen/standard_margin"
+        android:layout_height="@dimen/standard_margin"
+        android:layout_margin="@dimen/standard_margin"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/layout_message_group"
+        android:layout_below="@id/message_picture_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="?attr/actionBarSize"
         android:gravity="center_vertical"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <EditText
@@ -38,4 +63,4 @@
             android:src="@drawable/ic_send_24dp"/>
     </LinearLayout>
 
-</android.support.v7.widget.Toolbar>
+</RelativeLayout>

@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +47,8 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     private ImageButton mSendBtn;
     private ImageButton mAttachFileButton;
     private EditText mMessageET;
+    private ImageView mPicturePreview;
+    private ImageButton mRemovePictureBt;
     private View mMainLayout;
 
 
@@ -102,7 +107,10 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     protected void bindView(View view) {
         super.bindView(view);
         // Send Message View
-        mMainLayout = view;
+        mMainLayout = view.findViewById(R.id.message_send_toolbar);
+        mPicturePreview = (ImageView) view.findViewById(R.id.message_picture_preview);
+        mRemovePictureBt = (ImageButton) view.findViewById(R.id.message_picture_remove);
+        mRemovePictureBt.setOnClickListener(this);
         mSendBtn = (ImageButton) view.findViewById(R.id.message_send);
         mSendBtn.setOnClickListener(this);
         mAttachFileButton = (ImageButton) view.findViewById(R.id.button_attach_file);
@@ -139,7 +147,16 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             case R.id.button_attach_file:
                 selectFile();
                 break;
+            case R.id.message_picture_remove:
+                clearMedia();
+                break;
         }
+    }
+
+    private void clearMedia() {
+        mFileName = null;
+        mUploadFileUri = null;
+        updateImagePreview();
     }
 
     private void sendMessage() {
@@ -150,13 +167,13 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     private void selectFile() {
         if (Build.VERSION.SDK_INT < 19) {
             Intent intent = new Intent();
-            intent.setType("*/*");
+            intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), Const.WebServer.PICK_IMAGE_REQUEST);
         } else {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
+            intent.setType("image/*");
             startActivityForResult(intent, Const.WebServer.PICK_IMAGE_AFTER_KITKAT_REQUEST);
         }
     }
@@ -190,10 +207,23 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
                 // provider-specific, and might not necessarily be the file name.
                 mFileName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-
             }
         } finally {
             cursor.close();
+        }
+
+        // Display image
+        updateImagePreview();
+    }
+
+    private void updateImagePreview() {
+        if(mUploadFileUri != null) {
+            Picasso.with(getContext()).load(mUploadFileUri).into(mPicturePreview);
+            mPicturePreview.setVisibility(View.VISIBLE);
+            mRemovePictureBt.setVisibility(View.VISIBLE);
+        } else {
+            mPicturePreview.setVisibility(View.GONE);
+            mRemovePictureBt.setVisibility(View.GONE);
         }
     }
 
@@ -238,6 +268,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             mAttachFileButton.setEnabled(true);
             if (response != null && response.isSuccessful()) {
                 mMessageET.setText("");
+                clearMedia();
                 if (mGroupId != -1)
                     NetworkService.startActionGroupMessages(getContext(), mGroupId);
                 else if (mRelationId != -1)

@@ -167,7 +167,7 @@
     <FrameLayout
         android:id="@+id/relation_send_message_fragment"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>
