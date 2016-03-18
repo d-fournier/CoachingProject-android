@@ -44,6 +44,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private List<List<SportLevel>> mLevelsLists;
     private List<ArrayAdapter<SportLevel>> mLevelsAdapters;
 
+    private List<Long> mLevelsSelected;
+
     private SportLoaderCallbacks mSportLoader;
     private List<Sport> mSportsList;
 
@@ -73,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         mLevelsLists = new ArrayList<>();
         mLevelsAdapters = new ArrayList<>();
+        mLevelsSelected = new ArrayList<>();
 
         mSportsList = new ArrayList<>();
         mSportLevelList = new ArrayList<>();
@@ -126,6 +129,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //On set l'adapter sur le spinner des levels
         mLevelsLists.add(new ArrayList<SportLevel>());
+        mLevelsSelected.add((long) -1);
         ArrayAdapter<SportLevel> levelAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, mLevelsLists.get(mAddedLevelsNumber));
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -161,6 +165,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         return;
                     }
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        levelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LinearLayout levelView = (LinearLayout) parent.getParent();
+                int viewPosition = mLevelViewsChildren.indexOf(levelView);
+                mLevelsSelected.set(viewPosition,((SportLevel) parent.getSelectedItem()).mIdDb);
             }
 
             @Override
