@@ -59,6 +59,7 @@
     <string name="first_launch_bkg_cd">First launch tutorial background</string>
     <string name="send_message">Send</string>
 
+
     <!-- Notification -->
     <string name="notif_coaching_accept">%1$s has accepted your coaching request</string>
     <string name="notif_coaching_refuse">%1$s has refused your coaching request</string>
@@ -111,6 +112,8 @@
     <string name="invitations">My invitations</string>
     <string name="picture">Picture</string>
     <string name="nav_blog_post_new">New blog post</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_confirm">Confirm</string>
 
     <string name="post_preview">Preview</string>
     <string name="prompt_title">Title</string>
