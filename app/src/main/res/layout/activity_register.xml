@@ -11,26 +11,6 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <LinearLayout
-            android:id="@+id/register_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/TextAppearance.Design.Error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cannot_connect_server" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="retryToConnect"
-                android:text="@string/retry" />
-        </LinearLayout>
-
-
-        <LinearLayout
             android:id="@+id/register_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

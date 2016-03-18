@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private static final String SPORT_ID = "sportId";
     private static final String VIEW_POSITION = "viewPosition";
-    private static final String ADD_LAYOUT = "addLayout";
 
     private static int MAX_LEVELS_NUMBER;
 
@@ -45,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private List<ArrayAdapter<SportLevel>> mLevelsAdapters;
 
     private List<Long> mLevelsSelected;
+    private boolean mSameSportSelectedTwice;
 
     private SportLoaderCallbacks mSportLoader;
     private List<Sport> mSportsList;
@@ -76,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mLevelsLists = new ArrayList<>();
         mLevelsAdapters = new ArrayList<>();
         mLevelsSelected = new ArrayList<>();
+        mSameSportSelectedTwice = false;
 
         mSportsList = new ArrayList<>();
         mSportLevelList = new ArrayList<>();
@@ -101,10 +103,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.register_remove_level_button:
                 if (mAddedLevelsNumber > 0) {
-                    mLevelViewsParent.removeViewAt(mAddedLevelsNumber - 1);
-                    mLevelViewsChildren.remove(mAddedLevelsNumber - 1);
-                    mLevelsLists.remove(mAddedLevelsNumber - 1);
-                    mLevelsAdapters.remove(mAddedLevelsNumber - 1);
+                    //We remove the last element of all our lists
+                    mLevelViewsParent.removeViewAt(mAddedLevelsNumber - 1);//This is the parent layout
+                    mLevelViewsChildren.remove(mAddedLevelsNumber - 1);//This is the list of layouts containing the two spinners
+                    mLevelsLists.remove(mAddedLevelsNumber - 1);//This is the list of levels list in each spinner of levels
+                    mLevelsAdapters.remove(mAddedLevelsNumber - 1);//This is the list of all the adapters for each spinner of levels
+                    mLevelsSelected.remove(mAddedLevelsNumber - 1);//This is the list of the all the selected levels
                     mAddedLevelsNumber--;
                     mAddLevelButton.setEnabled(true);
                     getLoaderManager().destroyLoader(Const.Loaders.LEVEL_LOADER_ID);
@@ -162,9 +166,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     Sport selectedSport = (Sport) sportSpinner.getSelectedItem();
                     if (selectedSport == currentSport && mLevelViewsChildren.indexOf(l) != viewPosition) {
                         Snackbar.make(mLevelViewsParent, "You cannot have two levels in the same sport", Snackbar.LENGTH_LONG).show();
+                        mSameSportSelectedTwice = true;
                         return;
                     }
                 }
+                mSameSportSelectedTwice = false;
             }
 
             @Override
@@ -178,7 +184,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LinearLayout levelView = (LinearLayout) parent.getParent();
                 int viewPosition = mLevelViewsChildren.indexOf(levelView);
-                mLevelsSelected.set(viewPosition,((SportLevel) parent.getSelectedItem()).mIdDb);
+                mLevelsSelected.set(viewPosition, ((SportLevel) parent.getSelectedItem()).mIdDb);
             }
 
             @Override
@@ -207,6 +213,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 mSportsList.clear();
                 mSportsList.addAll(data);
                 MAX_LEVELS_NUMBER = mSportsList.size();
+            }else{
+                Toast.makeText(getApplicationContext(),getString(R.string.no_connectivity),Toast.LENGTH_LONG).show();
+                finish();
             }
         }
 
