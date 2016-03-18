@@ -164,33 +164,10 @@
     </FrameLayout>
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/message_send_layout"
+    <FrameLayout
+        android:id="@+id/relation_send_message_fragment"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+        android:layout_gravity="bottom"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/message_content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/message_send"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/send_message" />
-        </LinearLayout>
-
-    </android.support.v7.widget.Toolbar>
 </android.support.design.widget.CoordinatorLayout>

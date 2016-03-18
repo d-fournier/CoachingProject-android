@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
@@ -20,9 +22,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,15 +29,12 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.local.RelationLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.UserProfile;
-import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.ui.adapter.pager.RelationPagerAdapter;
+import fr.sims.coachingproject.ui.fragment.MessageSendFragment;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -48,20 +44,18 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
     private static final String EXTRA_COACHING_RELATION_ID = "fr.sims.coachingproject.extra.COACHING_RELATION_ID";
 
-    RelationPagerAdapter mRelationPagerAdapter;
-    ViewPager mViewPager;
-    TabLayout mTabLayout;
-    NestedScrollView mInvitationLayout;
-    TextView mRefusedInvitationTV;
-    // Send message views
-    Toolbar mSendMessageTB;
-    Button mSendBtn;
-    EditText mMessageET;
+    private RelationPagerAdapter mRelationPagerAdapter;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private NestedScrollView mInvitationLayout;
+    private TextView mRefusedInvitationTV;
 
-    AlertDialog.Builder alertDialog;
+    private MessageSendFragment mSendMessFragment;
 
-    CoachingRelation mRelation;
-    UserProfile mPartner;
+    private AlertDialog.Builder alertDialog;
+
+    private CoachingRelation mRelation;
+    private UserProfile mPartner;
     boolean mIsCurrentUserCoach;
     private long mRelationId;
 
@@ -109,13 +103,15 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mRefusedInvitationTV = ((TextView) findViewById(R.id.coaching_invitation_refused));
         findViewById(R.id.profile_layout).setOnClickListener(this);
 
-        // Send Message View
-        mSendMessageTB = (Toolbar) findViewById(R.id.message_send_layout);
-        mSendBtn = (Button) findViewById(R.id.message_send);
-        mSendBtn.setOnClickListener(this);
-        mMessageET = (EditText) findViewById(R.id.message_content);
+        // Manage send message Fragment
+        String tag = MessageSendFragment.getRelationTag(mRelationId);
+        FragmentManager fm = getSupportFragmentManager();
+        mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
+        if(mSendMessFragment == null) {
+            mSendMessFragment = MessageSendFragment.newRelationInstance(mRelationId);
+        }
+        fm.beginTransaction().replace(R.id.relation_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
 
-        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -135,6 +131,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         alertDialog= new AlertDialog.Builder(this);
         alertDialog.setPositiveButton(R.string.button_confirm, dialogClickListener)
                 .setNegativeButton(R.string.button_cancel, dialogClickListener);
+
+        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
@@ -207,8 +205,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setVisibility(View.GONE);
         mInvitationLayout.setVisibility(View.GONE);
         mRefusedInvitationTV.setVisibility(View.GONE);
-        mSendMessageTB.setVisibility(View.GONE);
         invalidateOptionsMenu();
+        boolean displaySendMessage = false;
 
         if (mRelation.mIsPending) {
             mInvitationLayout.setVisibility(View.VISIBLE);
@@ -225,16 +223,22 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             if (mRelation.mIsAccepted) {
                 mTabLayout.setVisibility(View.VISIBLE);
                 mViewPager.setVisibility(View.VISIBLE);
-                mSendMessageTB.setVisibility(View.VISIBLE);
+                displaySendMessage = true;
             } else {
                 mRefusedInvitationTV.setVisibility(View.VISIBLE);
             }
         }
+
+        if(displaySendMessage)
+            mSendMessFragment.show();
+        else
+            mSendMessFragment.hide();
+
+
     }
 
     @Override
     public void onLoaderReset(Loader<CoachingRelation> loader) {
-
     }
 
     @Override
@@ -251,34 +255,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             case R.id.coaching_invitation_refuse:
                 new AnswerInvitationTask().execute(false);
                 break;
-            case R.id.message_send:
-                sendMessage();
-            default:
 
         }
-    }
-
-    private void sendMessage() {
-        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        in.hideSoftInputFromWindow(mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-        String message = mMessageET.getText().toString();
-
-        String body = "";
-
-        try {
-            JSONObject parent = new JSONObject();
-            parent.put("content", message);
-            parent.put("to_relation", "" + mRelationId);
-            parent.put("is_pinned", false);
-
-            body = parent.toString(2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        new SendRequestTask().execute(body);
-
     }
 
     private class PutEndRelationTask extends AsyncTask<Boolean, Void, Boolean> {
@@ -378,31 +356,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             }
         }
 
-    }
-
-
-    private class SendRequestTask extends AsyncTask<String, Void, NetworkUtil.Response> {
-        @Override
-        protected NetworkUtil.Response doInBackground(String... params) {
-            String connectedToken = SharedPrefUtil.getConnectedToken(getApplicationContext());
-            return NetworkUtil.post(Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES, connectedToken, params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(NetworkUtil.Response response) {
-            mSendBtn.setEnabled(true);
-            mMessageET.setText("");
-            if (response.isSuccessful()) {
-                NetworkService.startActionRelationMessages(getApplicationContext(), mRelationId);
-            } else {
-                Snackbar.make(mViewPager, response.getBody(), Snackbar.LENGTH_LONG);
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mSendBtn.setEnabled(false);
-        }
     }
 }
 

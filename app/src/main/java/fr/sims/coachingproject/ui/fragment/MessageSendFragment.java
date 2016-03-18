@@ -1,20 +1,27 @@
 package fr.sims.coachingproject.ui.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.service.NetworkService;
@@ -55,7 +62,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     }
 
     /***
-     * @param relationId     Id of relation
+     * @param relationId Id of relation
      * @return the fragment
      */
     public static MessageSendFragment newRelationInstance(long relationId) {
@@ -67,7 +74,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     }
 
     /***
-     * @param groupId        Id of group
+     * @param groupId Id of group
      * @return
      */
     public static MessageSendFragment newGroupInstance(long groupId) {
@@ -104,10 +111,28 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
         mUploadFileUri = null;
     }
 
+    public void hide() {
+        if (!this.isHidden())
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
+                    .hide(MessageSendFragment.this)
+                    .commitAllowingStateLoss();
+    }
+
+    public void show() {
+        if (this.isHidden())
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
+                    .show(MessageSendFragment.this)
+                    .commitAllowingStateLoss();
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch(id) {
+        switch (id) {
             case R.id.message_send:
                 sendMessage();
                 break;
@@ -174,6 +199,14 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
 
     private class SendMessageTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
+        protected void onPreExecute() {
+            InputMethodManager in = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mSendBtn.setEnabled(false);
+            mAttachFileButton.setEnabled(false);
+        }
+
+        @Override
         protected NetworkUtil.Response doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
@@ -184,10 +217,10 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             try {
                 MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + connectedToken, "POST");
                 multipart.addFormField("content", params[0]);
-                if(mGroupId != -1)
-                    multipart.addFormField("to_group",String.valueOf(mGroupId));
+                if (mGroupId != -1)
+                    multipart.addFormField("to_group", String.valueOf(mGroupId));
                 else if (mRelationId != -1)
-                    multipart.addFormField("to_relation",String.valueOf(mRelationId));
+                    multipart.addFormField("to_relation", String.valueOf(mRelationId));
                 if (mUploadFileUri != null) {
                     InputStream in = getContext().getContentResolver().openInputStream(mUploadFileUri);
                     multipart.addFilePart("associated_file", in, mFileName);
@@ -199,24 +232,20 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
 
         }
 
-
         @Override
         protected void onPostExecute(NetworkUtil.Response response) {
             mSendBtn.setEnabled(true);
             mAttachFileButton.setEnabled(true);
             if (response != null && response.isSuccessful()) {
                 mMessageET.setText("");
-                NetworkService.startActionGroupMessages(getContext(), mGroupId);
+                if (mGroupId != -1)
+                    NetworkService.startActionGroupMessages(getContext(), mGroupId);
+                else if (mRelationId != -1)
+                    NetworkService.startActionRelationMessages(getContext(), mRelationId);
             } else {
                 Snackbar.make(mMainLayout, "Error", Snackbar.LENGTH_LONG);
             }
         }
-
-        @Override
-        protected void onPreExecute() {
-            mSendBtn.setEnabled(false);
-            mAttachFileButton.setEnabled(false);
-        }
     }
-
 }
+

@@ -52,6 +52,8 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     private FloatingActionButton mButtonJoin;
 
+    private MessageSendFragment mSendMessFragment;
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -120,11 +122,11 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         // Manage send message Fragment
         String tag = MessageSendFragment.getGroupTag(mGroupIdDb);
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        if(fragment == null) {
-            fragment = MessageSendFragment.newGroupInstance(mGroupIdDb);
+        mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
+        if(mSendMessFragment == null) {
+            mSendMessFragment = MessageSendFragment.newGroupInstance(mGroupIdDb);
         }
-        fm.beginTransaction().replace(R.id.group_send_message_fragment, fragment, tag).commit();
+        fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).commit();
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
@@ -151,8 +153,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     public void hideAllElements() {
         mButtonJoin.setVisibility(View.GONE);
         mButtonJoin.setEnabled(false);
-        // TODO Hide Message Toolbar
-//        mMessageToolbar.setVisibility(View.GONE);
+        mSendMessFragment.hide();
     }
 
     public void setMembersFragmentElementsVisibility() {
@@ -162,8 +163,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 mButtonJoin.setEnabled(true);
                 mButtonJoin.show();
-                // TODO display Message Toolbar
-//                mMessageToolbar.setVisibility(View.GONE);
+                mSendMessFragment.hide();
             }
         } else {
             hideAllElements();
@@ -175,21 +175,18 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
             if (mGroup.mIsCurrentUserMember) {
                 mButtonJoin.setVisibility(View.GONE);
                 mButtonJoin.setEnabled(false);
-                // TODO Display Message Toolbar
-//                mMessageToolbar.setVisibility(View.VISIBLE);
+                mSendMessFragment.show();
             } else if (mGroup.mIsCurrentUserPending) {
                 hideAllElements();
             } else {
                 mButtonJoin.setEnabled(true);
                 mButtonJoin.show();
-                // TODO Hide Message Toolbar
-//                mMessageToolbar.setVisibility(View.GONE);
+                mSendMessFragment.hide();
             }
         } else {
             mButtonJoin.setEnabled(false);
             mButtonJoin.hide();
-            // TODO Hide Message Toolbar
-//            mMessageToolbar.setVisibility(View.GONE);
+            mSendMessFragment.hide();
         }
 
     }
