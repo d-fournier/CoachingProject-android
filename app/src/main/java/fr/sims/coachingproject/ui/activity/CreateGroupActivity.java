@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
-import fr.sims.coachingproject.loader.network.SportLoader;
+import fr.sims.coachingproject.loader.local.SportLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Sport;
 import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;

@@ -11,11 +11,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import javax.net.ssl.HttpsURLConnection;
 
 import fr.sims.coachingproject.model.CoachingRelation;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.model.Sport;
+import fr.sims.coachingproject.model.SportLevel;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -23,6 +27,8 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 public class NetworkService extends IntentService {
+    public static final String ACTION_LEVELS = "fr.sims.coachingproject.action.LEVELS";
+    public static final String ACTION_SPORTS = "fr.sims.coachingproject.action.SPORTS";
     public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
     public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.RELATION_MESSAGES";
@@ -46,6 +52,18 @@ public class NetworkService extends IntentService {
     public static void startActionConnectedUserInfo(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
         intent.setAction(ACTION_CONNECTED_USER_INFO);
+        context.startService(intent);
+    }
+
+    public static void startActionSports(Context context) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_SPORTS);
+        context.startService(intent);
+    }
+
+    public static void startActionLevels(Context context) {
+        Intent intent = new Intent(context, NetworkService.class);
+        intent.setAction(ACTION_LEVELS);
         context.startService(intent);
     }
 
@@ -106,6 +124,12 @@ public class NetworkService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             switch (action) {
+                case ACTION_SPORTS:
+                    handleActionSports();
+                    break;
+                case ACTION_LEVELS:
+                    handleActionLevels();
+                    break;
                 case ACTION_CONNECTED_USER_INFO:
                     handleActionConnectedUserInfo();
                     break;
@@ -134,6 +158,48 @@ public class NetworkService extends IntentService {
             Intent endIntent = new Intent(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION);
             endIntent.putExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME, action);
             LocalBroadcastManager.getInstance(this).sendBroadcast(endIntent);
+        }
+    }
+
+    private void handleActionSports() {
+        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
+        NetworkUtil.Response response = NetworkUtil.get(request,null);
+
+        if (response.isSuccessful()) {
+            Sport[] sList = Sport.parseList(response.getBody());
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(Sport s : sList){
+                    s.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+        }
+    }
+
+    private void handleActionLevels() {
+        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.LEVELS;
+        NetworkUtil.Response response = NetworkUtil.get(request,null);
+
+        if (response.isSuccessful()) {
+            SportLevel[] slList = SportLevel.parseList(response.getBody());
+
+            ActiveAndroid.beginTransaction();
+            try {
+                for(SportLevel sl : slList){
+                    sl.saveOrUpdate();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
         }
     }
 
