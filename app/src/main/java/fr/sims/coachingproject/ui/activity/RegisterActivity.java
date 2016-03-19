@@ -155,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     mLevelsSelected.remove(mAddedLevelsNumber - 1);//This is the list of the all the selected levels
                     mAddedLevelsNumber--;
                     mAddLevelButton.setEnabled(true);
+                    checkSelectedSports();
                     getLoaderManager().destroyLoader(Const.Loaders.LEVEL_LOADER_ID);
                 }
                 break;
@@ -226,7 +227,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     Spinner sportSpinner = (Spinner) l.findViewById(R.id.register_spinner_sport);
                     Sport selectedSport = (Sport) sportSpinner.getSelectedItem();
                     if (selectedSport == currentSport && mLevelViewsChildren.indexOf(l) != viewPosition) {
-                        Snackbar.make(mLevelViewsParent, "You cannot have two levels in the same sport", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mLevelViewsParent, R.string.same_level_selected, Snackbar.LENGTH_LONG).show();
                         mSameSportSelectedTwice = true;
                         return;
                     }
@@ -259,6 +260,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mAddedLevelsNumber++;
 
         return levelView;
+    }
+
+    public void checkSelectedSports() {
+        List<Sport> sportSelectedList = new ArrayList<>();
+        for (LinearLayout layout : mLevelViewsChildren) {
+            Spinner firstSportSpinner = (Spinner) layout.findViewById(R.id.register_spinner_sport);
+            sportSelectedList.add((Sport) firstSportSpinner.getSelectedItem());
+        }
+        for(Sport firstSport : sportSelectedList){
+            for(Sport secondSport : sportSelectedList){
+                if(firstSport == secondSport && sportSelectedList.indexOf(firstSport) != sportSelectedList.indexOf(secondSport)){
+                    mSameSportSelectedTwice = true;
+                    return;
+                }
+            }
+        }
+        mSameSportSelectedTwice = false;
+
+
     }
 
 
@@ -311,6 +331,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void register() {
+
+        if (mSameSportSelectedTwice) {
+            Snackbar.make(mLevelViewsParent, R.string.same_level_selected, Snackbar.LENGTH_LONG).show();
+            return;
+        }
         String username, displayName, password, repeatPassword, email, city, description, date;
 
         if ((username = ((EditText) findViewById(R.id.register_username)).getText().toString()).isEmpty() && username.matches("/[a-zA-Z0-9@.+-_]+/")) {
@@ -401,18 +426,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             SharedPrefUtil.putConnectedToken(getApplicationContext(), token);
             SharedPrefUtil.putConnectedUserId(getApplicationContext(), up.mIdDb);
 
-            //Upload image
-            String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + up.mIdDb + Const.WebServer.SEPARATOR;
-            try {
-                MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()),"PATCH");
-                InputStream in = getContentResolver().openInputStream(mUploadFileUri);
-                multipart.addFilePart("picture", in, mFileName);
-                NetworkUtil.Response response_image = multipart.finish();
+            if(mUploadFileUri!=null) {
+                //Upload image
+                String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.USER_PROFILE + up.mIdDb + Const.WebServer.SEPARATOR;
+                try {
+                    MultipartUtility multipart = new MultipartUtility(url, "UTF-8", "Token " + SharedPrefUtil.getConnectedToken(getApplicationContext()), "PATCH");
+                    InputStream in = getContentResolver().openInputStream(mUploadFileUri);
+                    multipart.addFilePart("picture", in, mFileName);
+                    NetworkUtil.Response response_image = multipart.finish();
 
-                return response_image.isSuccessful();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
+                    return response_image.isSuccessful();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
         }
 

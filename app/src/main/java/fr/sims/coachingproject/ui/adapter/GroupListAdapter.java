@@ -24,7 +24,9 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
 
     private static final int LIST_INVITATIONS = 0;
     private List<Group> mInvitationsList;
-    private static final int LIST_GROUP = 1;
+    private static final int LIST_JOINS = 1;
+    private List<Group> mJoinsList;
+    private static final int LIST_GROUP = 2;
     private List<Group> mGroupList;
 
     private OnGroupClickListener mListener = null;
@@ -34,11 +36,12 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
         mCtx = ctx;
         mGroupList = new ArrayList<>();
         mInvitationsList = new ArrayList<>();
+        mJoinsList = new ArrayList<>();
     }
 
     @Override
     public int getSectionCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -51,13 +54,15 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
             case LIST_GROUP:
                 total = mGroupList.size();
                 break;
+            case LIST_JOINS:
+                total = mJoinsList.size();
         }
         return total;
     }
 
     @Override
     public int getItemViewType(int section, int relativePosition, int absolutePosition) {
-        return (section == LIST_INVITATIONS ? LIST_INVITATIONS : LIST_GROUP);
+        return section;
     }
 
     @Override
@@ -70,6 +75,9 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
                 break;
             case LIST_INVITATIONS:
                 resId = R.string.invitations;
+                break;
+            case LIST_JOINS:
+                resId = R.string.joins;
                 break;
         }
         vh.mTitle.setText(resId);
@@ -125,7 +133,7 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_group_invitation, parent, false);
             vh = new InvitationViewHolder(v);
-        } else if(viewType == LIST_GROUP){
+        } else if(viewType == LIST_GROUP || viewType == LIST_JOINS){
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_group, parent, false);
             vh = new GroupViewHolder(v);
@@ -141,6 +149,9 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
                 break;
             case LIST_GROUP:
                 gr = mGroupList.get(relativePosition);
+                break;
+            case LIST_JOINS:
+                gr = mJoinsList.get(relativePosition);
                 break;
         }
         return gr;
@@ -168,6 +179,17 @@ public class GroupListAdapter extends SectionedRecyclerViewAdapter<GroupListAdap
 
     public void clearInvitations() {
         mInvitationsList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setJoins(List<Group> gList){
+        mJoinsList.clear();
+        mJoinsList.addAll(gList);
+        notifyDataSetChanged();
+    }
+
+    public void clearJoins(){
+        mJoinsList.clear();
         notifyDataSetChanged();
     }
 

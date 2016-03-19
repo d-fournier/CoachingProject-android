@@ -20,6 +20,7 @@ import java.util.List;
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.local.GroupLoader;
 import fr.sims.coachingproject.loader.network.InvitationLoader;
+import fr.sims.coachingproject.loader.network.JoinLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;
 import fr.sims.coachingproject.service.NetworkService;
@@ -46,6 +47,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
 
     private GroupLoaderCallbacks mGroupLoader;
     private InvitationLoaderCallbacks mInvitationLoader;
+    private JoinLoaderCallbacks mJoinLoader;
 
     public GroupListFragment() {
     }
@@ -68,8 +70,10 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
         super.onActivityCreated(savedInstanceState);
         mGroupLoader = new GroupLoaderCallbacks();
         mInvitationLoader = new InvitationLoaderCallbacks();
+        mJoinLoader = new JoinLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
         getLoaderManager().initLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
+        getLoaderManager().initLoader(Const.Loaders.JOIN_LOADER_ID, null, mJoinLoader);
     }
 
     @Override
@@ -131,6 +135,8 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     @Override
     public void onRefresh() {
         NetworkService.startActionUserGroups(getContext());
+        getLoaderManager().restartLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
+        getLoaderManager().restartLoader(Const.Loaders.JOIN_LOADER_ID, null, mJoinLoader);
     }
 
     @Override
@@ -214,6 +220,26 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
                 mGroupAdapter.setInvitations(data);
             } else {
                 mGroupAdapter.clearInvitations();
+            }
+            updateEmptyList();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Group>> loader) { }
+    }
+
+    public class JoinLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
+        @Override
+        public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
+            return new JoinLoader(getContext());
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
+            if (data != null) {
+                mGroupAdapter.setJoins(data);
+            } else {
+                mGroupAdapter.clearJoins();
             }
             updateEmptyList();
         }
