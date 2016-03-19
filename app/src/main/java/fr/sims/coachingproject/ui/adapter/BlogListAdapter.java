@@ -125,9 +125,11 @@ public class BlogListAdapter extends RecyclerView.Adapter<BlogListAdapter.ViewHo
     }
 
     public void setData(List<BlogPost> data) {
-        mBlogPostList.clear();
-        mBlogPostList.addAll(data);
-        this.notifyDataSetChanged();
+        if(data!=null){
+            mBlogPostList.clear();
+            mBlogPostList.addAll(data);
+            this.notifyDataSetChanged();
+        }
     }
 
     public void setHeader(View view) {

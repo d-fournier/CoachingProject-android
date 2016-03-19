@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/register_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/register_layout">
+    android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,32 +11,15 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/register_error"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cannot_connect_server"
-                style="@style/TextAppearance.Design.Error" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/retry"
-                android:onClick="retryToConnect" />
-        </LinearLayout>
-
-
-        <LinearLayout
+            android:id="@+id/register_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/register_content">
+            android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_username"
                     android:layout_width="match_parent"
@@ -49,6 +33,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_display_name"
                     android:layout_width="match_parent"
@@ -62,6 +47,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_password"
                     android:layout_width="match_parent"
@@ -75,6 +61,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_password_repeat"
                     android:layout_width="match_parent"
@@ -88,6 +75,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_email"
                     android:layout_width="match_parent"
@@ -104,73 +92,97 @@
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:ems="10"
-                android:hint="@string/city"/>
+                android:hint="@string/city" />
 
             <Button
-                android:id="@+id/register_date"
+                android:id="@+id/register_date_button"
+                style="@style/Platform.Widget.AppCompat.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/pick_date"
-                android:onClick="showDatePickerDialog"
-                style="@style/Platform.Widget.AppCompat.Spinner"/>
+                android:text="@string/pick_date" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/picture"
-                android:layout_marginTop="@dimen/activity_vertical_margin" />
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/picture" />
 
             <ImageView
+                android:id="@+id/register_profile_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:id="@+id/register_profile_image"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:clickable="true"
-                android:onClick="selectImage"
-                android:src="@drawable/upload_image"
                 android:scaleType="centerCrop"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+                android:src="@drawable/upload_image" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/register_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="top"
                     android:hint="@string/description"
                     android:inputType="textMultiLine"
-                    android:lines="3"
-                    android:gravity="top"/>
+                    android:lines="3" />
             </android.support.design.widget.TextInputLayout>
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_register_level_list"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/label_register_level_list" />
 
             <LinearLayout
                 android:id="@+id/register_levels_list"
-                android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical"
+                android:scrollbars="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/register_add_level_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_add_24dp" />
+
+                <ImageButton
+                    android:id="@+id/register_remove_level_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_remove_24dp" />
+            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/register_is_coach"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/agree_to_coach"/>
+                android:text="@string/agree_to_coach" />
 
             <Button
+                android:id="@+id/register_button"
+                style="@style/Base.Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/register"
-                android:onClick="register"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                style="@style/Base.Widget.AppCompat.Button.Colored"/>
+                android:text="@string/register" />
 
         </LinearLayout>
 

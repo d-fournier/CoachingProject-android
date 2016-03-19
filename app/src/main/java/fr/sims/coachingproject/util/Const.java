@@ -46,6 +46,7 @@ public class Const {
         public final static String ACCEPT_JOIN = "accept_join";
         public final static String ACCEPT_INVITE = "accept_invite";
         public static final String MY_INVITATIONS = "my_invitations";
+        public static final String MY_JOINS = "my_joins";
         public static final String USER_STATUS = "user_status";
         public static final String LEAVE = "leave";
 
@@ -83,6 +84,9 @@ public class Const {
         public static final int INVITATION_LOADER_ID = 10;
         public final static int BLOG_POSTS_LOADER_ID = 11;
         public final static int BLOG_POST_LOADER_ID = 12;
+        public final static int JOIN_LOADER_ID = 13;
+
+
     }
 
     public static class Notification {

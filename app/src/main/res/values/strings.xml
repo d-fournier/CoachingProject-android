@@ -157,5 +157,12 @@
     <string name="message_image">Message image</string>
 
     <string name="first_launch_continue">Continue</string>
+    <string name="username_empty">Username cannot be empty</string>
+    <string name="display_name_empty">Display name cannot be empty</string>
+    <string name="password_empty">Password cannot be empty</string>
+    <string name="email_empty">Email cannot be empty</string>
+    <string name="city_empty">City cannot be empty</string>
+    <string name="same_level_selected">You cannot have two levels in the same sport</string>
+    <string name="joins">My join requests</string>
 
 </resources>
