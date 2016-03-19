@@ -115,21 +115,23 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     }
 
     public void hide() {
-        if (!this.isHidden())
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .hide(this)
-                    .commitAllowingStateLoss();
+        getFragmentManager()
+                .executePendingTransactions();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_bottom, R.animator.slide_out_bottom)
+                .hide(this)
+                .commitAllowingStateLoss();
     }
 
     public void show() {
-        if (this.isHidden())
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .show(this)
-                    .commitAllowingStateLoss();
+        getFragmentManager()
+                .executePendingTransactions();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_bottom, R.animator.slide_out_bottom)
+                .show(this)
+                .commitAllowingStateLoss();
     }
 
     @Override

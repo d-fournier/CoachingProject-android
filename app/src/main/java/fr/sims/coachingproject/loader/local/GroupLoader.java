@@ -4,7 +4,6 @@ import android.content.Context;
 
 import java.util.List;
 
-import fr.sims.coachingproject.loader.local.GenericLocalLoader;
 import fr.sims.coachingproject.model.Group;
 import fr.sims.coachingproject.util.Const;
 

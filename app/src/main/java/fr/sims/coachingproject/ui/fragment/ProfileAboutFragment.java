@@ -1,8 +1,8 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,12 +59,12 @@ public class ProfileAboutFragment extends GenericFragment implements LoaderManag
         mDescriptionTV = (TextView) view.findViewById(R.id.profile_description);
         mSportsLL = (LinearLayout) view.findViewById(R.id.profile_sports);
 
-        mSportsListAdapter = new ProfileSportListAdapter(getContext());
+        mSportsListAdapter = new ProfileSportListAdapter(getActivity());
     }
 
     @Override
     public Loader<UserProfile> onCreateLoader(int id, Bundle args) {
-        return new UserLoader(getContext(), mUserId);
+        return new UserLoader(getActivity(), mUserId);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class FirstLaunchActivity extends AppCompatActivity implements ViewPager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_launch);
 
-        mSectionsPagerAdapter = new FirstLaunchPagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.first_launch_title).length);
+        mSectionsPagerAdapter = new FirstLaunchPagerAdapter(getFragmentManager(), getResources().getStringArray(R.array.first_launch_title).length);
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);

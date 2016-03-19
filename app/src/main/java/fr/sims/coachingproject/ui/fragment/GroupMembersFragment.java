@@ -1,10 +1,10 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,13 +58,13 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package fr.sims.coachingproject.ui.adapter.pager;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v13.app.FragmentPagerAdapter;
 
 import fr.sims.coachingproject.ui.fragment.RelationsListFragment;
 import fr.sims.coachingproject.ui.fragment.GroupListFragment;

@@ -1,15 +1,15 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
-        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        mHomePagerAdapter = new HomePagerAdapter(getFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mHomePagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -118,13 +118,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
         NetworkService.startActionConnectedUserInfo(this);
-        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity
         } finally {
             ActiveAndroid.endTransaction();
         }
-        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
 

@@ -1,18 +1,17 @@
 package fr.sims.coachingproject.ui.activity;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -89,7 +88,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mRelationId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
 
         // Tabs Pattern
-        mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager(), mRelationId);
+        mRelationPagerAdapter = new RelationPagerAdapter(getFragmentManager(), mRelationId);
         mViewPager = (ViewPager) findViewById(R.id.messagePager);
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -105,9 +104,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         // Manage send message Fragment
         String tag = MessageSendFragment.getRelationTag(mRelationId);
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
-        if(mSendMessFragment == null) {
+        if (mSendMessFragment == null) {
             mSendMessFragment = MessageSendFragment.newRelationInstance(mRelationId);
         }
         fm.beginTransaction().replace(R.id.relation_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
@@ -116,7 +115,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         new PutEndRelationTask().execute(false);
                         MainActivity.startActivity(getBaseContext());
@@ -128,11 +127,11 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 }
             }
         };
-        alertDialog= new AlertDialog.Builder(this);
+        alertDialog = new AlertDialog.Builder(this);
         alertDialog.setPositiveButton(R.string.button_confirm, dialogClickListener)
                 .setNegativeButton(R.string.button_cancel, dialogClickListener);
 
-        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
@@ -229,7 +228,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             }
         }
 
-        if(displaySendMessage)
+        if (displaySendMessage)
             mSendMessFragment.show();
         else
             mSendMessFragment.hide();
