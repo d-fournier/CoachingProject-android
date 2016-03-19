@@ -86,12 +86,8 @@ public class Sport extends Model implements Parcelable {
         return mIdDb;
     }
 
-    public static Sport getSportById(long id){
-        return new Select().from(Sport.class).where("idDb = ?", id).executeSingle();
-    }
-
-    public List<SportLevel> getLevels(){
-        return new Select().from(SportLevel.class).where("sport == ?", mIdDb).execute();
+    public static List<Sport> getAllSports(){
+        return new Select().from(Sport.class).execute();
     }
 
     @Override

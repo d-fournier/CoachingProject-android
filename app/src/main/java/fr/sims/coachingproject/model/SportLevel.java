@@ -10,6 +10,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by dfour on 15/02/2016.
  */
@@ -51,6 +53,8 @@ public class SportLevel extends Model {
         new Delete().from(SportLevel.class).execute();
     }
 
+
+
     public SportLevel saveOrUpdate(){
         mSport = mSport.saveOrUpdate();
         SportLevel res = new Select().from(SportLevel.class).where("idDb = ?", mIdDb).executeSingle();
@@ -79,4 +83,11 @@ public class SportLevel extends Model {
         return mIdDb;
     }
 
+    public static List<SportLevel> getAllSportLevels() {
+        return new Select().from(SportLevel.class).execute();
+    }
+
+    public static List<SportLevel> getAllSportLevelsBySportId(long mSport) {
+        return new Select().from(SportLevel.class).where("sport == ?", mSport).execute();
+    }
 }
