@@ -9,29 +9,32 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.service.NetworkService;
+import fr.sims.coachingproject.util.ImageUtil;
 
 /**
- * Created by Benjamin on 10/03/2016.
+ * Created by Donovan on 19/03/2016.
  */
-public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.ViewHolder> {
+public class GroupMembersAdapter extends SectionedRecyclerViewAdapter<GroupMembersAdapter.ViewHolder> {
 
-
-    private static final int HEADER_MEMBERS = 0;
-    private static final int LIST_MEMBERS = 1;
-    private static final int HEADER_PENDING_MEMBERS = 2;
-    private static final int LIST_PENDING_MEMBERS = 3;
     private List<UserProfile> mMembersList;
+    private static final int MEMBERS_LIST = 0;
+
     private List<UserProfile> mPendingMembersList;
+    private static final int PENDING_MEMBERS_LIST = 1;
+
+    private OnUserClickListener mListener;
+
     private Context mCtx;
-    private OnItemClickListener mOnItemClickListener;
+    /**
+     * Group Id
+     * Used to send accept/refuse request for the members
+     */
     private long mGroupId;
 
     public GroupMembersAdapter(Context ctx, long groupId) {
@@ -43,70 +46,69 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
 
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;
-        switch (viewType) {
-            case HEADER_MEMBERS:
-            case HEADER_PENDING_MEMBERS:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.group_header_item, parent, false);
-                return new HeaderViewHolder(v);
-            default:
-            case LIST_MEMBERS:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_user, parent, false);
-                final MemberViewHolder mvh = new MemberViewHolder(v);
-                mvh.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int pos = mvh.getAdapterPosition();
-                            mOnItemClickListener.onItemClick(v, pos);
-                        }
-                    }
-                });
-                return mvh;
-            case LIST_PENDING_MEMBERS:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_pending_member, parent, false);
-                final PendingMemberViewHolder pmvh = new PendingMemberViewHolder(v);
-                pmvh.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int pos = pmvh.getAdapterPosition();
-                            mOnItemClickListener.onItemClick(v, pos);
-                        }
-                    }
-                });
-                return pmvh;
-        }
+    public int getSectionCount() {
+        return 2;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        int itemViewType = holder.getItemViewType();
+    public int getItemCount(int section) {
+        int total = 0;
+        switch (section) {
+            case MEMBERS_LIST:
+                total = mMembersList.size();
+                break;
+            case PENDING_MEMBERS_LIST:
+                total = mPendingMembersList.size();
+                break;
+        }
+        return total;
+    }
 
-        if (itemViewType == LIST_MEMBERS) {//Liste des membres
-            final MemberViewHolder mvh = (MemberViewHolder) holder;
-            UserProfile up = getItem(itemViewType, position);
+    @Override
+    public int getItemViewType(int section, int relativePosition, int absolutePosition) {
+        return section;
+    }
 
-            Picasso.with(mCtx).load(up.mPicture).into(mvh.mPictureIV);
-            mvh.mNameTV.setText(up.mDisplayName);
-            mvh.mDescTV.setText(up.mCity);
-        } else if (itemViewType == LIST_PENDING_MEMBERS) {//Liste des membres en attente
+    @Override
+    public void onBindHeaderViewHolder(ViewHolder holder, int section) {
+        HeaderViewHolder vh = (HeaderViewHolder) holder;
+        int resId = -1;
+        switch (section) {
+            case MEMBERS_LIST:
+                resId = R.string.members;
+                break;
+            case PENDING_MEMBERS_LIST:
+                resId = R.string.pending_members;
+                break;
+        }
+        vh.mTitle.setText(resId);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int section, int relativePosition, int absolutePosition) {
+        MemberViewHolder mvh = (MemberViewHolder) holder;
+        final UserProfile up = getItem(section, relativePosition);
+        mvh.mNameTV.setText(up.mDisplayName);
+        mvh.mDescTV.setText(up.mCity);
+        ImageUtil.loadProfilePicture(mCtx, up.mPicture, mvh.mPictureIV);
+
+        mvh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onUserClick(v, up.mIdDb);
+                }
+            }
+        });
+
+        if(section == PENDING_MEMBERS_LIST) {
             final PendingMemberViewHolder pmvh = (PendingMemberViewHolder) holder;
-            final UserProfile up = getItem(itemViewType, position);
-
-            Picasso.with(mCtx).load(up.mPicture).into(pmvh.mPictureIV);
-            pmvh.mNameTV.setText(up.mDisplayName);
-            pmvh.mDescTV.setText(up.mCity);
             pmvh.mAcceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     pmvh.mAcceptButton.setEnabled(false);
                     pmvh.mRefuseButton.setEnabled(false);
-                    NetworkService.startActionAcceptUserGroups(mCtx,new long[]{up.mIdDb},mGroupId,true);
+                    NetworkService.startActionAcceptUserGroups(mCtx, new long[]{up.mIdDb}, mGroupId, true);
                 }
             });
             pmvh.mRefuseButton.setOnClickListener(new View.OnClickListener() {
@@ -117,67 +119,44 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     NetworkService.startActionAcceptUserGroups(mCtx,new long[]{up.mIdDb},mGroupId,false);
                 }
             });
-
-        } else {//Headers
-            HeaderViewHolder hvh = (HeaderViewHolder) holder;
-            int resId;
-            switch (itemViewType) {
-                case HEADER_MEMBERS:
-                    resId = R.string.members;
-                    break;
-                default:
-                case HEADER_PENDING_MEMBERS:
-                    resId = R.string.pending_members;
-                    break;
-            }
-            hvh.mTitle.setText(resId);
         }
     }
 
-    private UserProfile getItem(int type, int position) {
-        UserProfile up;
-        switch (type) {
-            case LIST_MEMBERS:
-                up = mMembersList.get(position - 1);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder vh = null;
+        View v;
+        if(viewType == VIEW_TYPE_HEADER) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.group_header_item, parent, false);
+            vh = new HeaderViewHolder(v);
+        } else if(viewType == MEMBERS_LIST){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_user, parent, false);
+            vh = new MemberViewHolder(v);
+        } else if(viewType == PENDING_MEMBERS_LIST){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_pending_member, parent, false);
+            vh = new PendingMemberViewHolder(v);
+        }
+        return vh;
+    }
+
+
+    /*
+        Data management
+     */
+    public UserProfile getItem(int section, int position) {
+        UserProfile up = null;
+        switch (section) {
+            case MEMBERS_LIST:
+                up = mMembersList.get(position);
                 break;
-            case LIST_PENDING_MEMBERS:
-                up = mPendingMembersList.get(position - (mMembersList.size() + 2));
+            case PENDING_MEMBERS_LIST:
+                up = mPendingMembersList.get(position);
                 break;
-            default:
-                up = null;
         }
         return up;
-    }
-
-    public long getMemberId(int position) {
-        if (position <= mMembersList.size())
-            return mMembersList.get(position - 1).mIdDb;
-        else if (position <= (mMembersList.size() + mPendingMembersList.size() + 1)) {
-            return mPendingMembersList.get(position - mMembersList.size() - 2).mIdDb;
-        }
-        return -1;
-    }
-
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0)
-            return HEADER_MEMBERS;
-        else if (position <= mMembersList.size())
-            return LIST_MEMBERS;
-        else if ((position == mMembersList.size() + 1) && !mPendingMembersList.isEmpty())
-            return HEADER_PENDING_MEMBERS;
-        else
-            return LIST_PENDING_MEMBERS;
-    }
-
-    @Override
-    public int getItemCount() {
-        if(mPendingMembersList.isEmpty()){
-            return mMembersList.size() + 1;
-        }else{
-            return mMembersList.size() + mPendingMembersList.size() + 2;//2 Headers
-        }
     }
 
     public void clearMembers() {
@@ -186,6 +165,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     }
 
     public void setMembers(List<UserProfile> members) {
+        mMembersList.clear();
         mMembersList.addAll(members);
         notifyDataSetChanged();
     }
@@ -196,18 +176,14 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     }
 
     public void setPendingMembers(List<UserProfile> pendingMembers) {
+        mPendingMembersList.clear();
         mPendingMembersList.addAll(pendingMembers);
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
+    /*
+        View Holder
+     */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View v) {
             super(v);
@@ -236,21 +212,26 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         }
     }
 
-    protected class PendingMemberViewHolder extends ViewHolder {
-        protected ImageView mPictureIV;
-        protected TextView mNameTV;
-        protected TextView mDescTV;
+    protected class PendingMemberViewHolder extends MemberViewHolder {
         protected ImageButton mAcceptButton;
         protected ImageButton mRefuseButton;
 
         public PendingMemberViewHolder(View v) {
             super(v);
-            this.mPictureIV = (ImageView) v.findViewById(R.id.user_picture);
-            this.mNameTV = (TextView) v.findViewById(R.id.user_name);
-            this.mDescTV = (TextView) v.findViewById(R.id.user_description);
             this.mAcceptButton = (ImageButton) v.findViewById(R.id.button_accept_pending);
             this.mRefuseButton = (ImageButton) v.findViewById(R.id.button_refuse_pending);
         }
+    }
+
+    /*
+        Listener
+     */
+    public void setOnUserClickListener(OnUserClickListener mOnUserClickListener) {
+        this.mListener = mOnUserClickListener;
+    }
+
+    public interface OnUserClickListener {
+        void onUserClick(View view, long userDbId);
     }
 
 }

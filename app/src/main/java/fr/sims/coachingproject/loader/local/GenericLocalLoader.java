@@ -1,9 +1,9 @@
 package fr.sims.coachingproject.loader.local;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.LocalBroadcastManager;
 
 import fr.sims.coachingproject.receiver.GenericBroadcastReceiver;

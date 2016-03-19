@@ -1,7 +1,7 @@
 package fr.sims.coachingproject.loader.network;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;

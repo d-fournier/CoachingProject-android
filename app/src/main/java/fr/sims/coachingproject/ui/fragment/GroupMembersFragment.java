@@ -1,10 +1,10 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +25,7 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by Zhenjie CEN on 2016/3/7.
  */
-public class GroupMembersFragment extends GenericFragment implements GenericBroadcastReceiver.BroadcastReceiverListener {
+public class GroupMembersFragment extends GenericFragment implements GenericBroadcastReceiver.BroadcastReceiverListener, GroupMembersAdapter.OnUserClickListener {
 
     public static final String MEMBERS_TITLE = "Members";
     public static final String GROUP_ID = "groupId";
@@ -52,26 +52,25 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         mGroupPendingMembersLoader = new GroupPendingMembersLoaderCallbacks();
         getLoaderManager().initLoader(Const.Loaders.GROUP_MEMBERS_LOADER_ID, null, mGroupMembersLoader);
         getLoaderManager().initLoader(Const.Loaders.GROUP_PENDING_MEMBERS_LOADER_ID, null, mGroupPendingMembersLoader);
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
     protected void bindArguments(Bundle args) {
         super.bindArguments(args);
-        mGroupId = args.getLong(GROUP_ID,-1);
+        mGroupId = args.getLong(GROUP_ID, -1);
     }
 
     @Override
@@ -81,14 +80,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
-
-        mGroupMembersAdapter.setOnItemClickListener(new GroupMembersAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                ProfileActivity.startActivity(getContext(), mGroupMembersAdapter.getMemberId(position), -1);
-            }
-        });
-
+        mGroupMembersAdapter.setOnUserClickListener(this);
     }
 
     @Override
@@ -104,6 +96,11 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         }
     }
 
+    @Override
+    public void onUserClick(View view, long userDbId) {
+        ProfileActivity.startActivity(getContext(), userDbId);
+    }
+
 
     public class GroupPendingMembersLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<UserProfile>> {
 
@@ -115,7 +112,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
             if (data != null) {
-                mGroupMembersAdapter.clearPendingMembers();
                 mGroupMembersAdapter.setPendingMembers(data);
             } else {
                 mGroupMembersAdapter.setPendingMembers(new ArrayList<UserProfile>());
@@ -124,7 +120,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public void onLoaderReset(Loader<List<UserProfile>> loader) {
-
         }
     }
 
@@ -138,7 +133,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
         @Override
         public void onLoadFinished(Loader<List<UserProfile>> loader, List<UserProfile> data) {
             if (data != null) {
-                mGroupMembersAdapter.clearMembers();
                 mGroupMembersAdapter.setMembers(data);
             } else {
                 mGroupMembersAdapter.setMembers(new ArrayList<UserProfile>());
@@ -147,7 +141,6 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public void onLoaderReset(Loader<List<UserProfile>> loader) {
-
         }
     }
 }
