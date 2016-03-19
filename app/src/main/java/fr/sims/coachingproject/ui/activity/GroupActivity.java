@@ -126,7 +126,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         if(mSendMessFragment == null) {
             mSendMessFragment = MessageSendFragment.newGroupInstance(mGroupIdDb);
         }
-        fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).commit();
+        fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
