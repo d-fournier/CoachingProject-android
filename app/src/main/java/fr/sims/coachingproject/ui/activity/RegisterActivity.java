@@ -187,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         Spinner levelsSpinner = (Spinner) levelView.findViewById(R.id.register_spinner_level);
 
         //On set l'adapter sur le spinner des sports
-        ArrayAdapter<Sport> sportAdapter = new ArrayAdapter<>(getApplicationContext(),
+        ArrayAdapter<Sport> sportAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, mSportsList);
         sportAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportsSpinner.setAdapter(sportAdapter);
@@ -196,7 +196,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         //On set l'adapter sur le spinner des levels
         mLevelsLists.add(new ArrayList<SportLevel>());
         mLevelsSelected.add((long) -1);
-        ArrayAdapter<SportLevel> levelAdapter = new ArrayAdapter<>(getApplicationContext(),
+        ArrayAdapter<SportLevel> levelAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, mLevelsLists.get(mAddedLevelsNumber));
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         levelsSpinner.setAdapter(levelAdapter);
@@ -338,28 +338,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
         String username, displayName, password, repeatPassword, email, city, description, date;
 
-        if ((username = ((EditText) findViewById(R.id.register_username)).getText().toString()).isEmpty() && username.matches("/[a-zA-Z0-9@.+-_]+/")) {
-            Snackbar.make(mLevelViewsParent, R.string.username_empty, Snackbar.LENGTH_LONG);
+        if ((username = ((EditText) findViewById(R.id.register_username)).getText().toString()).isEmpty()) {
+            Snackbar.make(mLevelViewsParent, R.string.username_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         if ((displayName = ((EditText) findViewById(R.id.register_display_name)).getText().toString()).isEmpty()) {
-            Snackbar.make(mLevelViewsParent, R.string.display_name_empty, Snackbar.LENGTH_LONG);
+            Snackbar.make(mLevelViewsParent, R.string.display_name_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         if ((password = ((EditText) findViewById(R.id.register_password)).getText().toString()).isEmpty()) {
-            Snackbar.make(mLevelViewsParent, R.string.password_empty, Snackbar.LENGTH_LONG);
+            Snackbar.make(mLevelViewsParent, R.string.password_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         if (!(repeatPassword = ((EditText) findViewById(R.id.register_password)).getText().toString()).equals(password)) {
-            Snackbar.make(mLevelViewsParent, R.string.passwords_dont_match, Snackbar.LENGTH_LONG);
+            Snackbar.make(mLevelViewsParent, R.string.passwords_dont_match, Snackbar.LENGTH_LONG).show();
             return;
         }
         if ((email = ((EditText) findViewById(R.id.register_email)).getText().toString()).isEmpty()) {
-            Snackbar.make(mLevelViewsParent, R.string.email_empty, Snackbar.LENGTH_LONG);
+            Snackbar.make(mLevelViewsParent, R.string.email_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         if ((city = ((EditText) findViewById(R.id.register_city)).getText().toString()).isEmpty()) {
-            Snackbar.make(mLevelViewsParent, R.string.city_empty, Snackbar.LENGTH_LONG);
+            Snackbar.make(mLevelViewsParent, R.string.city_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -441,6 +441,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     return false;
                 }
             }
+            return true;
         }
 
         @Override
