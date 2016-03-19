@@ -36,7 +36,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Zhenjie CEN on 2016/3/6.
  */
-public class GroupActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class GroupActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, LoaderManager.LoaderCallbacks<Group> {
 
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
@@ -102,15 +102,10 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mGroupSport = (TextView) findViewById(R.id.group_sport);
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
-        SingleGroupLoaderCallbacks mGroupLoader = new SingleGroupLoaderCallbacks();
-
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.groupMembersPager);
-        mPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(), mGroupIdDb);
-        mPager.setAdapter(mPagerAdapter);
-        mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
-        mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(this);
+        mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
 
         mButtonJoinInvite = (FloatingActionButton) findViewById(R.id.group_send_join_or_invite_members);
         mButtonJoinInvite.setOnClickListener(this);
@@ -118,18 +113,18 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
 
-        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
-
         // Manage send message Fragment
         String tag = MessageSendFragment.getGroupTag(mGroupIdDb);
         FragmentManager fm = getSupportFragmentManager();
         mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
-        if(mSendMessFragment == null) {
+        if (mSendMessFragment == null) {
             mSendMessFragment = MessageSendFragment.newGroupInstance(mGroupIdDb);
         }
         fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
 
         updateDisplayedElements();
+
+        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, this);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
@@ -149,16 +144,33 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     public void onPageScrollStateChanged(int state) {
     }
 
-    private void updateDisplayedElements(){
-        boolean isMessageFragment = mPagerAdapter.getItem(mPager.getCurrentItem()) instanceof MessageFragment;
+    private void updateUI() {
+        mPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(), mGroupIdDb, mGroup.mIsCurrentUserMember);
+        mPager.setAdapter(mPagerAdapter);
+        mTabLayout.setupWithViewPager(mPager);
 
-        if(mGroup == null) {
+        if (mPagerAdapter.getCount() > 1) {
+            mTabLayout.setVisibility(View.VISIBLE);
+        } else {
+            mTabLayout.setVisibility(View.GONE);
+        }
+
+        updateDisplayedElements();
+    }
+
+    private void updateDisplayedElements() {
+        boolean isMessageFragment = false;
+        if (mPagerAdapter != null) {
+            isMessageFragment = mPagerAdapter.getItem(mPager.getCurrentItem()) instanceof MessageFragment;
+        }
+
+        if (mGroup == null) {
             mButtonJoinInvite.hide();
             mButtonJoinInvite.setEnabled(false);
             mSendMessFragment.hide();
         } else {
-            if(mGroup.mIsCurrentUserMember) {
-                if(isMessageFragment) {
+            if (mGroup.mIsCurrentUserMember) {
+                if (isMessageFragment) {
                     mSendMessFragment.show();
                     mButtonJoinInvite.hide();
                     mButtonJoinInvite.setEnabled(false);
@@ -169,7 +181,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                 }
             } else {
                 mSendMessFragment.hide();
-                if(mCurrentUserId != -1 && !mGroup.mIsCurrentUserPending) {
+                if (mCurrentUserId != -1 && !mGroup.mIsCurrentUserPending) {
                     mButtonJoinInvite.show();
                     mButtonJoinInvite.setEnabled(true);
                 } else {
@@ -218,33 +230,30 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private class SingleGroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
+    @Override
+    public Loader<Group> onCreateLoader(int id, Bundle args) {
+        return new SingleGroupLoader(getApplicationContext(), mGroupIdDb);
+    }
 
-        @Override
-        public Loader<Group> onCreateLoader(int id, Bundle args) {
-            return new SingleGroupLoader(getApplicationContext(), mGroupIdDb);
+    @Override
+    public void onLoadFinished(Loader<Group> loader, Group data) {
+        if (data != null) {
+            mGroupName.setText(data.mName);
+            mGroupDescription.setText(data.mDescription);
+            mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
+            mGroupSport.setText(data.mSport.mName);
+            mGroupCity.setText(data.mCity);
+            ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mName);
+            mGroup = data;
+
+            updateUI();
+        } else {
+            //TODO Error
         }
+    }
 
-        @Override
-        public void onLoadFinished(Loader<Group> loader, Group data) {
-            if (data != null) {
-                mGroupName.setText(data.mName);
-                mGroupDescription.setText(data.mDescription);
-                mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
-                mGroupSport.setText(data.mSport.mName);
-                mGroupCity.setText(data.mCity);
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mName);
-                mGroup = data;
-                updateDisplayedElements();
-            } else {
-                //TODO Error
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Group> loader) {
-        }
-
+    @Override
+    public void onLoaderReset(Loader<Group> loader) {
     }
 
     private class SendJoinTask extends AsyncTask<Void, Void, NetworkUtil.Response> {

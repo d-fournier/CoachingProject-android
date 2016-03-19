@@ -8,12 +8,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,7 +20,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.service.NetworkService;
@@ -124,7 +119,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             getFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .hide(MessageSendFragment.this)
+                    .hide(this)
                     .commitAllowingStateLoss();
     }
 
@@ -133,7 +128,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             getFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .show(MessageSendFragment.this)
+                    .show(this)
                     .commitAllowingStateLoss();
     }
 
