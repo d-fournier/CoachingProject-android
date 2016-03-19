@@ -8,6 +8,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import fr.sims.coachingproject.R;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -25,6 +26,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
             RegistrationGCMIntentService.startActionRegistrationGCM(this);
+        }
+
+        if(SharedPrefUtil.isFirstLaunch(this)) {
+            NetworkService.startActionSports(this);
+            NetworkService.startActionLevels(this);
         }
 
 
