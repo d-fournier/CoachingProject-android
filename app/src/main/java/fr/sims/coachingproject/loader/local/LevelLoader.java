@@ -3,13 +3,9 @@ package fr.sims.coachingproject.loader.local;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fr.sims.coachingproject.model.SportLevel;
-import fr.sims.coachingproject.util.Const;
-import fr.sims.coachingproject.util.NetworkUtil;
 
 /**
  * Created by Benjamin on 16/02/2016.
