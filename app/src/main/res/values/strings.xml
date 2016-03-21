@@ -172,5 +172,13 @@
     <string name="sports">Sports</string>
     <string name="add_sport">Add sport</string>
     <string name="remove_sport">Remove sport</string>
+    <string name="about_content">
+        This non-profit application was developed by six students from INSA Lyon for a university
+        project. As a large scale use would require a significant investment of time and money, it
+        has been decided to limit the app to a demonstrative use.\n\n
+        We hope you enjoy the app.
+    </string>
+    <string name="title_about_activity">About</string>
+    <string name="contributors">Contributors :</string>
 
 </resources>

@@ -42,7 +42,7 @@ public class BlogPreviewDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        LayoutInflater i = LayoutInflater.from(getContext());
+        LayoutInflater i = LayoutInflater.from(getActivity());
         View view = i.inflate(R.layout.fragment_dialog_blog_preview, null);
 
         ((MarkDownView) view.findViewById(R.id.post_preview)).setMarkdown(mText);

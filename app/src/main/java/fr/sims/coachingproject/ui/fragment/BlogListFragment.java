@@ -1,7 +1,8 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +19,7 @@ import fr.sims.coachingproject.util.Const;
 /**
  * Created by dfour on 14/03/2016.
  */
-public class BlogListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<BlogPost>>,BlogListAdapter.OnItemClickListener {
+public class BlogListFragment extends GenericFragment implements LoaderManager.LoaderCallbacks<List<BlogPost>>, BlogListAdapter.OnItemClickListener {
 
     // TODO Put it in resources
     public static final String TITLE = "Blog";
@@ -51,8 +52,8 @@ public class BlogListFragment extends GenericFragment implements LoaderManager.L
     protected void bindView(View view) {
         super.bindView(view);
         mBlogPostRV = (RecyclerView) view.findViewById(R.id.blog_list);
-        mBlogPostRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new BlogListAdapter(getContext());
+        mBlogPostRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new BlogListAdapter(getActivity());
         mAdapter.setOnItemClickListener(this);
         mBlogPostRV.setAdapter(mAdapter);
     }
@@ -66,21 +67,27 @@ public class BlogListFragment extends GenericFragment implements LoaderManager.L
 
 
     @Override
-    public android.support.v4.content.Loader<List<BlogPost>> onCreateLoader(int id, Bundle args) {
-        return new BlogPostListLoader(getContext(), mUserId);
+    public Loader<List<BlogPost>> onCreateLoader(int id, Bundle args) {
+        return new BlogPostListLoader(getActivity(), mUserId);
     }
 
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<List<BlogPost>> loader, List<BlogPost> data) {
+    public void onLoadFinished(Loader<List<BlogPost>> loader, List<BlogPost> data) {
         mAdapter.setData(data);
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<List<BlogPost>> loader) { }
+    public void onLoaderReset(Loader<List<BlogPost>> loader) {
+
+    }
 
     @Override
     public void onItemClick(View view, int position) {
-        long id = mAdapter.getItem(position).mIdDb;
-        PostReadActivity.startActivity(getContext(), id);
+        BlogPost item = mAdapter.getItem(position);
+        long id = item.mIdDb;
+        if(item.mPicture != null && !item.mPicture.isEmpty())
+            PostReadActivity.startActivityWithAnimation(getActivity(), id, view.findViewById(R.id.post_picture));
+        else
+            PostReadActivity.startActivity(getActivity(), id);
     }
 }

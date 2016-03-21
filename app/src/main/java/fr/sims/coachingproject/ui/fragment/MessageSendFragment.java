@@ -8,12 +8,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,7 +20,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.service.NetworkService;
@@ -120,21 +115,23 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     }
 
     public void hide() {
-        if (!this.isHidden())
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .hide(MessageSendFragment.this)
-                    .commitAllowingStateLoss();
+        getFragmentManager()
+                .executePendingTransactions();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_bottom, R.animator.slide_out_bottom)
+                .hide(this)
+                .commitAllowingStateLoss();
     }
 
     public void show() {
-        if (this.isHidden())
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, R.anim.slide_down)
-                    .show(MessageSendFragment.this)
-                    .commitAllowingStateLoss();
+        getFragmentManager()
+                .executePendingTransactions();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_bottom, R.animator.slide_out_bottom)
+                .show(this)
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -178,7 +175,6 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
         }
     }
 
-    // TODO GetContext Null
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -190,13 +186,15 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             mUploadFileUri = data.getData();
             final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             // Check for the freshest data.
-            getContext().getContentResolver().takePersistableUriPermission(mUploadFileUri, takeFlags);
+            if(getActivity()!=null){
+                getActivity().getContentResolver().takePersistableUriPermission(mUploadFileUri, takeFlags);
+            }
         }
 
         // The query, since it only applies to a single document, will only return
         // one row. There's no need to filter, sort, or select fields, since we want
         // all fields for one document.
-        Cursor cursor = getContext().getContentResolver()
+        Cursor cursor = getActivity().getContentResolver()
                 .query(mUploadFileUri, null, null, null, null, null);
 
         try {
@@ -218,7 +216,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
 
     private void updateImagePreview() {
         if(mUploadFileUri != null) {
-            Picasso.with(getContext()).load(mUploadFileUri).into(mPicturePreview);
+            Picasso.with(getActivity()).load(mUploadFileUri).into(mPicturePreview);
             mPicturePreview.setVisibility(View.VISIBLE);
             mRemovePictureBt.setVisibility(View.VISIBLE);
         } else {
@@ -230,7 +228,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
     private class SendMessageTask extends AsyncTask<String, Void, NetworkUtil.Response> {
         @Override
         protected void onPreExecute() {
-            InputMethodManager in = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mSendBtn.setEnabled(false);
             mAttachFileButton.setEnabled(false);
@@ -241,7 +239,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             if (params.length == 0) {
                 return null;
             }
-            String connectedToken = SharedPrefUtil.getConnectedToken(getContext());
+            String connectedToken = SharedPrefUtil.getConnectedToken(getActivity());
             String url = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.MESSAGES;
 
             try {
@@ -252,7 +250,7 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
                 else if (mRelationId != -1)
                     multipart.addFormField("to_relation", String.valueOf(mRelationId));
                 if (mUploadFileUri != null) {
-                    InputStream in = getContext().getContentResolver().openInputStream(mUploadFileUri);
+                    InputStream in = getActivity().getContentResolver().openInputStream(mUploadFileUri);
                     multipart.addFilePart("associated_file", in, mFileName);
                 }
                 return multipart.finish();
@@ -270,9 +268,9 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
                 mMessageET.setText("");
                 clearMedia();
                 if (mGroupId != -1)
-                    NetworkService.startActionGroupMessages(getContext(), mGroupId);
+                    NetworkService.startActionGroupMessages(getActivity(), mGroupId);
                 else if (mRelationId != -1)
-                    NetworkService.startActionRelationMessages(getContext(), mRelationId);
+                    NetworkService.startActionRelationMessages(getActivity(), mRelationId);
             } else {
                 Snackbar.make(mMainLayout, "Error", Snackbar.LENGTH_LONG);
             }

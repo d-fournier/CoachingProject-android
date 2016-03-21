@@ -1,17 +1,14 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -80,16 +77,16 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mGroupAdapter = new GroupListAdapter(getContext());
-        NetworkService.startActionUserGroups(getContext());
+        mGroupAdapter = new GroupListAdapter(getActivity());
+        NetworkService.startActionUserGroups(getActivity());
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -114,7 +111,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
         mGroupAdapter.setOnGroupClickListener(this);
 
         mCreateButton= (Button) view.findViewById(R.id.createGroupButton);
-        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+        if(SharedPrefUtil.getConnectedUserId(getActivity())!=-1){
             mCreateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -134,7 +131,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionUserGroups(getContext());
+        NetworkService.startActionUserGroups(getActivity());
         getLoaderManager().restartLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
         getLoaderManager().restartLoader(Const.Loaders.JOIN_LOADER_ID, null, mJoinLoader);
     }
@@ -142,8 +139,8 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
-        NetworkService.startActionUserGroups(getContext());
-        if(SharedPrefUtil.getConnectedUserId(getContext())!=-1){
+        NetworkService.startActionUserGroups(getActivity());
+        if(SharedPrefUtil.getConnectedUserId(getActivity())!=-1){
             mCreateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -163,7 +160,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
         if (intent.getStringExtra(Const.BroadcastEvent.EXTRA_ACTION_NAME).equals(NetworkService.ACTION_INVITATION_USER_GROUPS))
         {
             mRefreshLayout.setRefreshing(true);
-            NetworkService.startActionUserGroups(getContext());
+            NetworkService.startActionUserGroups(getActivity());
             getLoaderManager().restartLoader(Const.Loaders.INVITATION_LOADER_ID, null, mInvitationLoader);
         }
     }
@@ -175,7 +172,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
 
     @Override
     public void onGroupClick(View view, long groupDbId) {
-        GroupActivity.startActivity(getContext(), groupDbId);
+        GroupActivity.startActivity(getActivity(), groupDbId);
     }
 
     private void updateEmptyList(){
@@ -191,7 +188,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new GroupLoader(getContext());
+            return new GroupLoader(getActivity());
         }
 
         @Override
@@ -202,6 +199,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
                 mGroupAdapter.clearGroups();
             }
             updateEmptyList();
+
         }
 
         @Override
@@ -211,7 +209,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class InvitationLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new InvitationLoader(getContext());
+            return new InvitationLoader(getActivity());
         }
 
         @Override
@@ -231,7 +229,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class JoinLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new JoinLoader(getContext());
+            return new JoinLoader(getActivity());
         }
 
         @Override

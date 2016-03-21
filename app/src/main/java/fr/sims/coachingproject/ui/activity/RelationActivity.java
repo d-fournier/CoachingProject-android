@@ -1,18 +1,19 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -58,10 +59,19 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private UserProfile mPartner;
     boolean mIsCurrentUserCoach;
     private long mRelationId;
+    private ImageView mPictureIV;
 
+    public static void startActivityWithAnimation(Activity activityCtx, long id, View pictureView){
+        Intent intent = getIntent(activityCtx, id);
 
-    public static void startActivity(Context ctx, long id) {
-        ctx.startActivity(getIntent(ctx, id));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activityCtx, pictureView,
+                            activityCtx.getResources().getString(R.string.transition_user_picture));
+            activityCtx.startActivity(intent, options.toBundle());
+        } else {
+            activityCtx.startActivity(intent);
+        }
     }
 
     public static Intent getIntent(Context ctx, long id) {
@@ -89,11 +99,13 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mRelationId = mIntent.getLongExtra(EXTRA_COACHING_RELATION_ID, 0);
 
         // Tabs Pattern
-        mRelationPagerAdapter = new RelationPagerAdapter(getSupportFragmentManager(), mRelationId);
+        mRelationPagerAdapter = new RelationPagerAdapter(getFragmentManager(), mRelationId);
         mViewPager = (ViewPager) findViewById(R.id.messagePager);
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mPictureIV = (ImageView) findViewById(R.id.imagePicture);
 
         // Invitation Layout
         mInvitationLayout = ((NestedScrollView) findViewById(R.id.invitationLayout));
@@ -105,9 +117,9 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         // Manage send message Fragment
         String tag = MessageSendFragment.getRelationTag(mRelationId);
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
-        if(mSendMessFragment == null) {
+        if (mSendMessFragment == null) {
             mSendMessFragment = MessageSendFragment.newRelationInstance(mRelationId);
         }
         fm.beginTransaction().replace(R.id.relation_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
@@ -116,7 +128,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         new PutEndRelationTask().execute(false);
                         MainActivity.startActivity(getBaseContext());
@@ -128,11 +140,11 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
                 }
             }
         };
-        alertDialog= new AlertDialog.Builder(this);
+        alertDialog = new AlertDialog.Builder(this);
         alertDialog.setPositiveButton(R.string.button_confirm, dialogClickListener)
                 .setNegativeButton(R.string.button_cancel, dialogClickListener);
 
-        getSupportLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Const.Loaders.RELATION_LOADER_ID, null, this);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.RELATION + "_" + Const.Notification.Tag.RELATION + String.valueOf(mRelationId));
@@ -184,7 +196,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void bindRelationDetails() {
-        ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView sport = (TextView) findViewById(R.id.sport);
@@ -192,7 +203,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         city.setText(mPartner.mCity);
         name.setText(mPartner.mDisplayName);
         sport.setText(mRelation.mSport.mName);
-        ImageUtil.loadProfilePicture(this, mPartner.mPicture, picture);
+        ImageUtil.loadProfilePicture(this, mPartner.mPicture, mPictureIV);
 
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mPartner.mDisplayName);
     }
@@ -229,7 +240,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
             }
         }
 
-        if(displaySendMessage)
+        if (displaySendMessage)
             mSendMessFragment.show();
         else
             mSendMessFragment.hide();
@@ -247,7 +258,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         switch (viewId) {
             case R.id.profile_layout:
-                ProfileActivity.startActivity(this, mPartner.mIdDb, -1);
+                ProfileActivity.startActivityWithAnimation(this, mPartner.mIdDb, -1, mPictureIV);
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);

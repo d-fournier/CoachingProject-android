@@ -1,13 +1,15 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,24 +45,30 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     private FloatingActionButton mSendRequestBtn;
 
 
-    /**
-     * Start activity
-     *
-     * @param ctx
-     * @param id
-     * @param idSport id of sport to be selected, -1 if no preference
-     */
-    public static void startActivity(Context ctx, long id, long idSport) {
-        Intent intent = new Intent(ctx, ProfileActivity.class);
+    public static void startActivityWithAnimation(Activity activityCtx, long id, long idSport, View pictureView){
+        Intent intent = new Intent(activityCtx, ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
         intent.putExtra(EXTRA_SPORT_ID, idSport);
-        ctx.startActivity(intent);
+
+        startIntentWithAnimation(activityCtx, intent, pictureView);
     }
 
-    public static void startActivity(Context ctx, long id) {
-        Intent intent = new Intent(ctx, ProfileActivity.class);
+    public static void startActivityWithAnimation(Activity activityCtx, long id, View pictureView){
+        Intent intent = new Intent(activityCtx, ProfileActivity.class);
         intent.putExtra(EXTRA_USER_PROFILE_ID, id);
-        ctx.startActivity(intent);
+
+        startIntentWithAnimation(activityCtx, intent, pictureView);
+    }
+
+    private static void startIntentWithAnimation(Activity activityCtx, Intent intent, View pictureView){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activityCtx, pictureView,
+                            activityCtx.getResources().getString(R.string.transition_user_picture));
+            activityCtx.startActivity(intent, options.toBundle());
+        } else {
+            activityCtx.startActivity(intent);
+        }
     }
 
     @Override
@@ -83,9 +91,9 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
         mSendRequestBtn = (FloatingActionButton) findViewById(R.id.profile_send_request);
         mSendRequestBtn.setOnClickListener(this);
 
-        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
 
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager(), mUserId);
+        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getFragmentManager(), mUserId);
         ViewPager viewPager = (ViewPager) findViewById(R.id.profile_view_pager);
         viewPager.setAdapter(profilePagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.profile_tabs);
@@ -95,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override

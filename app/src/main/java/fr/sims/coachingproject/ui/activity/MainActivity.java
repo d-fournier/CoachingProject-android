@@ -1,15 +1,18 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +26,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.local.UserLoader;
@@ -39,6 +45,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
+
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
 
@@ -50,8 +57,10 @@ public class MainActivity extends AppCompatActivity
     ViewPager mViewPager;
     View mDrawerHeader;
     NavigationView mNavigationView;
+    ImageView mConnectedUserPictureIV;
 
     private long mConnectedUserId;
+
 
     public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
@@ -80,7 +89,6 @@ public class MainActivity extends AppCompatActivity
                     // started opening
                     if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
                         Menu menu=mNavigationView.getMenu();
-                        menu.removeItem(R.id.nav_settings);
                         menu.removeItem(R.id.nav_disconnect);
                         menu.removeItem(R.id.nav_blog_post_new);
                     }
@@ -94,10 +102,11 @@ public class MainActivity extends AppCompatActivity
         // Drawer Items
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = mNavigationView.getHeaderView(0);
+        mConnectedUserPictureIV = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
-        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        mHomePagerAdapter = new HomePagerAdapter(getFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mHomePagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -118,13 +127,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
         NetworkService.startActionConnectedUserInfo(this);
-        getSupportLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
     @Override
@@ -147,10 +156,28 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_blog_post_new:
                 PostCreationActivity.startActivity(this);
                 break;
-            case R.id.nav_settings:
-
-                break;
             case R.id.nav_share:
+                List<Intent> targetedShareIntents = new ArrayList<Intent>();
+
+                Intent fbIntent = getShareIntent("com.facebook.katana");
+                if (fbIntent != null)
+                    targetedShareIntents.add(fbIntent);
+
+                Intent twitterIntent = getShareIntent("com.twitter.android");
+                if (twitterIntent != null) {
+                    twitterIntent.setClassName("com.twitter.android", "com.twitter.android.composer.ComposerActivity");
+                    targetedShareIntents.add(twitterIntent);
+                }
+
+                Intent gmIntent = getShareIntent("com.google.android.gm");
+                if (gmIntent != null)
+                    targetedShareIntents.add(gmIntent);
+
+                Intent chooser = Intent.createChooser(targetedShareIntents.remove(0), "Continuer avec");
+
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
+
+                startActivity(chooser);
 
                 break;
             case R.id.nav_disconnect:
@@ -158,12 +185,35 @@ public class MainActivity extends AppCompatActivity
                 LoginActivity.startActivity(getApplication());
                 break;
             case R.id.nav_about:
-                // TODO
+                AboutActivity.startActivity(getApplication());
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private Intent getShareIntent(String type) {
+        boolean appFound = false;
+        String urlToShare = "https://play.google.com/store/apps/details?id=fr.sims.coachingproject";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "The best sport app");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, urlToShare + " It's a great sport app - I recommend ");
+
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(shareIntent, 0);
+        for (ResolveInfo info : matches) {
+            // Check if the app is installed on the phone.
+            if (info.activityInfo.packageName.toLowerCase().contains(type)) {
+                shareIntent.setPackage(info.activityInfo.packageName);
+                appFound = true;
+                break;
+            }
+        }
+        if (!appFound)
+            return null;
+
+        return shareIntent;
     }
 
     @Override
@@ -174,19 +224,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
-        ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
 
         if (user != null) {
             mConnectedUserId = user.mIdDb;
             header.setText(user.mDisplayName);
-            ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
-            profilePicture.setVisibility(View.VISIBLE);
+            ImageUtil.loadProfilePicture(this, user.mPicture, mConnectedUserPictureIV);
+            mConnectedUserPictureIV.setVisibility(View.VISIBLE);
             mNavigationView.getMenu().findItem(R.id.nav_disconnect).setVisible(true);
 
         } else {
             mConnectedUserId = -1;
             header.setText(R.string.connect);
-            profilePicture.setVisibility(View.GONE);
+            mConnectedUserPictureIV.setVisibility(View.GONE);
         }
         mDrawerHeader.setOnClickListener(this);
     }
@@ -220,14 +269,14 @@ public class MainActivity extends AppCompatActivity
         } finally {
             ActiveAndroid.endTransaction();
         }
-        getSupportLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Const.Loaders.USER_LOADER_ID, null, this);
     }
 
 
     @Override
     public void onClick(View v) {
         if (mConnectedUserId != -1)
-            ProfileActivity.startActivity(this, mConnectedUserId);
+            ProfileActivity.startActivityWithAnimation(this, mConnectedUserId, mConnectedUserPictureIV);
         else
             LoginActivity.startActivity(this);
     }

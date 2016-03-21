@@ -1,11 +1,11 @@
 package fr.sims.coachingproject.ui.fragment;
 
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +61,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
         mRelationList = (RecyclerView) view.findViewById(R.id.relations_list);
         mRelationList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerAdapter = new RelationsListAdapter(getContext());
+        mRecyclerAdapter = new RelationsListAdapter(getActivity());
         mRecyclerAdapter.setOnRelationClickListener(this);
         mRelationList.setAdapter(mRecyclerAdapter);
 
@@ -73,7 +73,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
                 mRefreshLayout.setRefreshing(true);
             }
         });
-        NetworkService.startActionCoachingRelations(getContext());
+        NetworkService.startActionCoachingRelations(getActivity());
     }
 
     @Override
@@ -86,13 +86,13 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBroadcastReceiver = new GenericBroadcastReceiver(this);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, new IntentFilter(Const.BroadcastEvent.EVENT_END_SERVICE_ACTION));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     @Override
     public Loader<List<CoachingRelation>> onCreateLoader(int id, Bundle args) {
-        return new RelationListLoader(getContext());
+        return new RelationListLoader(getActivity());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     @Override
     public void onRefresh() {
-        NetworkService.startActionCoachingRelations(getContext());
+        NetworkService.startActionCoachingRelations(getActivity());
     }
 
     @Override
@@ -138,14 +138,6 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     @Override
     public void onRelationClick(View view, long relationIdDb) {
-        Intent intent = RelationActivity.getIntent(getContext(), relationIdDb);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptionsCompat options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
-                            getString(R.string.transition_user_picture));
-            getActivity().startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
-        }
+        RelationActivity.startActivityWithAnimation(getActivity(), relationIdDb, view.findViewById(R.id.user_picture));
     }
 }

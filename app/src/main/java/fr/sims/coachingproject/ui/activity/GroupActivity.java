@@ -1,17 +1,17 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.FragmentManager;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,9 +20,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.network.SingleGroupLoader;
@@ -38,7 +40,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Zhenjie CEN on 2016/3/6.
  */
-public class GroupActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class GroupActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, LoaderManager.LoaderCallbacks<Group> {
 
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
@@ -50,7 +52,9 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
     private long mGroupIdDb;
     private Group mGroup;
 
-    private FloatingActionButton mButtonJoin;
+    private long mCurrentUserId;
+
+    private FloatingActionButton mButtonJoinInvite;
 
     private MessageSendFragment mSendMessFragment;
 
@@ -91,9 +95,10 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-
         Intent intent = getIntent();
         mGroupIdDb = intent.getLongExtra(EXTRA_GROUP_ID, -1);
+
+        mCurrentUserId = SharedPrefUtil.getConnectedUserId(this);
 
         mGroupName = (TextView) findViewById(R.id.group_name);
         mGroupDescription = (TextView) findViewById(R.id.group_description);
@@ -101,32 +106,29 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         mGroupSport = (TextView) findViewById(R.id.group_sport);
         mGroupCity = (TextView) findViewById(R.id.group_city);
 
-        SingleGroupLoaderCallbacks mGroupLoader = new SingleGroupLoaderCallbacks();
-
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.groupMembersPager);
-        mPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(), mGroupIdDb);
-        mPager.setAdapter(mPagerAdapter);
-        mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
-        mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(this);
+        mTabLayout = (TabLayout) findViewById(R.id.view_group_tabs);
 
-        mButtonJoin = (FloatingActionButton) findViewById(R.id.group_send_join_invite);
-        mButtonJoin.setOnClickListener(this);
+        mButtonJoinInvite = (FloatingActionButton) findViewById(R.id.group_send_join_or_invite_members);
+        mButtonJoinInvite.setOnClickListener(this);
 
         mTabLayout.setVisibility(View.VISIBLE);
         mPager.setVisibility(View.VISIBLE);
 
-        getSupportLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, mGroupLoader);
-
         // Manage send message Fragment
         String tag = MessageSendFragment.getGroupTag(mGroupIdDb);
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         mSendMessFragment = (MessageSendFragment) fm.findFragmentByTag(tag);
-        if(mSendMessFragment == null) {
+        if (mSendMessFragment == null) {
             mSendMessFragment = MessageSendFragment.newGroupInstance(mGroupIdDb);
         }
-        fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).commit();
+        fm.beginTransaction().replace(R.id.group_send_message_fragment, mSendMessFragment, tag).hide(mSendMessFragment).commit();
+
+        updateDisplayedElements();
+
+        getLoaderManager().initLoader(Const.Loaders.GROUP_LOADER_ID, null, this);
 
         // Remove Notification pending content
         SharedPrefUtil.clearNotificationContent(this, Const.Notification.Id.GROUP + "_" + Const.Notification.Tag.GROUP + String.valueOf(mGroupIdDb));
@@ -139,63 +141,66 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onPageSelected(int position) {
-        if (mPagerAdapter.getItem(position) instanceof MessageFragment) {
-            setMessageFragmentElementsVisibility();
-        } else {
-            setMembersFragmentElementsVisibility();
-        }
+        updateDisplayedElements();
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
     }
 
-    public void hideAllElements() {
-        mButtonJoin.setVisibility(View.GONE);
-        mButtonJoin.setEnabled(false);
-        mSendMessFragment.hide();
-    }
+    private void updateUI() {
+        mPagerAdapter = new GroupPagerAdapter(getFragmentManager(), mGroupIdDb, mGroup.mIsCurrentUserMember);
+        mPager.setAdapter(mPagerAdapter);
+        mTabLayout.setupWithViewPager(mPager);
 
-    public void setMembersFragmentElementsVisibility() {
-        if (mGroup != null) {
-            if (mGroup.mIsCurrentUserPending) {
-                hideAllElements();
-            } else {
-                mButtonJoin.setEnabled(true);
-                mButtonJoin.show();
-                mSendMessFragment.hide();
-            }
+        if (mPagerAdapter.getCount() > 1) {
+            mTabLayout.setVisibility(View.VISIBLE);
         } else {
-            hideAllElements();
+            mTabLayout.setVisibility(View.GONE);
         }
+
+        updateDisplayedElements();
     }
 
-    public void setMessageFragmentElementsVisibility() {
-        if (mGroup != null) {
-            if (mGroup.mIsCurrentUserMember) {
-                mButtonJoin.setVisibility(View.GONE);
-                mButtonJoin.setEnabled(false);
-                mSendMessFragment.show();
-            } else if (mGroup.mIsCurrentUserPending) {
-                hideAllElements();
-            } else {
-                mButtonJoin.setEnabled(true);
-                mButtonJoin.show();
-                mSendMessFragment.hide();
-            }
-        } else {
-            mButtonJoin.setEnabled(false);
-            mButtonJoin.hide();
+    private void updateDisplayedElements() {
+        boolean isMessageFragment = false;
+        if (mPagerAdapter != null) {
+            isMessageFragment = mPagerAdapter.getItem(mPager.getCurrentItem()) instanceof MessageFragment;
+        }
+
+        if (mGroup == null) {
+            mButtonJoinInvite.hide();
+            mButtonJoinInvite.setEnabled(false);
             mSendMessFragment.hide();
+        } else {
+            if (mGroup.mIsCurrentUserMember) {
+                if (isMessageFragment) {
+                    mSendMessFragment.show();
+                    mButtonJoinInvite.hide();
+                    mButtonJoinInvite.setEnabled(false);
+                } else {
+                    mSendMessFragment.hide();
+                    mButtonJoinInvite.show();
+                    mButtonJoinInvite.setEnabled(true);
+                }
+            } else {
+                mSendMessFragment.hide();
+                if (mCurrentUserId != -1 && !mGroup.mIsCurrentUserPending) {
+                    mButtonJoinInvite.show();
+                    mButtonJoinInvite.setEnabled(true);
+                } else {
+                    mButtonJoinInvite.hide();
+                    mButtonJoinInvite.setEnabled(false);
+                }
+            }
         }
-
     }
 
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
         switch (viewId) {
-            case R.id.group_send_join_invite:
+            case R.id.group_send_join_or_invite_members:
                 if (mGroup.mIsCurrentUserMember) {//We invite people
                     SearchActivity.startActivity(getApplicationContext(), true, mGroupIdDb, false);
                 } else if (!mGroup.mIsCurrentUserPending) {//We are not member and not pending, so we join
@@ -229,35 +234,30 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private class SingleGroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<Group> {
+    @Override
+    public Loader<Group> onCreateLoader(int id, Bundle args) {
+        return new SingleGroupLoader(getApplicationContext(), mGroupIdDb);
+    }
 
-        @Override
-        public Loader<Group> onCreateLoader(int id, Bundle args) {
-            return new SingleGroupLoader(getApplicationContext(), mGroupIdDb);
+    @Override
+    public void onLoadFinished(Loader<Group> loader, Group data) {
+        if (data != null) {
+            mGroupName.setText(data.mName);
+            mGroupDescription.setText(data.mDescription);
+            mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
+            mGroupSport.setText(data.mSport.mName);
+            mGroupCity.setText(data.mCity);
+            ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mName);
+            mGroup = data;
+
+            updateUI();
+        } else {
+            //TODO Error
         }
+    }
 
-        @Override
-        public void onLoadFinished(Loader<Group> loader, Group data) {
-            if (data != null) {
-                mGroupName.setText(data.mName);
-                mGroupDescription.setText(data.mDescription);
-                mGroupCreationDate.setText(getString(R.string.created_on, data.mCreationDate));
-                mGroupSport.setText(data.mSport.mName);
-                mGroupCity.setText(data.mCity);
-                ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(data.mName);
-                mGroup = data;
-                setMessageFragmentElementsVisibility();
-            } else {
-                //TODO Error
-            }
-
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Group> loader) {
-
-        }
-
+    @Override
+    public void onLoaderReset(Loader<Group> loader) {
     }
 
     private class SendJoinTask extends AsyncTask<Void, Void, NetworkUtil.Response> {
@@ -273,7 +273,7 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(NetworkUtil.Response response) {
             if (response.isSuccessful()) {
                 Snackbar.make(mGroupName, R.string.demand_sent, Snackbar.LENGTH_LONG).show();
-                mButtonJoin.setVisibility(View.GONE);
+                mButtonJoinInvite.setVisibility(View.GONE);
             } else {
                 switch (response.getReturnCode()) {
                     case 400:
@@ -287,11 +287,9 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     default:
                         Snackbar.make(mGroupName, R.string.unknown_error, Snackbar.LENGTH_LONG).show();
-
+                        break;
                 }
-
             }
-
         }
     }
 
@@ -327,13 +325,11 @@ public class GroupActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     default:
                         Snackbar.make(mGroupName, R.string.unknown_error, Snackbar.LENGTH_LONG).show();
-
+                        break;
                 }
             }
-
         }
     }
-
 }
 
 

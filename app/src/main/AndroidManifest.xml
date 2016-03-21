@@ -86,6 +86,11 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".ui.activity.AboutActivity"
+            android:label="@string/title_about_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+        <activity
             android:name=".ui.activity.GroupActivity"
             android:label="@string/title_activity_group"
             android:parentActivityName=".ui.activity.MainActivity"
@@ -99,8 +104,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".ui.activity.SendRequestActivity"
-            android:label="@string/activity_send_request"/>
+        <activity
+            android:name=".ui.activity.SendRequestActivity"
+            android:label="@string/activity_send_request" />
         <activity
             android:name=".ui.activity.CreateGroupActivity"
             android:screenOrientation="portrait"
@@ -115,6 +121,9 @@
             android:name=".ui.activity.PostReadActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar" />
+
+        <activity android:name=".ui.activity.ImagePreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service
             android:name=".service.NetworkService"
