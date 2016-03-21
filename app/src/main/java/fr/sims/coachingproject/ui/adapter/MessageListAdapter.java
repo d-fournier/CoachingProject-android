@@ -1,6 +1,7 @@
 package fr.sims.coachingproject.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.model.Message;
+import fr.sims.coachingproject.ui.activity.ImagePreviewActivity;
 import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
@@ -106,7 +108,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public void onBindViewHolder(final CommonViewHolder vh, int position) {
-        Message message = getItem(position);
+        final Message message = getItem(position);
 
         vh.mContent.setText(message.mContent);
         vh.mDateTV.setText(mDateFormat.format(message.mTime));
@@ -114,6 +116,15 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         if(message.mAssociatedFile != null && !message.mAssociatedFile.isEmpty()){
             Picasso.with(mContext).load(message.mAssociatedFile).into(vh.mImageView);
             vh.mImageView.setVisibility(View.VISIBLE);
+
+            vh.mImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImagePreviewActivity.startActivity(mContext, message.mAssociatedFile);
+                }
+            });
+        } else {
+            vh.mImageView.setVisibility(View.GONE);
         }
 
         if(getItemViewType(position) == MESSAGE_ITEM)

@@ -44,6 +44,8 @@ dependencies {
     compile('com.github.afollestad:sectioned-recyclerview:0.2.0') {
         transitive = true
     }
+    compile 'com.commit451:PhotoView:1.2.5'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
