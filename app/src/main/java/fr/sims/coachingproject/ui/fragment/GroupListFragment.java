@@ -188,7 +188,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class GroupLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new GroupLoader(getContext());
+            return new GroupLoader(getActivity());
         }
 
         @Override
@@ -209,7 +209,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class InvitationLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new InvitationLoader(getContext());
+            return new InvitationLoader(getActivity());
         }
 
         @Override
@@ -229,7 +229,7 @@ public class GroupListFragment extends GenericFragment implements View.OnClickLi
     public class JoinLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Group>> {
         @Override
         public Loader<List<Group>> onCreateLoader(int id, Bundle args) {
-            return new JoinLoader(getContext());
+            return new JoinLoader(getActivity());
         }
 
         @Override
