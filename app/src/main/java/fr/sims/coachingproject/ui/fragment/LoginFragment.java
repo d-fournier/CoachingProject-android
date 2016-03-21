@@ -62,14 +62,11 @@ public class LoginFragment extends GenericFragment {
 
     @Override
     protected void bindView(View view) {
-        TextView title=(TextView)view.findViewById(R.id.log_in_title);
         LinearLayout layout=(LinearLayout)view.findViewById(R.id.email_login_form);
         ScrollView.LayoutParams params;
         if(!mIsFirstLaunch){
-            title.setVisibility(View.GONE);
             params  = new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT, Gravity.TOP);
         }else{
-            title.setVisibility(View.VISIBLE);
             params = new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL);
         }
         layout.setLayoutParams(params);

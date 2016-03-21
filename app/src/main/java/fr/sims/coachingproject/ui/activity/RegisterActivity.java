@@ -7,21 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -49,6 +51,7 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
+import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.MultipartUtility;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -82,8 +85,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private LevelsLoaderCallbacks mLevelLoader;
     private List<SportLevel> mSportLevelList;
 
-    private ImageButton mAddLevelButton;
-    private ImageButton mRemoveLevelButton;
+    private Button mAddLevelButton;
+    private Button mRemoveLevelButton;
     private Button mRegisterButton;
     private ImageView mUploadedImage;
     private Button mDateButton;
@@ -102,6 +105,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        AutoCompleteTextView cityView = (AutoCompleteTextView) findViewById(R.id.register_city);
+        cityView.setAdapter(new CityAutoCompleteAdapter(this, android.R.layout.simple_list_item_1));
+
         mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(this);
         mUploadedImage = (ImageView) findViewById(R.id.register_profile_image);
@@ -109,9 +115,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mDateButton = (Button) findViewById(R.id.register_date_button);
         mDateButton.setOnClickListener(this);
 
-        mAddLevelButton = (ImageButton) findViewById(R.id.register_add_level_button);
+        mAddLevelButton = (Button) findViewById(R.id.register_add_level_button);
         mAddLevelButton.setOnClickListener(this);
-        mRemoveLevelButton = (ImageButton) findViewById(R.id.register_remove_level_button);
+        mRemoveLevelButton = (Button) findViewById(R.id.register_remove_level_button);
         mRemoveLevelButton.setOnClickListener(this);
 
         mLevelViewsParent = (LinearLayout) findViewById(R.id.register_levels_list);
@@ -163,7 +169,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 register();
                 break;
             case R.id.register_date_button:
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(this, R.style.Datepicker, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         Calendar cal = Calendar.getInstance();
@@ -188,7 +194,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //On set l'adapter sur le spinner des sports
         ArrayAdapter<Sport> sportAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, mSportsList);
+                R.layout.spinner_element, mSportsList);
         sportAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportsSpinner.setAdapter(sportAdapter);
         sportsSpinner.setSelection(mAddedLevelsNumber);
@@ -197,7 +203,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mLevelsLists.add(new ArrayList<SportLevel>());
         mLevelsSelected.add((long) -1);
         ArrayAdapter<SportLevel> levelAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, mLevelsLists.get(mAddedLevelsNumber));
+                R.layout.spinner_element, mLevelsLists.get(mAddedLevelsNumber));
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         levelsSpinner.setAdapter(levelAdapter);
 
@@ -221,7 +227,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 args.putInt(VIEW_POSITION, viewPosition);
                 getLoaderManager().restartLoader(Const.Loaders.LEVEL_LOADER_ID, args, mLevelLoader);
 
-                //Ici on check si on selectionne 2 fois le même sport Todo faire ce check au moment du register aussi
+                //Ici on check si on selectionne 2 fois le même sport
                 Sport currentSport = (Sport) parent.getSelectedItem();
                 for (LinearLayout l : mLevelViewsChildren) {
                     Spinner sportSpinner = (Spinner) l.findViewById(R.id.register_spinner_sport);
@@ -327,6 +333,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         } finally {
             cursor.close();
+        }
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mUploadFileUri);
+            ImageView imageView = (ImageView) findViewById(R.id.register_profile_image);
+            imageView.setImageBitmap(bitmap);
+            bitmap.recycle();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -473,9 +488,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 mSportsList.clear();
                 mSportsList.addAll(data);
                 MAX_LEVELS_NUMBER = mSportsList.size();
-            } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.no_connectivity), Toast.LENGTH_LONG).show();
-                finish();
             }
         }
 

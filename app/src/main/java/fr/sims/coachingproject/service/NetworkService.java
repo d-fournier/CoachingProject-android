@@ -27,8 +27,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
 public class NetworkService extends IntentService {
-    public static final String ACTION_LEVELS = "fr.sims.coachingproject.action.LEVELS";
-    public static final String ACTION_SPORTS = "fr.sims.coachingproject.action.SPORTS";
+    public static final String ACTION_SPORTS_LEVELS = "fr.sims.coachingproject.action.SPORTS_LEVELS";
     public static final String ACTION_CONNECTED_USER_INFO = "fr.sims.coachingproject.action.CONNECTED_USER_INFO";
     public static final String ACTION_COACHING_RELATIONS = "fr.sims.coachingproject.action.COACHING_RELATIONS";
     public static final String ACTION_RELATION_MESSAGES = "fr.sims.coachingproject.action.RELATION_MESSAGES";
@@ -55,15 +54,9 @@ public class NetworkService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionSports(Context context) {
+    public static void startActionSportsLevels(Context context) {
         Intent intent = new Intent(context, NetworkService.class);
-        intent.setAction(ACTION_SPORTS);
-        context.startService(intent);
-    }
-
-    public static void startActionLevels(Context context) {
-        Intent intent = new Intent(context, NetworkService.class);
-        intent.setAction(ACTION_LEVELS);
+        intent.setAction(ACTION_SPORTS_LEVELS);
         context.startService(intent);
     }
 
@@ -124,11 +117,8 @@ public class NetworkService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             switch (action) {
-                case ACTION_SPORTS:
-                    handleActionSports();
-                    break;
-                case ACTION_LEVELS:
-                    handleActionLevels();
+                case ACTION_SPORTS_LEVELS:
+                    handleActionSportsLevels();
                     break;
                 case ACTION_CONNECTED_USER_INFO:
                     handleActionConnectedUserInfo();
@@ -161,12 +151,12 @@ public class NetworkService extends IntentService {
         }
     }
 
-    private void handleActionSports() {
-        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
-        NetworkUtil.Response response = NetworkUtil.get(request,null);
+    private void handleActionSportsLevels() {
+        String request_sports = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.SPORTS ;
+        NetworkUtil.Response response_sports = NetworkUtil.get(request_sports,null);
 
-        if (response.isSuccessful()) {
-            Sport[] sList = Sport.parseList(response.getBody());
+        if (response_sports.isSuccessful()) {
+            Sport[] sList = Sport.parseList(response_sports.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -179,15 +169,15 @@ public class NetworkService extends IntentService {
             } finally {
                 ActiveAndroid.endTransaction();
             }
+        }else{
+            SharedPrefUtil.putSportsAndLevelsLoaded(getApplicationContext(),false);
         }
-    }
 
-    private void handleActionLevels() {
-        String request = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.LEVELS;
-        NetworkUtil.Response response = NetworkUtil.get(request,null);
+        String request_levels = Const.WebServer.DOMAIN_NAME + Const.WebServer.API + Const.WebServer.LEVELS;
+        NetworkUtil.Response response_levels = NetworkUtil.get(request_levels,null);
 
-        if (response.isSuccessful()) {
-            SportLevel[] slList = SportLevel.parseList(response.getBody());
+        if (response_levels.isSuccessful()) {
+            SportLevel[] slList = SportLevel.parseList(response_levels.getBody());
 
             ActiveAndroid.beginTransaction();
             try {
@@ -200,7 +190,14 @@ public class NetworkService extends IntentService {
             } finally {
                 ActiveAndroid.endTransaction();
             }
+        }else{
+            SharedPrefUtil.putSportsAndLevelsLoaded(getApplicationContext(), false);
         }
+
+        SharedPrefUtil.putSportsAndLevelsLoaded(getApplicationContext(), true);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_SPORTS_UPDATED));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.BroadcastEvent.EVENT_LEVELS_UPDATED));
+
     }
 
     private void handleActionInvitationUserGroups(long groupId, boolean accepted) {

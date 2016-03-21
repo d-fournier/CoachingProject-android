@@ -1,15 +1,23 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/register_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.sims.coachingproject.ui.activity.LoginActivity">
+    android:background="@color/colorPrimary">
 
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="fr.sims.coachingproject.ui.activity.LoginActivity">
 
-    <fragment android:name="fr.sims.coachingproject.ui.fragment.LoginFragment"
-        android:id="@+id/article_fragment"
-        android:layout_weight="2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+        <fragment
+            android:id="@+id/article_fragment"
+            android:name="fr.sims.coachingproject.ui.fragment.LoginFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_weight="1" />
 
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

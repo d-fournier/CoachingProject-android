@@ -7,7 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme" parent="BaseAppTheme"/>
+
+    <style name="Datepicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
@@ -20,7 +23,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
     <style name="CollapsingToolbarLayoutExpandedTextStyle" parent="AppTheme">
         <item name="android:textColor">@android:color/transparent</item>
         <item name="android:textSize">0.1sp</item>
@@ -32,6 +34,10 @@
     </style>
     <style name="TextAppearance.ListSecondaryItem">
         <item name="android:textSize">@dimen/list_secondary_text</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
+        <item name="colorAccent">@color/white</item>
     </style>
 
 </resources>

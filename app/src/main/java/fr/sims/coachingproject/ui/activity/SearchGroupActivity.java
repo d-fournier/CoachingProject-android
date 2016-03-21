@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -90,10 +91,14 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSearchArgs.putCharSequence("searchText", mSearchInput.getText().toString());
-                mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
-                mSearchArgs.putCharSequence("searchPlace", mAutoCompView.getText().toString());
-                getLoaderManager().restartLoader(Const.Loaders.GROUP_LOADER_ID, mSearchArgs, mGroupLoader);
+                try {
+                    mSearchArgs.putCharSequence("searchText", mSearchInput.getText().toString());
+                    mSearchArgs.putLong("idSport", ((Sport) mSportsSpinner.getSelectedItem()).getmIdDb());
+                    mSearchArgs.putCharSequence("searchPlace", mAutoCompView.getText().toString());
+                    getLoaderManager().restartLoader(Const.Loaders.GROUP_LOADER_ID, mSearchArgs, mGroupLoader);
+                }catch(NullPointerException e){
+
+                }
             }
         });
 
@@ -132,17 +137,26 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
         @Override
         public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
-            mGroupList = data;
-            mSearchGroupListAdapter.setData(mGroupList);
-            mLoadingBar.setVisibility(View.GONE);
+            if(data!=null){
+                mGroupList = data;
+                mSearchGroupListAdapter.setData(mGroupList);
+                mLoadingBar.setVisibility(View.GONE);
+                mSportsSpinner.setVisibility(View.VISIBLE);
 
-            if (mGroupList.isEmpty()) {
-                mRecycleView.setVisibility(View.GONE);
+                if (mGroupList.isEmpty()) {
+                    mRecycleView.setVisibility(View.GONE);
+                    mEmptyGroupListText.setVisibility(View.VISIBLE);
+                } else {
+                    mRecycleView.setVisibility(View.VISIBLE);
+                    mEmptyGroupListText.setVisibility(View.GONE);
+                }
+            }else{
+                Snackbar.make(mRecycleView,R.string.no_connectivity,Snackbar.LENGTH_LONG).show();
+                mLoadingBar.setVisibility(View.GONE);
                 mEmptyGroupListText.setVisibility(View.VISIBLE);
-            } else {
-                mRecycleView.setVisibility(View.VISIBLE);
-                mEmptyGroupListText.setVisibility(View.GONE);
+                mSportsSpinner.setVisibility(View.GONE);
             }
+
 
         }
 
@@ -162,19 +176,19 @@ public class SearchGroupActivity extends AppCompatActivity implements SearchGrou
 
         @Override
         public void onLoadFinished(Loader<List<Sport>> loader, List<Sport> data) {
-            mSportList = data;
-            mSportsAdapter.clear();
+            if(data!=null){
+                mSportList = data;
+                mSportsAdapter.clear();
 
-            //Create fake sport for "All sports" with ID -1
-            Sport allSports = new Sport();
-            allSports.mName = getString(R.string.all_sports);
-            allSports.mIdDb = -1;
-            mSportsAdapter.add(allSports);
+                //Create fake sport for "All sports" with ID -1
+                Sport allSports = new Sport();
+                allSports.mName = getString(R.string.all_sports);
+                allSports.mIdDb = -1;
+                mSportsAdapter.add(allSports);
 
-            //Add all sports got from server
-            mSportsAdapter.addAll(mSportList);
-
-
+                //Add all sports got from server
+                mSportsAdapter.addAll(mSportList);
+            }
         }
 
         @Override

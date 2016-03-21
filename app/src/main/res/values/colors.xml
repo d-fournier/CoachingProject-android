@@ -8,6 +8,8 @@
     <color name="white">@android:color/white</color>
     <color name="black">@android:color/black</color>
 
+    <color name="light_grey">#EEEEEE</color>
+
     <color name="firstLaunchBkgTint">#be8ce4cb</color>
 
     <color name="colorBackgroundDark">#EFEFEF</color>

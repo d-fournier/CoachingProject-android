@@ -1,20 +1,17 @@
 package fr.sims.coachingproject.loader.local;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fr.sims.coachingproject.model.SportLevel;
+import fr.sims.coachingproject.service.NetworkService;
 import fr.sims.coachingproject.util.Const;
-import fr.sims.coachingproject.util.NetworkUtil;
 
 /**
  * Created by Benjamin on 16/02/2016.
  */
-public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
+public class LevelLoader extends GenericLocalLoader<List<SportLevel>> {
 
     List<SportLevel> mLevelsList;
     public long mSport;
@@ -30,10 +27,21 @@ public class LevelLoader extends AsyncTaskLoader<List<SportLevel>> {
         if (mSport != -1) {
             return SportLevel.getAllSportLevelsBySportId(mSport);
         }else{
-            return SportLevel.getAllSportLevels();
+            List<SportLevel> listSportLevels = SportLevel.getAllSportLevels();
+            if(listSportLevels == null || listSportLevels.isEmpty()){
+                NetworkService.startActionSportsLevels(getContext());
+                return null;
+            }else{
+                return listSportLevels;
+            }
         }
     }
 
+
+    @Override
+    protected String getBroadcastEvent() {
+        return Const.BroadcastEvent.EVENT_LEVELS_UPDATED;
+    }
 
     @Override
     protected void onStartLoading() {
