@@ -6,7 +6,6 @@
     android:padding="8dp">
 
     <Spinner
-        android:theme="@style/SpinnerTheme"
         android:id="@+id/register_spinner_sport"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -17,7 +16,6 @@
         android:prompt="@string/select_sport" />
 
     <Spinner
-        android:theme="@style/SpinnerTheme"
         android:id="@+id/register_spinner_level"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

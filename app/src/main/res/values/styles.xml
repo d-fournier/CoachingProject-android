@@ -7,7 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme" parent="BaseAppTheme"/>
+
+    <style name="Datepicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
@@ -19,7 +22,6 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 
     <style name="CollapsingToolbarLayoutExpandedTextStyle" parent="AppTheme">
         <item name="android:textColor">@android:color/transparent</item>
@@ -34,18 +36,8 @@
         <item name="android:textSize">@dimen/list_secondary_text</item>
     </style>
 
-    <style name="EditTextLight" parent="TextAppearance.AppCompat">
-       <item name="android:textColorHint">@color/light_grey</item>
-        <item name="android:textColor">@color/light_grey</item>
-        <item name="colorAccent">@color/light_grey</item>
-        <item name="colorControlNormal">@color/light_grey</item>
-        <item name="colorControlActivated">@color/light_grey</item>
-    </style>
-
-    <style name="SpinnerTheme" parent="AppTheme">
-        <item name="colorControlNormal">@color/light_grey</item>
-        <item name="colorControlActivated">#000000</item>
-        <item name="colorControlHighlight">#000000</item>
+    <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
+        <item name="colorAccent">@color/white</item>
     </style>
 
 </resources>

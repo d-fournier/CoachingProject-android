@@ -45,13 +45,18 @@
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Dark"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.FirstLaunchActivity"
             android:label="@string/title_activity_first_launch"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
+        <activity
+            android:name=".ui.activity.RegisterActivity"
+            android:label="@string/title_register_activity"
+            android:theme="@style/AppTheme.NoActionBar.Dark"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
@@ -69,11 +74,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.RegisterActivity"
-            android:label="@string/title_register_activity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.ProfileActivity"
             android:label="@string/title_register_activity"

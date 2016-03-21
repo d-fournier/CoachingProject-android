@@ -169,7 +169,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 register();
                 break;
             case R.id.register_date_button:
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(this, R.style.Datepicker, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         Calendar cal = Calendar.getInstance();
