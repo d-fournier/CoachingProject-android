@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +49,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private TabLayout mTabLayout;
     private NestedScrollView mInvitationLayout;
     private TextView mRefusedInvitationTV;
+
+    private EditText mMessageET;
 
     private MessageSendFragment mSendMessFragment;
 

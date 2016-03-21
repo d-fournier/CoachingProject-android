@@ -3,14 +3,21 @@ package fr.sims.coachingproject.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +38,7 @@ import fr.sims.coachingproject.util.SharedPrefUtil;
 /**
  * Created by Donovan on 18/03/2016.
  */
-public class MessageSendFragment extends GenericFragment implements View.OnClickListener {
+public class MessageSendFragment extends GenericFragment implements View.OnClickListener, EditText.OnKeyListener, View.OnFocusChangeListener {
     private static final String EXTRA_RELATION_ID = "fr.sims.coachingproject.extra.RELATION_ID";
     private static final String EXTRA_GROUP_ID = "fr.sims.coachingproject.extra.GROUP_ID";
 
@@ -112,8 +119,52 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
         mAttachFileButton.setOnClickListener(this);
         mMessageET = (EditText) view.findViewById(R.id.message_content);
         mUploadFileUri = null;
+
+        mMessageET.setOnFocusChangeListener(this);
+        //Being inside the box and pressing a key
+        mMessageET.setOnKeyListener(this);
     }
 
+    public void collapseToolbar(){
+        AppBarLayout appbarLayout;
+        if (mGroupId == -1) {
+            appbarLayout = (AppBarLayout) getActivity().findViewById(R.id.relation_appbarlayout);
+        } else {
+            appbarLayout = (AppBarLayout) getActivity().findViewById(R.id.group_appbarlayout);
+        }
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        CoordinatorLayout rootLayout;
+        if (mGroupId == -1) {
+            rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.relation_rootlayout);
+        } else {
+            rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.group_rootlayout);
+        }
+        if(behavior!=null) {
+            behavior.onNestedFling(rootLayout, appbarLayout, null, 0, 10000, true);
+        }
+    }
+
+    public void expandToolbar(){
+        AppBarLayout appbarLayout;
+        if (mGroupId == -1) {
+            appbarLayout = (AppBarLayout) getActivity().findViewById(R.id.relation_appbarlayout);
+        } else {
+            appbarLayout = (AppBarLayout) getActivity().findViewById(R.id.group_appbarlayout);
+        }
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        CoordinatorLayout rootLayout;
+        if (mGroupId == -1) {
+            rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.relation_rootlayout);
+        } else {
+            rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.group_rootlayout);
+        }
+        if (behavior!= null) {
+            behavior.setTopAndBottomOffset(0);
+            behavior.onNestedPreScroll(rootLayout, appbarLayout, null, 0, 1, new int[2]);
+        }
+    }
     public void hide() {
         getFragmentManager()
                 .executePendingTransactions();
@@ -132,6 +183,27 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
                 .setCustomAnimations(R.animator.slide_in_bottom, R.animator.slide_out_bottom)
                 .show(this)
                 .commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean focused) {
+        if (focused) {
+            collapseToolbar();
+            //do something
+        } else {
+            expandToolbar();
+        }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        //If the event is a key-down event on the "enter" button
+        //If enter is pressed while inside the textbox
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            sendMessage();
+        }
+        return false;
     }
 
     @Override
@@ -232,6 +304,8 @@ public class MessageSendFragment extends GenericFragment implements View.OnClick
             in.hideSoftInputFromWindow(mMessageET.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mSendBtn.setEnabled(false);
             mAttachFileButton.setEnabled(false);
+            //expandToolbar();
+            mMessageET.clearFocus();
         }
 
         @Override
