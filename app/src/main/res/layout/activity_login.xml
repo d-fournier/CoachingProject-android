@@ -11,23 +11,6 @@
         android:orientation="vertical"
         tools:context="fr.sims.coachingproject.ui.activity.LoginActivity">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:contentDescription="@string/logo"
-            android:src="@drawable/img_runners_timer" />
-
-        <TextView
-            style="@style/Base.TextAppearance.AppCompat.Display1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/log_in"
-            android:textColor="@color/white"/>
-
-
         <fragment
             android:id="@+id/article_fragment"
             android:name="fr.sims.coachingproject.ui.fragment.LoginFragment"
