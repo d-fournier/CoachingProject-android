@@ -488,9 +488,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 mSportsList.clear();
                 mSportsList.addAll(data);
                 MAX_LEVELS_NUMBER = mSportsList.size();
-            } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.no_connectivity), Toast.LENGTH_LONG).show();
-                finish();
             }
         }
 

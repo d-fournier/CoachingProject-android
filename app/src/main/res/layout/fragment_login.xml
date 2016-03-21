@@ -29,74 +29,89 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/log_in_title"
+                style="@style/TextAppearance.AppCompat.Display1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/log_in"
-                style="@style/TextAppearance.AppCompat.Display1"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="@string/log_in" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
 
                 <EditText
                     android:id="@+id/login_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_person_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_person_24dp"
                     android:hint="@string/prompt_username"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/login_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_lock_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_lock_24dp"
                     android:hint="@string/prompt_password"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
 
             </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/username_sign_in_button"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                style="@style/Widget.AppCompat.Button.Colored" />
+                android:text="@string/action_sign_in" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/not_registered_question"/>
+                    android:text="@string/not_registered_question"
+                    android:textColor="@color/light_grey"/>
+
                 <Button
                     android:id="@+id/sign_up_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sign_up"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:textColor="@color/white"/>
             </LinearLayout>
 
         </LinearLayout>

@@ -19,6 +19,6 @@
         <item>@drawable/first_launch_3</item>
         <item>@drawable/first_launch_2</item>
         <item>@drawable/first_launch_1</item>
-        <item>@drawable/first_launch_4</item>
+        <item>@color/colorPrimary</item>
     </string-array>
 </resources>
