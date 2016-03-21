@@ -10,7 +10,6 @@
 
     <ImageView
         android:id="@+id/first_launch_bkg1"
-        android:tint="@color/firstLaunchBkgTint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -18,7 +17,6 @@
 
     <ImageView
         android:id="@+id/first_launch_bkg2"
-        android:tint="@color/firstLaunchBkgTint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"

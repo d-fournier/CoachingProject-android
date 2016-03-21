@@ -52,7 +52,12 @@ public class GroupSearchLoader extends AsyncTaskLoader<List<Group>> {
         }
         NetworkUtil.Response response = NetworkUtil.get(request, null);
 
-        return Arrays.asList(Group.parseList(response.getBody()));
+        if(response.isSuccessful()){
+            return Arrays.asList(Group.parseList(response.getBody()));
+        }else{
+            return null;
+        }
+
     }
 
 
