@@ -83,7 +83,11 @@ public class BlogListFragment extends GenericFragment implements LoaderManager.L
 
     @Override
     public void onItemClick(View view, int position) {
-        long id = mAdapter.getItem(position).mIdDb;
-        PostReadActivity.startActivity(getActivity(), id);
+        BlogPost item = mAdapter.getItem(position);
+        long id = item.mIdDb;
+        if(item.mPicture != null && !item.mPicture.isEmpty())
+            PostReadActivity.startActivityWithAnimation(getActivity(), id, view.findViewById(R.id.post_picture));
+        else
+            PostReadActivity.startActivity(getActivity(), id);
     }
 }

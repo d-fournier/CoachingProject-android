@@ -1,11 +1,14 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +26,21 @@ public class PostReadActivity extends AppCompatActivity implements LoaderManager
     private CollapsingToolbarLayout mCollapsToolbar;
     private ImageView mPictureIV;
     private MarkDownView mMarkDownView;
+
+    public static void startActivityWithAnimation(Activity activityCtx, long id, View picture) {
+        Intent intent = new Intent(activityCtx, PostReadActivity.class);
+        intent.putExtra(EXTRA_POST_ID, id);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activityCtx, picture,
+                            activityCtx.getResources().getString(R.string.transition_post_picture));
+            activityCtx.startActivity(intent, options.toBundle());
+        } else {
+            activityCtx.startActivity(intent);
+        }
+
+    }
 
     public static void startActivity(Context ctx, long id) {
         Intent intent = new Intent(ctx, PostReadActivity.class);
