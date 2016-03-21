@@ -46,7 +46,6 @@ import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
 
-
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
 
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavigationView;
 
     private long mConnectedUserId;
-
 
 
     public static void startActivity(Context ctx) {
@@ -88,8 +86,8 @@ public class MainActivity extends AppCompatActivity
                     startActionCoachingRelations(getApplicationContext());
                 } else if (slideOffset != 0) {
                     // started opening
-                    if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
-                        Menu menu=mNavigationView.getMenu();
+                    if (SharedPrefUtil.getConnectedUserId(getApplicationContext()) == -1) {
+                        Menu menu = mNavigationView.getMenu();
                         menu.removeItem(R.id.nav_settings);
                         menu.removeItem(R.id.nav_disconnect);
                         menu.removeItem(R.id.nav_blog_post_new);
@@ -164,17 +162,17 @@ public class MainActivity extends AppCompatActivity
                 List<Intent> targetedShareIntents = new ArrayList<Intent>();
 
                 Intent fbIntent = getShareIntent("com.facebook.katana");
-                if(fbIntent != null)
+                if (fbIntent != null)
                     targetedShareIntents.add(fbIntent);
 
                 Intent twitterIntent = getShareIntent("com.twitter.android");
-                if(twitterIntent != null) {
-                    twitterIntent.setClassName("com.twitter.android","com.twitter.android.composer.ComposerActivity");
+                if (twitterIntent != null) {
+                    twitterIntent.setClassName("com.twitter.android", "com.twitter.android.composer.ComposerActivity");
                     targetedShareIntents.add(twitterIntent);
                 }
 
                 Intent gmIntent = getShareIntent("com.google.android.gm");
-                if(gmIntent != null)
+                if (gmIntent != null)
                     targetedShareIntents.add(gmIntent);
 
                 Intent chooser = Intent.createChooser(targetedShareIntents.remove(0), "Continuer avec");
@@ -183,7 +181,7 @@ public class MainActivity extends AppCompatActivity
 
                 startActivity(chooser);
 
-              break;
+                break;
             case R.id.nav_disconnect:
                 disconnect();
                 LoginActivity.startActivity(getApplication());
@@ -197,8 +195,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private Intent getShareIntent(String type)
-    {
+    private Intent getShareIntent(String type) {
         boolean appFound = false;
         String urlToShare = "https://play.google.com/store/apps/details?id=fr.sims.coachingproject";
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -206,20 +203,19 @@ public class MainActivity extends AppCompatActivity
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "The best sport app");
         shareIntent.putExtra(Intent.EXTRA_TEXT, urlToShare + " It's a great sport app - I recommend ");
 
-        List<ResolveInfo> matches = getPackageManager().queryIntentActivities( shareIntent,0);
-        for(ResolveInfo info : matches)
-        {
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(shareIntent, 0);
+        for (ResolveInfo info : matches) {
             // Check if the app is installed on the phone.
-            if(info.activityInfo.packageName.toLowerCase().contains(type)){
+            if (info.activityInfo.packageName.toLowerCase().contains(type)) {
                 shareIntent.setPackage(info.activityInfo.packageName);
-                appFound =true;
+                appFound = true;
                 break;
             }
         }
-        if(!appFound)
-               return null;
+        if (!appFound)
+            return null;
 
-       return  shareIntent;
+        return shareIntent;
     }
 
     @Override
