@@ -28,9 +28,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             RegistrationGCMIntentService.startActionRegistrationGCM(this);
         }
 
-        if(SharedPrefUtil.isFirstLaunch(this)) {
-            NetworkService.startActionSports(this);
-            NetworkService.startActionLevels(this);
+        if(SharedPrefUtil.sportsAndLevelsLoaded(this)) {
+            NetworkService.startActionSportsLevels(this);
         }
 
 

@@ -15,6 +15,8 @@ public class Const {
         // TODO Move out from SharedPref
         public final static String CURRENT_TOKEN = "CURRENT_TOKEN";
 
+        public final static String LEVELS_SPORTS_LOADED = "LEVELS_SPORTS_LOADED";
+
         public final static String NOTIFICATION_CONTENT = "NOTIFICATION_CONTENT_";
     }
 
@@ -139,5 +141,7 @@ public class Const {
         public static final String EVENT_GROUPS_UPDATED = "fr.sims.coachingproject.event.GROUPS_UPDATED";
         public static final String EVENT_GROUP_MEMBERS_UPDATED = "fr.sims.coachingproject.event.GROUP_MEMBERS_UPDATED";
         public static final String EVENT_INVITATIONS_UPDATED = "fr.sims.coachingproject.event.INVITATIONS_UPDATED";
+        public static final String EVENT_SPORTS_UPDATED = "fr.sims.coachingproject.event.SPORTS_UPDATED";
+        public static final String EVENT_LEVELS_UPDATED = "fr.sims.coachingproject.event.LEVELS_UPDATED";
     }
 }

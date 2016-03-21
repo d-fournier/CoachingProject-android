@@ -33,6 +33,14 @@ public class SharedPrefUtil {
         getSharedPreferences(ctx).edit().putString(Const.SharedPref.CURRENT_TOKEN, token).apply();
     }
 
+    public static boolean sportsAndLevelsLoaded(Context ctx) {
+        return getSharedPreferences(ctx).getBoolean(Const.SharedPref.LEVELS_SPORTS_LOADED, false);
+    }
+
+    public static void putSportsAndLevelsLoaded(Context ctx, boolean sportsLevelsLoaded) {
+        getSharedPreferences(ctx).edit().putBoolean(Const.SharedPref.LEVELS_SPORTS_LOADED, sportsLevelsLoaded).apply();
+    }
+
     public static boolean isFirstLaunch(Context ctx) {
         return getSharedPreferences(ctx).getBoolean(Const.SharedPref.IS_FIRST_LAUNCH, true);
     }

@@ -19,11 +19,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -51,6 +51,7 @@ import fr.sims.coachingproject.model.UserProfile;
 import fr.sims.coachingproject.model.fakejson.LoginRequest;
 import fr.sims.coachingproject.model.fakejson.LoginResponse;
 import fr.sims.coachingproject.service.gcmService.RegistrationGCMIntentService;
+import fr.sims.coachingproject.ui.adapter.CityAutoCompleteAdapter;
 import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.MultipartUtility;
 import fr.sims.coachingproject.util.NetworkUtil;
@@ -103,6 +104,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        AutoCompleteTextView cityView = (AutoCompleteTextView) findViewById(R.id.register_city);
+        cityView.setAdapter(new CityAutoCompleteAdapter(this, android.R.layout.simple_list_item_1));
 
         mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(this);
