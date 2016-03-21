@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     ViewPager mViewPager;
     View mDrawerHeader;
     NavigationView mNavigationView;
+    ImageView mConnectedUserPictureIV;
 
     private long mConnectedUserId;
 
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity
         // Drawer Items
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerHeader = mNavigationView.getHeaderView(0);
+        mConnectedUserPictureIV = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         // Tabs Pattern
@@ -226,19 +228,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<UserProfile> loader, UserProfile user) {
         TextView header = (TextView) mDrawerHeader.findViewById(R.id.drawer_header_name);
-        ImageView profilePicture = (ImageView) mDrawerHeader.findViewById(R.id.drawer_header_picture);
 
         if (user != null) {
             mConnectedUserId = user.mIdDb;
             header.setText(user.mDisplayName);
-            ImageUtil.loadProfilePicture(this, user.mPicture, profilePicture);
-            profilePicture.setVisibility(View.VISIBLE);
+            ImageUtil.loadProfilePicture(this, user.mPicture, mConnectedUserPictureIV);
+            mConnectedUserPictureIV.setVisibility(View.VISIBLE);
             mNavigationView.getMenu().findItem(R.id.nav_disconnect).setVisible(true);
 
         } else {
             mConnectedUserId = -1;
             header.setText(R.string.connect);
-            profilePicture.setVisibility(View.GONE);
+            mConnectedUserPictureIV.setVisibility(View.GONE);
         }
         mDrawerHeader.setOnClickListener(this);
     }
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         if (mConnectedUserId != -1)
-            ProfileActivity.startActivity(this, mConnectedUserId);
+            ProfileActivity.startActivityWithAnimation(this, mConnectedUserId, mConnectedUserPictureIV);
         else
             LoginActivity.startActivity(this);
     }

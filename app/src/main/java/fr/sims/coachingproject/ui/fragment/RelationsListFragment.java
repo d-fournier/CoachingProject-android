@@ -138,14 +138,6 @@ public class RelationsListFragment extends GenericFragment implements LoaderMana
 
     @Override
     public void onRelationClick(View view, long relationIdDb) {
-        Intent intent = RelationActivity.getIntent(getActivity(), relationIdDb);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptionsCompat options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(getActivity(),view.findViewById(R.id.user_picture),
-                            getString(R.string.transition_user_picture));
-            getActivity().startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
-        }
+        RelationActivity.startActivityWithAnimation(getActivity(), relationIdDb, view.findViewById(R.id.user_picture));
     }
 }

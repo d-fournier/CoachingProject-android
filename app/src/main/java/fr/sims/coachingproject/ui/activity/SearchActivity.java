@@ -179,7 +179,7 @@ public class SearchActivity extends AppCompatActivity implements UsersListAdapte
 
     @Override
     public void onItemClick(View view, int position) {
-        ProfileActivity.startActivity(this, mUserList.get(position).mIdDb,mSportsSpinner.getSelectedItemId());
+        ProfileActivity.startActivityWithAnimation(this, mUserList.get(position).mIdDb, mSportsSpinner.getSelectedItemId(), view.findViewById(R.id.user_picture));
     }
 
     @Override

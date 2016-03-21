@@ -227,8 +227,10 @@ public class LoginFragment extends GenericFragment {
             UserProfile up = UserProfile.parseItem(response_user.getBody());
             up.saveOrUpdate();
 
-            SharedPrefUtil.putConnectedToken(getActivity(), lResponse.token);
-            SharedPrefUtil.putConnectedUserId(getActivity(), up.mIdDb);
+            if(getActivity()!=null){
+                SharedPrefUtil.putConnectedToken(getActivity(), lResponse.token);
+                SharedPrefUtil.putConnectedUserId(getActivity(), up.mIdDb);
+            }
 
             return true;
         }
