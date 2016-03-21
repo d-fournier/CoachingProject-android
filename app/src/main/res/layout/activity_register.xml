@@ -52,6 +52,9 @@
                     android:id="@+id/register_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_person_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_person_24dp"
                     android:hint="@string/prompt_username"
                     android:inputType="text"
                     android:maxLines="1"
@@ -68,6 +71,9 @@
                     android:id="@+id/register_display_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_person_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_person_24dp"
                     android:hint="@string/display_name"
                     android:inputType="text"
                     android:maxLines="1"
@@ -84,6 +90,9 @@
                     android:id="@+id/register_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_lock_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_lock_24dp"
                     android:hint="@string/prompt_password"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -100,6 +109,9 @@
                     android:id="@+id/register_password_repeat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_lock_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_lock_24dp"
                     android:hint="@string/repeat_password"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -116,6 +128,9 @@
                     android:id="@+id/register_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_mail_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_mail_24dp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
@@ -128,6 +143,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
+                android:drawableLeft="@drawable/ic_location_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_location_24dp"
                 android:ems="10"
                 android:hint="@string/city"
                 android:textColor="@color/light_grey"
@@ -135,6 +153,9 @@
 
             <Button
                 android:id="@+id/register_date_button"
+                android:drawableLeft="@drawable/ic_cake_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_cake_24dp"
                 style="@style/Platform.Widget.AppCompat.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,6 +171,9 @@
                     android:id="@+id/register_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_subject_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_subject_24dp"
                     android:gravity="top"
                     android:hint="@string/description"
                     android:inputType="textMultiLine"
@@ -162,7 +186,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/agree_to_coach"
-                android:textColor="@color/light_grey" />
+                android:textColor="@color/light_grey"/>
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Title"
@@ -191,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_marginTop="@dimen/section_margin_top"
-                android:text="@string/levels"
+                android:text="@string/sports"
                 android:textColor="@color/white" />
 
             <LinearLayout
@@ -214,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:text="@string/add_level"
+                    android:text="@string/add_sport"
                     android:textColor="@color/light_grey" />
 
                 <Button
@@ -224,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="@string/remove_level"
+                    android:text="@string/remove_sport"
                     android:textColor="@color/light_grey" />
 
             </LinearLayout>

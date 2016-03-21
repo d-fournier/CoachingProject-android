@@ -169,5 +169,8 @@
     <string name="levels">Levels</string>
     <string name="add_level">Add level</string>
     <string name="remove_level">Remove level</string>
+    <string name="sports">Sports</string>
+    <string name="add_sport">Add sport</string>
+    <string name="remove_sport">Remove sport</string>
 
 </resources>
