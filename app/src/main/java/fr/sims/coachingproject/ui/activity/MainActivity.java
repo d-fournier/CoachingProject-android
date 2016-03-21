@@ -87,9 +87,8 @@ public class MainActivity extends AppCompatActivity
                     startActionCoachingRelations(getApplicationContext());
                 } else if (slideOffset != 0) {
                     // started opening
-                    if (SharedPrefUtil.getConnectedUserId(getApplicationContext()) == -1) {
-                        Menu menu = mNavigationView.getMenu();
-                        menu.removeItem(R.id.nav_settings);
+                    if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
+                        Menu menu=mNavigationView.getMenu();
                         menu.removeItem(R.id.nav_disconnect);
                         menu.removeItem(R.id.nav_blog_post_new);
                     }
@@ -157,9 +156,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_blog_post_new:
                 PostCreationActivity.startActivity(this);
                 break;
-            case R.id.nav_settings:
-
-                break;
             case R.id.nav_share:
                 List<Intent> targetedShareIntents = new ArrayList<Intent>();
 
@@ -189,7 +185,7 @@ public class MainActivity extends AppCompatActivity
                 LoginActivity.startActivity(getApplication());
                 break;
             case R.id.nav_about:
-                // TODO
+                AboutActivity.startActivity(getApplication());
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
