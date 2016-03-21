@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity
                     // started opening
                     if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
                         Menu menu=mNavigationView.getMenu();
-                        menu.removeItem(R.id.nav_settings);
                         menu.removeItem(R.id.nav_disconnect);
                         menu.removeItem(R.id.nav_blog_post_new);
                     }
@@ -147,9 +146,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_blog_post_new:
                 PostCreationActivity.startActivity(this);
                 break;
-            case R.id.nav_settings:
-
-                break;
             case R.id.nav_share:
 
                 break;
@@ -158,7 +154,7 @@ public class MainActivity extends AppCompatActivity
                 LoginActivity.startActivity(getApplication());
                 break;
             case R.id.nav_about:
-                // TODO
+                AboutActivity.startActivity(getApplication());
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
