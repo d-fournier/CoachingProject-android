@@ -1,5 +1,6 @@
 package fr.sims.coachingproject.ui.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -60,10 +62,19 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     private UserProfile mPartner;
     boolean mIsCurrentUserCoach;
     private long mRelationId;
+    private ImageView mPictureIV;
 
+    public static void startActivityWithAnimation(Activity activityCtx, long id, View pictureView){
+        Intent intent = getIntent(activityCtx, id);
 
-    public static void startActivity(Context ctx, long id) {
-        ctx.startActivity(getIntent(ctx, id));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activityCtx, pictureView,
+                            activityCtx.getResources().getString(R.string.transition_user_picture));
+            activityCtx.startActivity(intent, options.toBundle());
+        } else {
+            activityCtx.startActivity(intent);
+        }
     }
 
     public static Intent getIntent(Context ctx, long id) {
@@ -96,6 +107,8 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         mViewPager.setAdapter(mRelationPagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mPictureIV = (ImageView) findViewById(R.id.imagePicture);
 
         // Invitation Layout
         mInvitationLayout = ((NestedScrollView) findViewById(R.id.invitationLayout));
@@ -186,7 +199,6 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void bindRelationDetails() {
-        ImageView picture = (ImageView) findViewById(R.id.imagePicture);
         TextView city = (TextView) findViewById(R.id.city);
         TextView name = (TextView) findViewById(R.id.name);
         TextView sport = (TextView) findViewById(R.id.sport);
@@ -194,7 +206,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
         city.setText(mPartner.mCity);
         name.setText(mPartner.mDisplayName);
         sport.setText(mRelation.mSport.mName);
-        ImageUtil.loadProfilePicture(this, mPartner.mPicture, picture);
+        ImageUtil.loadProfilePicture(this, mPartner.mPicture, mPictureIV);
 
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(mPartner.mDisplayName);
     }
@@ -249,7 +261,7 @@ public class RelationActivity extends AppCompatActivity implements LoaderManager
 
         switch (viewId) {
             case R.id.profile_layout:
-                ProfileActivity.startActivity(this, mPartner.mIdDb, -1);
+                ProfileActivity.startActivityWithAnimation(this, mPartner.mIdDb, -1, mPictureIV);
                 break;
             case R.id.coaching_invitation_accept:
                 new AnswerInvitationTask().execute(true);

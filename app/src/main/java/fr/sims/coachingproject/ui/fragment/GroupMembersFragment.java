@@ -98,7 +98,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
     @Override
     public void onUserClick(View view, long userDbId) {
-        ProfileActivity.startActivity(getActivity(), userDbId);
+        ProfileActivity.startActivityWithAnimation(getActivity(), userDbId, view.findViewById(R.id.user_picture));
     }
 
 
