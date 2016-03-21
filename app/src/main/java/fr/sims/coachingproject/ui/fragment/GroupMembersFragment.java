@@ -76,7 +76,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
     @Override
     protected void bindView(View view) {
         super.bindView(view);
-        mGroupMembersAdapter = new GroupMembersAdapter(getContext(), mGroupId);
+        mGroupMembersAdapter = new GroupMembersAdapter(getActivity(), mGroupId);
         mGroupMembersList = (RecyclerView) view.findViewById(R.id.group_members_list);
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGroupMembersList.setAdapter(mGroupMembersAdapter);
@@ -98,7 +98,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
     @Override
     public void onUserClick(View view, long userDbId) {
-        ProfileActivity.startActivity(getContext(), userDbId);
+        ProfileActivity.startActivity(getActivity(), userDbId);
     }
 
 
@@ -106,7 +106,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new GroupMembersLoader(getContext(), mGroupId, true);
+            return new GroupMembersLoader(getActivity(), mGroupId, true);
         }
 
         @Override
@@ -127,7 +127,7 @@ public class GroupMembersFragment extends GenericFragment implements GenericBroa
 
         @Override
         public Loader<List<UserProfile>> onCreateLoader(int id, Bundle args) {
-            return new GroupMembersLoader(getContext(), mGroupId, false);
+            return new GroupMembersLoader(getActivity(), mGroupId, false);
         }
 
         @Override
