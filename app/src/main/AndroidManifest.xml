@@ -102,8 +102,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".ui.activity.SendRequestActivity"
-            android:label="@string/activity_send_request"/>
+        <activity
+            android:name=".ui.activity.SendRequestActivity"
+            android:label="@string/activity_send_request" />
         <activity
             android:name=".ui.activity.CreateGroupActivity"
             android:screenOrientation="portrait"
@@ -118,6 +119,9 @@
             android:name=".ui.activity.PostReadActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.StatusBar" />
+
+        <activity android:name=".ui.activity.ImagePreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service
             android:name=".service.NetworkService"
