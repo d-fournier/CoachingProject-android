@@ -164,5 +164,10 @@
     <string name="city_empty">City cannot be empty</string>
     <string name="same_level_selected">You cannot have two levels in the same sport</string>
     <string name="joins">My join requests</string>
+    <string name="logo">logo</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="levels">Levels</string>
+    <string name="add_level">Add level</string>
+    <string name="remove_level">Remove level</string>
 
 </resources>

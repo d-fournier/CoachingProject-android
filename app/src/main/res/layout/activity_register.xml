@@ -14,29 +14,39 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:src="@drawable/img_runners_timer"
-            android:contentDescription="logo" />
+            android:contentDescription="@string/logo"
+            android:src="@drawable/img_runners_timer" />
 
         <TextView
+            style="@style/Base.TextAppearance.AppCompat.Display1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            style="@style/Base.TextAppearance.AppCompat.Display1"
             android:gravity="center_horizontal"
-            android:text="@string/sign_up"/>
+            android:text="@string/sign_up"
+            android:textColor="@color/white" />
 
 
         <LinearLayout
             android:id="@+id/register_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:padding="@dimen/activity_vertical_margin"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/section_margin_top"
+                android:text="@string/personal_information"
+                android:textColor="@color/white" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_username"
@@ -45,12 +55,14 @@
                     android:hint="@string/prompt_username"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_display_name"
@@ -59,12 +71,14 @@
                     android:hint="@string/display_name"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_password"
@@ -73,12 +87,14 @@
                     android:hint="@string/prompt_password"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_password_repeat"
@@ -87,12 +103,14 @@
                     android:hint="@string/repeat_password"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_email"
@@ -101,7 +119,8 @@
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
 
             <AutoCompleteTextView
@@ -110,33 +129,22 @@
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:ems="10"
-                android:hint="@string/city" />
+                android:hint="@string/city"
+                android:textColor="@color/light_grey"
+                android:theme="@style/EditTextLight" />
 
             <Button
                 android:id="@+id/register_date_button"
                 style="@style/Platform.Widget.AppCompat.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/pick_date" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/picture" />
-
-            <ImageView
-                android:id="@+id/register_profile_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:clickable="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/upload_image" />
+                android:text="@string/pick_date"
+                android:textColor="@color/light_grey" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/EditTextLight">
 
                 <EditText
                     android:id="@+id/register_description"
@@ -145,15 +153,46 @@
                     android:gravity="top"
                     android:hint="@string/description"
                     android:inputType="textMultiLine"
-                    android:lines="3" />
+                    android:lines="3"
+                    android:textColor="@color/light_grey" />
             </android.support.design.widget.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/register_is_coach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agree_to_coach"
+                android:textColor="@color/light_grey" />
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/section_margin_top"
+                android:text="@string/picture"
+                android:textColor="@color/white" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/register_profile_image"
+                android:layout_width="@dimen/profile_picture_size"
+                android:layout_height="@dimen/profile_picture_size"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:background="@drawable/rounded_image_white_bkg"
+                android:clickable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_person_96dp_accent" />
 
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/label_register_level_list" />
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/section_margin_top"
+                android:text="@string/levels"
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:id="@+id/register_levels_list"
@@ -168,30 +207,28 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <Button
                     android:id="@+id/register_add_level_button"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:src="@drawable/ic_add_24dp" />
+                    android:text="@string/add_level"
+                    android:textColor="@color/light_grey" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/register_remove_level_button"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_remove_24dp" />
+                    android:text="@string/remove_level"
+                    android:textColor="@color/light_grey" />
+
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/register_is_coach"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/agree_to_coach" />
 
             <Button
                 android:id="@+id/register_button"
@@ -199,7 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/section_margin_top"
                 android:text="@string/sign_up" />
 
         </LinearLayout>
