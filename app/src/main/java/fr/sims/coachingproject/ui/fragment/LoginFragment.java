@@ -100,7 +100,7 @@ public class LoginFragment extends GenericFragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterActivity.startActivity(getContext());
+                RegisterActivity.startActivity(getActivity());
             }
         });
 
@@ -227,8 +227,8 @@ public class LoginFragment extends GenericFragment {
             UserProfile up = UserProfile.parseItem(response_user.getBody());
             up.saveOrUpdate();
 
-            SharedPrefUtil.putConnectedToken(getContext(), lResponse.token);
-            SharedPrefUtil.putConnectedUserId(getContext(), up.mIdDb);
+            SharedPrefUtil.putConnectedToken(getActivity(), lResponse.token);
+            SharedPrefUtil.putConnectedUserId(getActivity(), up.mIdDb);
 
             return true;
         }
@@ -239,9 +239,9 @@ public class LoginFragment extends GenericFragment {
             showProgress(false);
 
             if (success) {
-                RegistrationGCMIntentService.startActionRegistrationGCM(getContext());
-                MainActivity.startActivity(getContext());
-                SharedPrefUtil.putIsFirstLaunch(getContext(),false);
+                RegistrationGCMIntentService.startActionRegistrationGCM(getActivity());
+                MainActivity.startActivity(getActivity());
+                SharedPrefUtil.putIsFirstLaunch(getActivity(),false);
                 if(getActivity()!=null){
                     getActivity().finish();
                 }
