@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -24,6 +27,9 @@ import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.sims.coachingproject.R;
 import fr.sims.coachingproject.loader.local.UserLoader;
 import fr.sims.coachingproject.model.CoachingRelation;
@@ -39,6 +45,7 @@ import fr.sims.coachingproject.util.Const;
 import fr.sims.coachingproject.util.ImageUtil;
 import fr.sims.coachingproject.util.SharedPrefUtil;
 
+
 import static fr.sims.coachingproject.service.NetworkService.startActionCoachingRelations;
 
 
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     ImageView mConnectedUserPictureIV;
 
     private long mConnectedUserId;
+
 
     public static void startActivity(Context ctx) {
         Intent startIntent = new Intent(ctx, MainActivity.class);
@@ -79,8 +87,8 @@ public class MainActivity extends AppCompatActivity
                     startActionCoachingRelations(getApplicationContext());
                 } else if (slideOffset != 0) {
                     // started opening
-                    if(SharedPrefUtil.getConnectedUserId(getApplicationContext())==-1){
-                        Menu menu=mNavigationView.getMenu();
+                    if (SharedPrefUtil.getConnectedUserId(getApplicationContext()) == -1) {
+                        Menu menu = mNavigationView.getMenu();
                         menu.removeItem(R.id.nav_settings);
                         menu.removeItem(R.id.nav_disconnect);
                         menu.removeItem(R.id.nav_blog_post_new);
@@ -153,6 +161,27 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_share:
+                List<Intent> targetedShareIntents = new ArrayList<Intent>();
+
+                Intent fbIntent = getShareIntent("com.facebook.katana");
+                if (fbIntent != null)
+                    targetedShareIntents.add(fbIntent);
+
+                Intent twitterIntent = getShareIntent("com.twitter.android");
+                if (twitterIntent != null) {
+                    twitterIntent.setClassName("com.twitter.android", "com.twitter.android.composer.ComposerActivity");
+                    targetedShareIntents.add(twitterIntent);
+                }
+
+                Intent gmIntent = getShareIntent("com.google.android.gm");
+                if (gmIntent != null)
+                    targetedShareIntents.add(gmIntent);
+
+                Intent chooser = Intent.createChooser(targetedShareIntents.remove(0), "Continuer avec");
+
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
+
+                startActivity(chooser);
 
                 break;
             case R.id.nav_disconnect:
@@ -166,6 +195,29 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private Intent getShareIntent(String type) {
+        boolean appFound = false;
+        String urlToShare = "https://play.google.com/store/apps/details?id=fr.sims.coachingproject";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "The best sport app");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, urlToShare + " It's a great sport app - I recommend ");
+
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(shareIntent, 0);
+        for (ResolveInfo info : matches) {
+            // Check if the app is installed on the phone.
+            if (info.activityInfo.packageName.toLowerCase().contains(type)) {
+                shareIntent.setPackage(info.activityInfo.packageName);
+                appFound = true;
+                break;
+            }
+        }
+        if (!appFound)
+            return null;
+
+        return shareIntent;
     }
 
     @Override
