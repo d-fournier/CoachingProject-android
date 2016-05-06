@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="first_launch_title">
+        <item>CoachMe</item>
+        <item>Find a Coach</item>
+        <item>Join a Group</item>
+        <item>Log in</item>
+    </string-array>
+
+    <string-array name="first_launch_description">
+        <item>You want to increase your skills but you don\'t know how ? Get some help from other people !</item>
+        <item>You can easily find a coach who will follow your performance and give you advices.</item>
+        <item>Bored to train alone ? Find a group to share your training sessions !</item>
+        <item></item>
+    </string-array>
+
+    <string-array name="first_launch_image">
+        <item>@drawable/first_launch_3</item>
+        <item>@drawable/first_launch_2</item>
+        <item>@drawable/first_launch_1</item>
+        <item>@color/colorPrimary</item>
+    </string-array>
+</resources>

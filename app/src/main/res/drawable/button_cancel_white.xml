@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_clear_24dp_white" android:width="24dp" android:gravity="center" />
+    <item android:width="32dp" android:height="32dp">
+        <shape android:shape="oval">
+            <stroke
+                android:width="2dp"
+                android:color="@color/white" />
+
+            <solid android:color="#00ffffff" />
+
+        </shape>
+    </item>
+</layer-list>
